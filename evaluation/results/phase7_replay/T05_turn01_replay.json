@@ -1,0 +1,104 @@
+{
+  "label": "Offline replay of a recorded Phase 6 Gemini response; not a new live result or accuracy score",
+  "case_id": "T05",
+  "turn": 1,
+  "live_requests": 0,
+  "original_response": "raw_outputs\\live-first-v1\\T05_turn01_response.txt",
+  "original_response_sha256": "18e3f2553de1fb5ab3d5b937cd5e17a829ec8d249945f62b285c339550fc878f",
+  "original_input_messages": [
+    {
+      "role": "user",
+      "content": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken. I have the invoice. I want a refund. What are my options?"
+    }
+  ],
+  "before_phase6_case": {
+    "issue_type": "defective product",
+    "user_language": "en",
+    "user_summary": "User ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.",
+    "company_or_seller": "Fictional Cedar Shop",
+    "amount_inr": "2000",
+    "incident_date": "2026-10-06",
+    "timeline": [
+      "2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken."
+    ],
+    "evidence_available": [
+      "invoice"
+    ],
+    "evidence_missing": [
+      "photos of the broken kettle",
+      "delivery confirmation or tracking details",
+      "communication with the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Do you want to correct any recorded detail before proceeding further?"
+    ],
+    "confidence_or_uncertainty": "User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.",
+    "case_status": "ready_for_review"
+  },
+  "after_fixed_case": {
+    "issue_type": "defective product",
+    "user_language": "en",
+    "user_summary": "User ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.",
+    "company_or_seller": "Fictional Cedar Shop",
+    "amount_inr": "2000",
+    "incident_date": "2026-10-06",
+    "timeline": [
+      "2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken."
+    ],
+    "evidence_available": [
+      "invoice"
+    ],
+    "evidence_missing": [
+      "photos of the broken kettle",
+      "delivery confirmation or tracking details",
+      "communication with the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Do you want to correct any recorded detail before proceeding further?"
+    ],
+    "confidence_or_uncertainty": "User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.",
+    "case_status": "ready_for_review",
+    "narrative_review_required": false,
+    "uncertain_fields": {}
+  },
+  "before_phase6_complaint": "Subject: Consumer complaint — defective product\n\nTo: Fictional Cedar Shop\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nUser ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): 2026-10-06\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹2,000\n\nTimeline supplied by me:\n- 2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken.\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+  "after_fixed_package": {
+    "complaint": "Subject: Consumer complaint — defective product\n\nTo: Fictional Cedar Shop\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nUser ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): 2026-10-06\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹2,000\n\nTimeline supplied by me:\n- 2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken.\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+    "summary": "NCH preparation summary\n\nPersonal preparation only. This is not submitted to NCH and is not officially validated. All case facts are the user's account.\n\nCompany/seller:\nFictional Cedar Shop\n\nProduct/service:\n[Product/service — confirm from your order]\n\nIssue category:\ndefective product\n\nTransaction details:\nOrder ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: ₹2,000\n\nReported incident date (type of event to confirm):\n2026-10-06\n\nGrievance — user's account:\nUser ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.\n\nTimeline — user's account:\n- 2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken.\n\nEvidence reported by user; not inspected:\n- invoice\n\nPrevious resolution attempts — user-reported:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nDesired outcome:\nrefund\n\nInformation to review or provide:\n- Order ID, exact product/service, purchase date, name and contact details\n- Do you want to correct any recorded detail before proceeding further?",
+    "checklist": {
+      "reported": [
+        "invoice"
+      ],
+      "collect": [
+        "Order confirmation",
+        "Payment proof",
+        "Delivery tracking",
+        "Photos/videos (if defects are involved)",
+        "Refund requests",
+        "Seller/support communication"
+      ],
+      "unknown": []
+    },
+    "readiness": {
+      "status": "ready",
+      "missing": [],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "45fa9db7af5faceab8bf0c17d7d09cf2ffde3a53fa002036e717bbd467560be8",
+    "language": "en"
+  },
+  "displayed_reply": "Do you want to correct any recorded detail before proceeding further?",
+  "guidance_status": "grounded",
+  "application_error": null,
+  "retrieved_source_ids": [
+    "CPA-DEFECT",
+    "DOCS-EVIDENCE",
+    "ECOM-2026-STATUS",
+    "NCH-PORTAL",
+    "RULES-REFUND"
+  ],
+  "recorded_provider_calls": 1
+}

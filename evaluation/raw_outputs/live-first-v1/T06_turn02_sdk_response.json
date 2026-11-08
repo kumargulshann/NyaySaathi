@@ -1,0 +1,121 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Sun, 08 Nov 2026 20:44:04 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=2633",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"scope\": \"in_scope\",\n  \"reply_language\": \"en\",\n  \"changes\": [\n    {\n      \"field\": \"incident_date\",\n      \"value\": null,\n      \"source_quote\": \"I now have contradictory notes: one says the order date was 3 October 2026 and another says 8 October 2026. I cannot confirm which purchase date is correct. Withdraw my earlier confirmed date and leave it unknown; ask me to clarify rather than choosing a date.\",\n      \"is_correction\": true\n    }\n  ],\n  \"evidence_missing\": [\n    \"Purchase invoice or receipt\",\n    \"Payment confirmation record\",\n    \"Order confirmation or communication records with the seller\"\n  ],\n  \"missing_details\": [\n    \"Purchase or order date\",\n    \"Whether you have contacted the seller or received any response about the delivery\"\n  ],\n  \"uncertainty\": \"The facts provided by the user are unverified. The order date is currently unknown due to conflicting dates provided.\",\n  \"case_status\": \"in_progress\",\n  \"next_question\": \"Could you please clarify the exact date when you placed the order?\",\n  \"guidance\": [\n    {\n      \"source_id\": \"RULES-CONTACT\",\n      \"explanation\": \"E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact.\"\n    },\n    {\n      \"source_id\": \"RULES-NONDELIVERY\",\n      \"explanation\": \"The e-commerce rules address refunds where delivery is later than the stated schedule, with a force-majeure exception. For non-delivery, the promised schedule and order history need checking before applying that rule.\"\n    },\n    {\n      \"source_id\": \"RULES-REFUND\",\n      \"explanation\": \"The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.\"\n    }\n  ],\n  \"safety_flag\": \"none\"\n}",
+            "thought": null,
+            "thought_signature": "EmAKXgFpFH0TWE7OvkDLvmeuuVoO1-mx70_GilPSd2JLolEsYBJHL8Y7XaxOT8SNw9J49HjhbJMTJIb17uFbrY3m-t7qDflTXCOJ3EBRuf3LkOXAclFZw6RJvTxbAjJHbRQ=",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null,
+            "audio_transcription": null,
+            "media_processing": null,
+            "speech_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null,
+      "continuation_token": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.5-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "Et_wapewK4CVg8UPp9yAAQ",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 485,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 3765,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 3765
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 4250,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [
+      {
+        "field": "incident_date",
+        "value": null,
+        "source_quote": "I now have contradictory notes: one says the order date was 3 October 2026 and another says 8 October 2026. I cannot confirm which purchase date is correct. Withdraw my earlier confirmed date and leave it unknown; ask me to clarify rather than choosing a date.",
+        "is_correction": true
+      }
+    ],
+    "evidence_missing": [
+      "Purchase invoice or receipt",
+      "Payment confirmation record",
+      "Order confirmation or communication records with the seller"
+    ],
+    "missing_details": [
+      "Purchase or order date",
+      "Whether you have contacted the seller or received any response about the delivery"
+    ],
+    "uncertainty": "The facts provided by the user are unverified. The order date is currently unknown due to conflicting dates provided.",
+    "case_status": "in_progress",
+    "next_question": "Could you please clarify the exact date when you placed the order?",
+    "guidance": [
+      {
+        "source_id": "RULES-CONTACT",
+        "explanation": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact."
+      },
+      {
+        "source_id": "RULES-NONDELIVERY",
+        "explanation": "The e-commerce rules address refunds where delivery is later than the stated schedule, with a force-majeure exception. For non-delivery, the promised schedule and order history need checking before applying that rule."
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+      }
+    ],
+    "safety_flag": "none"
+  }
+}

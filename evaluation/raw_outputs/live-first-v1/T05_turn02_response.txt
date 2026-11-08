@@ -1,0 +1,36 @@
+{
+  "scope": "in_scope",
+  "reply_language": "en",
+  "changes": [
+    {
+      "field": "amount_inr",
+      "value": "2500",
+      "source_quote": "Correction: the amount was Rs 2500, not Rs 2000.",
+      "is_correction": true
+    }
+  ],
+  "evidence_missing": [
+    "photos of the broken kettle",
+    "delivery confirmation or tracking details",
+    "communication with the seller"
+  ],
+  "missing_details": [],
+  "uncertainty": "User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.",
+  "case_status": "ready_for_review",
+  "next_question": "Do you want to correct any recorded detail before proceeding further?",
+  "guidance": [
+    {
+      "source_id": "RULES-CONTACT",
+      "explanation": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact."
+    },
+    {
+      "source_id": "CPA-DEFECT",
+      "explanation": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome."
+    },
+    {
+      "source_id": "RULES-REFUND",
+      "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+    }
+  ],
+  "safety_flag": "none"
+}

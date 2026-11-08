@@ -1,0 +1,437 @@
+{
+  "run_id": "offline-baseline-v1",
+  "case_id": "T01",
+  "turn": 1,
+  "mode": "offline",
+  "response_origin": "synthetic_mock",
+  "model": "OFFLINE_MOCK_NOT_GEMINI",
+  "timestamp": "2026-11-08T20:38:04.741039+00:00",
+  "input_messages": [
+    {
+      "role": "user",
+      "content": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?"
+    }
+  ],
+  "interface_language": "en",
+  "case_before": {
+    "issue_type": null,
+    "user_language": null,
+    "user_summary": null,
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [],
+    "desired_resolution": null,
+    "unanswered_questions": [],
+    "confidence_or_uncertainty": null,
+    "case_status": "not_started"
+  },
+  "retrieved_records": [
+    {
+      "source_id": "CPA-DEFECT",
+      "topic": "Defective products",
+      "keywords": [
+        "defect",
+        "defective",
+        "damaged",
+        "broken",
+        "खराब",
+        "टूटा",
+        "damage",
+        "kharab",
+        "tuta",
+        "toota"
+      ],
+      "guidance": {
+        "en": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome.",
+        "hi": "खराब वस्तु की शिकायत साबित होने पर अधिनियम में वस्तु बदलने या कीमत लौटाने जैसे उपाय हैं। रिफंड अपने आप या निश्चित रूप से मिलने वाला परिणाम नहीं है।",
+        "hinglish": "Defective goods ki complaint prove hone par Act mein replacement ya price wapas karne jaise remedies hain. Refund automatic ya guaranteed outcome nahi hai."
+      },
+      "next_step": {
+        "en": "Describe the defect and request your preferred resolution from the seller, keeping any response.",
+        "hi": "खराबी बताएँ, विक्रेता से अपना इच्छित समाधान माँगें और उत्तर सँभालें।",
+        "hinglish": "Defect batayein, seller se apna desired resolution maangein aur response rakhein."
+      },
+      "limitation": {
+        "en": "The defect and relevant allegations need proof; the app does not decide liability.",
+        "hi": "खराबी और संबंधित आरोपों को साबित करना होगा; ऐप जिम्मेदारी तय नहीं करता।",
+        "hinglish": "Defect aur relevant allegations ko prove karna hoga; app liability decide nahi karta."
+      },
+      "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=21",
+      "provision_or_location": "Sections 2(10) and 39(1)(b)–(c), PDF pages 4 and 21",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    },
+    {
+      "source_id": "DOCS-EVIDENCE",
+      "topic": "Consumer evidence and documentation",
+      "keywords": [
+        "evidence",
+        "proof",
+        "invoice",
+        "receipt",
+        "document",
+        "सबूत",
+        "बिल",
+        "साक्ष्य",
+        "प्रमाण",
+        "saboot"
+      ],
+      "guidance": {
+        "en": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established.",
+        "hi": "अधिनियम में शिकायतों की सुनवाई शपथपत्र और दस्तावेज़ी साक्ष्य के आधार पर करने का प्रावधान है। असली खरीद और बातचीत के रिकॉर्ड सँभालना उपयोगी तैयारी है; इससे आरोप अपने आप साबित नहीं होते।",
+        "hinglish": "Act mein complaints ki hearing affidavit aur documentary evidence par hone ka provision hai. Genuine purchase aur communication records rakhna useful preparation hai; allegations apne aap prove nahi hote."
+      },
+      "next_step": {
+        "en": "Preserve available invoices, payment records, order details, messages, and photos; do not invent missing records.",
+        "hi": "उपलब्ध बिल, भुगतान रिकॉर्ड, ऑर्डर विवरण, संदेश और तस्वीरें सँभालें; गायब रिकॉर्ड न गढ़ें।",
+        "hinglish": "Available invoices, payment records, order details, messages aur photos rakhein; missing records invent na karein."
+      },
+      "limitation": {
+        "en": "This practical list is not a mandatory legal checklist. The app has not inspected or authenticated evidence.",
+        "hi": "यह व्यावहारिक सूची अनिवार्य कानूनी चेकलिस्ट नहीं है। ऐप ने सबूत देखे या प्रमाणित नहीं किए हैं।",
+        "hinglish": "Yeh practical list mandatory legal checklist nahi hai. App ne evidence inspect ya authenticate nahi kiya."
+      },
+      "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=20",
+      "provision_or_location": "Section 38(6), PDF page 20; checklist is practical preparation",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "practical_caution"
+    },
+    {
+      "source_id": "ECOM-2026-STATUS",
+      "topic": "Status of the 2026 e-commerce amendment",
+      "keywords": [
+        "2026",
+        "2027",
+        "amendment",
+        "new rules",
+        "संशोधन",
+        "नए नियम",
+        "naye rules"
+      ],
+      "guidance": {
+        "en": "The published 2026 e-commerce amendment states that it comes into force on 1 January 2027. Its added duties must not be treated as already effective before that date.",
+        "hi": "प्रकाशित 2026 ई-कॉमर्स संशोधन में लागू होने की तारीख 1 जनवरी 2027 है। इससे पहले उसके जोड़े गए दायित्वों को लागू नहीं माना जाना चाहिए।",
+        "hinglish": "Published 2026 e-commerce amendment ki commencement date 1 January 2027 hai. Usse pehle added duties ko already effective nahi maana jana chahiye."
+      },
+      "next_step": {
+        "en": "Check which version applied on the relevant date; obtain updated guidance before relying on a changed rule.",
+        "hi": "संबंधित तारीख पर लागू संस्करण जाँचें; बदले नियम पर भरोसा करने से पहले अद्यतन मार्गदर्शन लें।",
+        "hinglish": "Relevant date par applicable version check karein; changed rule par rely karne se pehle updated guidance lein."
+      },
+      "limitation": {
+        "en": "Commencement was visually verified on PDF page 5. No case-specific application of future provisions is given.",
+        "hi": "लागू होने की तारीख PDF पृष्ठ 5 पर देखकर सत्यापित की गई। भविष्य के प्रावधान किसी विशेष केस पर लागू नहीं किए गए हैं।",
+        "hinglish": "Commencement PDF page 5 par visually verify hua. Future provisions ka case-specific application nahi diya gaya."
+      },
+      "source_title": "Consumer Protection (E-Commerce) (Amendment) Rules, 2026",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20Commerce%20Amendment%20Rules%202026_1789127949.pdf#page=5",
+      "provision_or_location": "Rule 1(2), English Gazette page 5; G.S.R. 789(E), 9 September 2026",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    },
+    {
+      "source_id": "NCH-PORTAL",
+      "topic": "National Consumer Helpline grievance route",
+      "keywords": [
+        "helpline",
+        "nch",
+        "escalate",
+        "escalation",
+        "unresolved",
+        "हेल्पलाइन",
+        "समाधान नहीं",
+        "aage",
+        "kya karu",
+        "what can i do",
+        "options"
+      ],
+      "guidance": {
+        "en": "The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund.",
+        "hi": "राष्ट्रीय उपभोक्ता हेल्पलाइन शिकायतें स्वीकार कर संबंधित संस्था को भेजती है और ऑनलाइन जवाब तथा स्थिति देखने देती है। शिकायत दर्ज करने से रिफंड की गारंटी नहीं होती।",
+        "hinglish": "National Consumer Helpline consumer grievances leti hai, process karke concerned entity ko forward karti hai aur responses online track karne deti hai. Registration refund guarantee nahi karta."
+      },
+      "next_step": {
+        "en": "Use the official NCH portal to register and keep the grievance reference for tracking.",
+        "hi": "आधिकारिक NCH पोर्टल पर शिकायत दर्ज करें और ट्रैकिंग के लिए संदर्भ संख्या रखें।",
+        "hinglish": "Official NCH portal par grievance register karein aur tracking ke liye reference rakhein."
+      },
+      "limitation": {
+        "en": "NCH is a grievance route; this app does not equate it with a consumer commission order.",
+        "hi": "NCH शिकायत का माध्यम है; ऐप इसे उपभोक्ता आयोग के आदेश के समान नहीं मानता।",
+        "hinglish": "NCH grievance route hai; app ise consumer commission ke order ke barabar nahi maanta."
+      },
+      "source_title": "National Consumer Helpline — How NCH Works",
+      "source_url": "https://consumerhelpline.gov.in/",
+      "provision_or_location": "How NCH Works: Register, Process & Forward, Respond, Track",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "official_service"
+    },
+    {
+      "source_id": "RULES-CONTACT",
+      "topic": "Contacting seller and platform",
+      "keywords": [
+        "seller",
+        "contact",
+        "complain",
+        "complaint",
+        "grievance",
+        "विक्रेता",
+        "शिकायत",
+        "संपर्क",
+        "seller se",
+        "shikayat"
+      ],
+      "guidance": {
+        "en": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact.",
+        "hi": "ई-कॉमर्स संस्थाओं को ग्राहक सेवा और शिकायत अधिकारी की संपर्क जानकारी दिखानी तथा शिकायत व्यवस्था रखनी होती है। मार्केटप्लेस पर विक्रेता का विवरण सही संपर्क पहचानने में मदद करता है।",
+        "hinglish": "E-commerce entities ko customer-care aur grievance-officer contact details dikhani aur grievance mechanism rakhna hota hai. Marketplace seller details sahi contact identify karne mein madad karti hain."
+      },
+      "next_step": {
+        "en": "Use the seller or platform's published support channel, state the problem and requested solution, and keep a copy.",
+        "hi": "विक्रेता या प्लेटफॉर्म के प्रकाशित सहायता माध्यम पर समस्या और इच्छित समाधान बताएँ तथा प्रति रखें।",
+        "hinglish": "Seller ya platform ke published support channel par problem aur requested solution batayein aur copy rakhein."
+      },
+      "limitation": {
+        "en": "A written request is a practical record, not a claim that a formal legal notice is always compulsory.",
+        "hi": "लिखित अनुरोध व्यावहारिक रिकॉर्ड है; औपचारिक कानूनी नोटिस हमेशा अनिवार्य होने का दावा नहीं है।",
+        "hinglish": "Written request practical record hai; formal legal notice hamesha compulsory hone ka claim nahi hai."
+      },
+      "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=8",
+      "provision_or_location": "Rules 4(2), 4(4) and 5(3)(a), PDF pages 8–9",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    },
+    {
+      "source_id": "RULES-REFUND",
+      "topic": "Withheld refunds",
+      "keywords": [
+        "refund",
+        "return money",
+        "रिफंड",
+        "पैसे वापस",
+        "paisa wapas",
+        "paise wapas"
+      ],
+      "guidance": {
+        "en": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.",
+        "hi": "ई-कॉमर्स नियम कुछ स्थितियों में वस्तु वापस लेने या भुगतान लौटाने से इनकार पर रोक लगाते हैं, जैसे खराब या विज्ञापन अथवा समझौते से अलग वस्तु। यह हर खरीद पर मन बदलने के कारण रिफंड का सार्वभौमिक अधिकार नहीं है।",
+        "hinglish": "E-commerce rules kuch situations mein goods wapas lene ya paid price refund karne se refusal ko restrict karte hain, jaise defective ya advertised/agreed features se alag goods. Yeh har purchase par change-of-mind refund right nahi hai."
+      },
+      "next_step": {
+        "en": "Keep the refund request, seller response, and any stated refund policy or commitment.",
+        "hi": "रिफंड अनुरोध, विक्रेता का उत्तर और बताई गई रिफंड नीति या वादा सँभालें।",
+        "hinglish": "Refund request, seller response aur stated refund policy ya commitment rakhein."
+      },
+      "limitation": {
+        "en": "Applicability depends on the transaction and facts. No fixed refund-processing deadline is asserted.",
+        "hi": "लागू होना लेनदेन और तथ्यों पर निर्भर है। कोई निश्चित रिफंड-प्रक्रिया समय सीमा नहीं बताई जा रही है।",
+        "hinglish": "Applicability transaction aur facts par depend karti hai. Koi fixed refund-processing deadline claim nahi ki ja rahi."
+      },
+      "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+      "provision_or_location": "Rules 6(3) and 7(4), PDF pages 10–11",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    }
+  ],
+  "retrieval_reasons": [
+    "CPA-DEFECT: question=damaged,damage; case=",
+    "DOCS-EVIDENCE: question=invoice; case=",
+    "ECOM-2026-STATUS: question=2026; case=",
+    "NCH-PORTAL: question=options; case=",
+    "RULES-CONTACT: question=seller; case=",
+    "RULES-REFUND: question=refund; case="
+  ],
+  "live_requests_attempted": 0,
+  "provider_response_received": true,
+  "sdk_response_received": false,
+  "parsed_response": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [
+      {
+        "field": "company_or_seller",
+        "value": "Fictional Amber Retail",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      },
+      {
+        "field": "amount_inr",
+        "value": "2999",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      },
+      {
+        "field": "incident_date",
+        "value": "2026-10-03",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      },
+      {
+        "field": "user_language",
+        "value": "en",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      },
+      {
+        "field": "issue_type",
+        "value": "defective product",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      },
+      {
+        "field": "user_summary",
+        "value": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      },
+      {
+        "field": "desired_resolution",
+        "value": "refund",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      },
+      {
+        "field": "evidence_available",
+        "value": [
+          "invoice",
+          "photo"
+        ],
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?",
+        "is_correction": false
+      }
+    ],
+    "evidence_missing": [],
+    "missing_details": [],
+    "uncertainty": "User-reported information has not been independently verified.",
+    "case_status": "in_progress",
+    "next_question": "What is the order reference?",
+    "guidance": [
+      {
+        "source_id": "CPA-DEFECT",
+        "explanation": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome."
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+      },
+      {
+        "source_id": "DOCS-EVIDENCE",
+        "explanation": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established."
+      }
+    ],
+    "safety_flag": "none"
+  },
+  "schema_validation": "passed",
+  "application_processing": "completed",
+  "displayed_reply": "What is the order reference?",
+  "displayed_guidance": {
+    "status": "grounded",
+    "language": "en",
+    "message": "",
+    "entries": [
+      {
+        "source_id": "CPA-DEFECT",
+        "explanation": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome.",
+        "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=21",
+        "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+        "next_step": "Describe the defect and request your preferred resolution from the seller, keeping any response.",
+        "limitation": "The defect and relevant allegations need proof; the app does not decide liability.",
+        "provision_or_location": "Sections 2(10) and 39(1)(b)–(c), PDF pages 4 and 21",
+        "date_checked": "2026-11-09"
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.",
+        "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+        "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+        "next_step": "Keep the refund request, seller response, and any stated refund policy or commitment.",
+        "limitation": "Applicability depends on the transaction and facts. No fixed refund-processing deadline is asserted.",
+        "provision_or_location": "Rules 6(3) and 7(4), PDF pages 10–11",
+        "date_checked": "2026-11-09"
+      },
+      {
+        "source_id": "DOCS-EVIDENCE",
+        "explanation": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established.",
+        "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=20",
+        "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+        "next_step": "Preserve available invoices, payment records, order details, messages, and photos; do not invent missing records.",
+        "limitation": "This practical list is not a mandatory legal checklist. The app has not inspected or authenticated evidence.",
+        "provision_or_location": "Section 38(6), PDF page 20; checklist is practical preparation",
+        "date_checked": "2026-11-09"
+      }
+    ]
+  },
+  "action_package": {
+    "complaint": "Subject: Consumer complaint — defective product\n\nTo: Fictional Amber Retail\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nI bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): 2026-10-03\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹2,999\n\nTimeline supplied by me:\n[Timeline not provided]\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+    "summary": "NCH preparation summary\n\nPersonal preparation only. This is not submitted to NCH and is not officially validated. All case facts are the user's account.\n\nCompany/seller:\nFictional Amber Retail\n\nProduct/service:\n[Product/service — confirm from your order]\n\nIssue category:\ndefective product\n\nTransaction details:\nOrder ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: ₹2,999\n\nReported incident date (type of event to confirm):\n2026-10-03\n\nGrievance — user's account:\nI bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.\n\nTimeline — user's account:\n[Timeline not provided]\n\nEvidence reported by user; not inspected:\n- invoice\n- photo\n\nPrevious resolution attempts — user-reported:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nDesired outcome:\nrefund\n\nInformation to review or provide:\n- Order ID, exact product/service, purchase date, name and contact details\n- What is the order reference?",
+    "checklist": {
+      "reported": [
+        "invoice",
+        "photo"
+      ],
+      "collect": [
+        "Order confirmation",
+        "Payment proof",
+        "Refund requests",
+        "Seller/support communication"
+      ],
+      "unknown": [
+        "Delivery tracking"
+      ]
+    },
+    "readiness": {
+      "status": "ready",
+      "missing": [],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "81a582160a085f4a4b4d80612fc185f13e8c43cb46a0ad1ea2a33694d04c616a",
+    "language": "en"
+  },
+  "original_response_file": "T01_turn01_response.txt",
+  "complete_sdk_response_file": null,
+  "retrieval_safety": "none",
+  "original_response_sha256": "48b344ca8aed8e68927bb88af66c916aff8ebd82ed1e244140e726129160e6a9",
+  "intake_error": null,
+  "case_after": {
+    "issue_type": "defective product",
+    "user_language": "en",
+    "user_summary": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.",
+    "company_or_seller": "Fictional Amber Retail",
+    "amount_inr": "2999",
+    "incident_date": "2026-10-03",
+    "timeline": [],
+    "evidence_available": [
+      "invoice",
+      "photo"
+    ],
+    "evidence_missing": [],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "What is the order reference?"
+    ],
+    "confidence_or_uncertainty": "User-reported information has not been independently verified.",
+    "case_status": "in_progress"
+  },
+  "readiness": {
+    "status": "ready",
+    "missing": [],
+    "review": [],
+    "provisional_allowed": true
+  },
+  "provisional_generation_explicitly_requested_by_evaluation": true,
+  "completed_at": "2026-11-08T20:38:04.778981+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "label": "Software replay only; original model responses and Phase 6 scores unchanged",
+  "timestamp_utc": "2026-11-08T22:02:34.164096+00:00",
+  "cases_replayed": 10,
+  "recorded_responses_replayed": 12,
+  "live_requests": 0,
+  "T05_regression": "passed",
+  "T06_regression": "passed",
+  "original_artifact_hashes": "verified unchanged",
+  "current_source_sha256": {
+    "nyaysaathi/models.py": "2a29318f49c27c0b5355ba26692c6ea4b67daa1b09fab26620cabc7168b6d0bb",
+    "nyaysaathi/consistency.py": "fbf8848cfde589cf5e21846d90f2b9a62725afc4051f0dfd3846f47ec79de73f",
+    "nyaysaathi/intake.py": "d691157e189dacc360a74d445e32412b2814fa6821c9dbba681dccc54102e616",
+    "nyaysaathi/action_package.py": "b7ed83ab186eaa4dea18ecdf49a6c84dca363c8039300b7021f28c22b3603dcb",
+    "app.py": "a22d86c9d381990607ebb3b84bb41016dd50a02b8a8e04ee0c1c44162542d6ec",
+    "evaluation/replay_phase7.py": "5b8dbe664886fe75358fd711053379bf7ac0974bf9ea60e498e3823638a2a9a1"
+  },
+  "limitations": "Recorded outputs were not regenerated for the new case metadata/context. This demonstrates corrected software handling, not new live-model reliability."
+}

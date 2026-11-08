@@ -1,0 +1,1 @@
+{"scope": "in_scope", "reply_language": "en", "changes": [], "uncertainty": "User-reported information has not been independently verified.", "case_status": "in_progress", "next_question": "What is the order reference?", "guidance": [], "safety_flag": "urgent_notice"}

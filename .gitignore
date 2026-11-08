@@ -1,0 +1,28 @@
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets (keep the blank example tracked)
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.vercel/
+
+# Private assignment and local-only audit material
+*.pdf
+*.pem
+*.key
+credentials*.json
+publication-audit.local.json

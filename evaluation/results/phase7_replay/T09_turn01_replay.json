@@ -1,0 +1,53 @@
+{
+  "label": "Offline replay of a recorded Phase 6 Gemini response; not a new live result or accuracy score",
+  "case_id": "T09",
+  "turn": 1,
+  "live_requests": 0,
+  "original_response": "raw_outputs\\live-first-v1\\T09_turn01_response.txt",
+  "original_response_sha256": "fb3e798b64fbde355c4a6663276e8f0d6e1503de2eefb386775ce9d170c84378",
+  "original_input_messages": [
+    {
+      "role": "user",
+      "content": "I received a court notice about my consumer refund dispute. It lists a hearing tomorrow and I am worried about a deadline. I have not provided the notice or confirmed any calendar date. What should I do?"
+    }
+  ],
+  "before_phase6_case": {
+    "issue_type": null,
+    "user_language": null,
+    "user_summary": null,
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [],
+    "desired_resolution": null,
+    "unanswered_questions": [],
+    "confidence_or_uncertainty": null,
+    "case_status": "not_started"
+  },
+  "after_fixed_case": {
+    "issue_type": null,
+    "user_language": null,
+    "user_summary": null,
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [],
+    "desired_resolution": null,
+    "unanswered_questions": [],
+    "confidence_or_uncertainty": null,
+    "case_status": "not_started",
+    "narrative_review_required": false,
+    "uncertain_fields": {}
+  },
+  "before_phase6_complaint": null,
+  "after_fixed_package": null,
+  "displayed_reply": "A notice, hearing, appeal, or deadline may need prompt professional review. Do not rely on this app to calculate time limits. Keep the document and contact a qualified lawyer promptly.",
+  "guidance_status": "urgent_notice",
+  "application_error": null,
+  "retrieved_source_ids": [],
+  "recorded_provider_calls": 1
+}

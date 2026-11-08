@@ -1,0 +1,8 @@
+{
+  "dataset_version": "1.0",
+  "sha256": "7b8767a30f5c2561d89a00e9456c8b14126602d85cf2d530d6f92757e5b66418",
+  "frozen_at_utc": "2026-11-08T20:37:39.741177+00:00",
+  "frozen_before_phase6_live_outputs": true,
+  "case_count": 10,
+  "turn_count": 12
+}

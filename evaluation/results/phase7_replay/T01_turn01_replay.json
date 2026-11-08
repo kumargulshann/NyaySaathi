@@ -1,0 +1,108 @@
+{
+  "label": "Offline replay of a recorded Phase 6 Gemini response; not a new live result or accuracy score",
+  "case_id": "T01",
+  "turn": 1,
+  "live_requests": 0,
+  "original_response": "raw_outputs\\live-first-v1\\T01_turn01_response.txt",
+  "original_response_sha256": "cf319110ebe032932c01df589ee4c3aad60749fe90bc1f5ce2657ec1cd0c344d",
+  "original_input_messages": [
+    {
+      "role": "user",
+      "content": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused. I want a refund. What are my options?"
+    }
+  ],
+  "before_phase6_case": {
+    "issue_type": "defective product",
+    "user_language": "en",
+    "user_summary": "Bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999, which arrived damaged. Emailed the seller on 5 October 2026 and the refund was refused.",
+    "company_or_seller": "Fictional Amber Retail",
+    "amount_inr": "2999",
+    "incident_date": "2026-10-03",
+    "timeline": [
+      "2026-10-03: Bought headphones from Fictional Amber Retail for Rs 2999",
+      "2026-10-05: Emailed the seller about the damaged headphones and the refund was refused"
+    ],
+    "evidence_available": [
+      "invoice",
+      "photos of the damage"
+    ],
+    "evidence_missing": [
+      "delivery confirmation or courier tracking records",
+      "written email communication and refusal response from the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Would you like to correct any recorded detail before proceeding?"
+    ],
+    "confidence_or_uncertainty": "User allegations that the headphones arrived damaged and that the seller refused a refund are unverified.",
+    "case_status": "ready_for_review"
+  },
+  "after_fixed_case": {
+    "issue_type": "defective product",
+    "user_language": "en",
+    "user_summary": "Bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999, which arrived damaged. Emailed the seller on 5 October 2026 and the refund was refused.",
+    "company_or_seller": "Fictional Amber Retail",
+    "amount_inr": "2999",
+    "incident_date": "2026-10-03",
+    "timeline": [
+      "2026-10-03: Bought headphones from Fictional Amber Retail for Rs 2999",
+      "2026-10-05: Emailed the seller about the damaged headphones and the refund was refused"
+    ],
+    "evidence_available": [
+      "invoice",
+      "photos of the damage"
+    ],
+    "evidence_missing": [
+      "delivery confirmation or courier tracking records",
+      "written email communication and refusal response from the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Would you like to correct any recorded detail before proceeding?"
+    ],
+    "confidence_or_uncertainty": "User allegations that the headphones arrived damaged and that the seller refused a refund are unverified.",
+    "case_status": "ready_for_review",
+    "narrative_review_required": false,
+    "uncertain_fields": {}
+  },
+  "before_phase6_complaint": "Subject: Consumer complaint — defective product\n\nTo: Fictional Amber Retail\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nBought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999, which arrived damaged. Emailed the seller on 5 October 2026 and the refund was refused.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): 2026-10-03\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹2,999\n\nTimeline supplied by me:\n- 2026-10-03: Bought headphones from Fictional Amber Retail for Rs 2999\n- 2026-10-05: Emailed the seller about the damaged headphones and the refund was refused\n\nPrevious communication reported by me:\n- 2026-10-05: Emailed the seller about the damaged headphones and the refund was refused\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+  "after_fixed_package": {
+    "complaint": "Subject: Consumer complaint — defective product\n\nTo: Fictional Amber Retail\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nBought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999, which arrived damaged. Emailed the seller on 5 October 2026 and the refund was refused.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): 2026-10-03\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹2,999\n\nTimeline supplied by me:\n- 2026-10-03: Bought headphones from Fictional Amber Retail for Rs 2999\n- 2026-10-05: Emailed the seller about the damaged headphones and the refund was refused\n\nPrevious communication reported by me:\n- 2026-10-05: Emailed the seller about the damaged headphones and the refund was refused\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+    "summary": "NCH preparation summary\n\nPersonal preparation only. This is not submitted to NCH and is not officially validated. All case facts are the user's account.\n\nCompany/seller:\nFictional Amber Retail\n\nProduct/service:\n[Product/service — confirm from your order]\n\nIssue category:\ndefective product\n\nTransaction details:\nOrder ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: ₹2,999\n\nReported incident date (type of event to confirm):\n2026-10-03\n\nGrievance — user's account:\nBought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999, which arrived damaged. Emailed the seller on 5 October 2026 and the refund was refused.\n\nTimeline — user's account:\n- 2026-10-03: Bought headphones from Fictional Amber Retail for Rs 2999\n- 2026-10-05: Emailed the seller about the damaged headphones and the refund was refused\n\nEvidence reported by user; not inspected:\n- invoice\n- photos of the damage\n\nPrevious resolution attempts — user-reported:\n- 2026-10-05: Emailed the seller about the damaged headphones and the refund was refused\n\nDesired outcome:\nrefund\n\nInformation to review or provide:\n- Order ID, exact product/service, purchase date, name and contact details\n- Would you like to correct any recorded detail before proceeding?",
+    "checklist": {
+      "reported": [
+        "invoice",
+        "photos of the damage"
+      ],
+      "collect": [
+        "Order confirmation",
+        "Payment proof",
+        "Delivery tracking",
+        "Photos/videos (if defects are involved)",
+        "Refund requests",
+        "Seller/support communication"
+      ],
+      "unknown": []
+    },
+    "readiness": {
+      "status": "ready",
+      "missing": [],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "949bfa5e280c77d36d38ad31fffd0570be39ea6e6954f96a88dd911f214ebf32",
+    "language": "en"
+  },
+  "displayed_reply": "Would you like to correct any recorded detail before proceeding?",
+  "guidance_status": "grounded",
+  "application_error": null,
+  "retrieved_source_ids": [
+    "CPA-DEFECT",
+    "DOCS-EVIDENCE",
+    "ECOM-2026-STATUS",
+    "NCH-PORTAL",
+    "RULES-CONTACT",
+    "RULES-REFUND"
+  ],
+  "recorded_provider_calls": 1
+}

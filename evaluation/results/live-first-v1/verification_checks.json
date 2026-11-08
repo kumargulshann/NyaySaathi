@@ -1,0 +1,68 @@
+{
+  "run_id": "live-first-v1",
+  "recomputed_at": "2026-11-08T20:45:45.261018+00:00",
+  "live_requests_attempted": 0,
+  "all_metrics_match": true,
+  "turns": [
+    {
+      "case_id": "T01",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T02",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T03",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T04",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T05",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T05",
+      "turn": 2,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T06",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T06",
+      "turn": 2,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T07",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T08",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T09",
+      "turn": 1,
+      "metrics_match_original": true
+    },
+    {
+      "case_id": "T10",
+      "turn": 1,
+      "metrics_match_original": true
+    }
+  ]
+}

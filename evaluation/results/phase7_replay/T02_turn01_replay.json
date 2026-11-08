@@ -1,0 +1,100 @@
+{
+  "label": "Offline replay of a recorded Phase 6 Gemini response; not a new live result or accuracy score",
+  "case_id": "T02",
+  "turn": 1,
+  "live_requests": 0,
+  "original_response": "raw_outputs\\live-first-v1\\T02_turn01_response.txt",
+  "original_response_sha256": "3020957ff279094c1c9380a94f366111b9eab95693b9c021a979669865d26a67",
+  "original_input_messages": [
+    {
+      "role": "user",
+      "content": "Maine Fictional Saffron Mart se Rs 4500 ka product order kiya tha, lekin delivery nahi hui. Mujhe refund chahiye. Maine order ki date ya evidence ke baare mein abhi nahi bataya. Mere options kya hain?"
+    }
+  ],
+  "before_phase6_case": {
+    "issue_type": "online-shopping non-delivery",
+    "user_language": "hinglish",
+    "user_summary": "User ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.",
+    "company_or_seller": "Fictional Saffron Mart",
+    "amount_inr": "4500",
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [
+      "order confirmation or invoice",
+      "payment receipt",
+      "delivery tracking details or communication with seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Kya aap bata sakte hain ki yeh order kis date par kiya gaya tha?",
+      "incident date"
+    ],
+    "confidence_or_uncertainty": "Unverified user claims regarding order, payment, and non-delivery. No independent verification has been conducted.",
+    "case_status": "in_progress"
+  },
+  "after_fixed_case": {
+    "issue_type": "online-shopping non-delivery",
+    "user_language": "hinglish",
+    "user_summary": "User ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.",
+    "company_or_seller": "Fictional Saffron Mart",
+    "amount_inr": "4500",
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [
+      "order confirmation or invoice",
+      "payment receipt",
+      "delivery tracking details or communication with seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Kya aap bata sakte hain ki yeh order kis date par kiya gaya tha?",
+      "incident date"
+    ],
+    "confidence_or_uncertainty": "Unverified user claims regarding order, payment, and non-delivery. No independent verification has been conducted.",
+    "case_status": "in_progress",
+    "narrative_review_required": false,
+    "uncertain_fields": {}
+  },
+  "before_phase6_complaint": "Subject: Consumer complaint — online-shopping non-delivery\n\nTo: Fictional Saffron Mart\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nUser ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): [Incident date]\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹4,500\n\nTimeline supplied by me:\n[Timeline not provided]\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+  "after_fixed_package": {
+    "complaint": "Subject: Consumer complaint — online-shopping non-delivery\n\nTo: Fictional Saffron Mart\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nUser ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): [Incident date]\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹4,500\n\nTimeline supplied by me:\n[Timeline not provided]\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+    "summary": "NCH preparation summary\n\nPersonal preparation only. This is not submitted to NCH and is not officially validated. All case facts are the user's account.\n\nCompany/seller:\nFictional Saffron Mart\n\nProduct/service:\n[Product/service — confirm from your order]\n\nIssue category:\nonline-shopping non-delivery\n\nTransaction details:\nOrder ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: ₹4,500\n\nReported incident date (type of event to confirm):\n[Incident date]\n\nGrievance — user's account:\nUser ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.\n\nTimeline — user's account:\n[Timeline not provided]\n\nEvidence reported by user; not inspected:\n[Evidence availability not confirmed]\n\nPrevious resolution attempts — user-reported:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nDesired outcome:\nrefund\n\nInformation to review or provide:\n- Incident date and what it refers to\n- Evidence availability\n- Order ID, exact product/service, purchase date, name and contact details\n- Kya aap bata sakte hain ki yeh order kis date par kiya gaya tha?\n- incident date",
+    "checklist": {
+      "reported": [],
+      "collect": [
+        "Order confirmation",
+        "Invoice or receipt",
+        "Payment proof",
+        "Delivery tracking",
+        "Refund requests",
+        "Seller/support communication"
+      ],
+      "unknown": [
+        "Photos/videos (if defects are involved)"
+      ]
+    },
+    "readiness": {
+      "status": "missing",
+      "missing": [
+        "incident_date",
+        "evidence_available"
+      ],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "6189d151ec2b5675a2a71634e1bda91c9e432abde04075b0481e9a6115d9b9f8",
+    "language": "en"
+  },
+  "displayed_reply": "Kya aap bata sakte hain ki yeh order kis date par kiya gaya tha?",
+  "guidance_status": "grounded",
+  "application_error": null,
+  "retrieved_source_ids": [
+    "RULES-NONDELIVERY",
+    "DOCS-EVIDENCE",
+    "NCH-PORTAL",
+    "RULES-REFUND"
+  ],
+  "recorded_provider_calls": 1
+}

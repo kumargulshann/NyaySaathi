@@ -1,0 +1,108 @@
+{
+  "label": "Offline replay of a recorded Phase 6 Gemini response; not a new live result or accuracy score",
+  "case_id": "T04",
+  "turn": 1,
+  "live_requests": 0,
+  "original_response": "raw_outputs\\live-first-v1\\T04_turn01_response.txt",
+  "original_response_sha256": "743eea4e19288c26b4f21df6daeeb61c14e1509f6e51d59d06c506d9abb3fa21",
+  "original_input_messages": [
+    {
+      "role": "user",
+      "content": "An item I bought online arrived damaged. The seller is not helping. I have not said which seller, any dates, the price, what evidence I have, or what resolution I want. What should I tell you first?"
+    }
+  ],
+  "before_phase6_case": {
+    "issue_type": "damaged online purchase",
+    "user_language": "en",
+    "user_summary": "User bought an item online that arrived damaged and the seller is not helping.",
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [
+      "invoice",
+      "photos of damage",
+      "communication with seller"
+    ],
+    "desired_resolution": null,
+    "unanswered_questions": [
+      "What is the name of the seller or online platform?",
+      "company_or_seller",
+      "amount_inr",
+      "incident_date",
+      "desired_resolution"
+    ],
+    "confidence_or_uncertainty": "User reports item arrived damaged and seller is unhelpful; details unverified.",
+    "case_status": "in_progress"
+  },
+  "after_fixed_case": {
+    "issue_type": "damaged online purchase",
+    "user_language": "en",
+    "user_summary": "User bought an item online that arrived damaged and the seller is not helping.",
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [
+      "invoice",
+      "photos of damage",
+      "communication with seller"
+    ],
+    "desired_resolution": null,
+    "unanswered_questions": [
+      "What is the name of the seller or online platform?",
+      "company_or_seller",
+      "amount_inr",
+      "incident_date",
+      "desired_resolution"
+    ],
+    "confidence_or_uncertainty": "User reports item arrived damaged and seller is unhelpful; details unverified.",
+    "case_status": "in_progress",
+    "narrative_review_required": false,
+    "uncertain_fields": {}
+  },
+  "before_phase6_complaint": "Subject: Consumer complaint — damaged online purchase\n\nTo: [Seller/company]\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nUser bought an item online that arrived damaged and the seller is not helping.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): [Incident date]\n\nAmount reported for this grievance (confirm whether price, payment or refund): [Amount in INR]\n\nTimeline supplied by me:\n[Timeline not provided]\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: [Desired resolution]\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+  "after_fixed_package": {
+    "complaint": "Subject: Consumer complaint — damaged online purchase\n\nTo: [Seller/company]\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nUser bought an item online that arrived damaged and the seller is not helping.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): [Incident date]\n\nAmount reported for this grievance (confirm whether price, payment or refund): [Amount in INR]\n\nTimeline supplied by me:\n[Timeline not provided]\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: [Desired resolution]\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+    "summary": "NCH preparation summary\n\nPersonal preparation only. This is not submitted to NCH and is not officially validated. All case facts are the user's account.\n\nCompany/seller:\n[Seller/company]\n\nProduct/service:\n[Product/service — confirm from your order]\n\nIssue category:\ndamaged online purchase\n\nTransaction details:\nOrder ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: [Amount in INR]\n\nReported incident date (type of event to confirm):\n[Incident date]\n\nGrievance — user's account:\nUser bought an item online that arrived damaged and the seller is not helping.\n\nTimeline — user's account:\n[Timeline not provided]\n\nEvidence reported by user; not inspected:\n[Evidence availability not confirmed]\n\nPrevious resolution attempts — user-reported:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nDesired outcome:\n[Desired resolution]\n\nInformation to review or provide:\n- Seller/company\n- Desired resolution\n- Incident date and what it refers to\n- Amount and what it refers to\n- Evidence availability\n- Order ID, exact product/service, purchase date, name and contact details\n- What is the name of the seller or online platform?\n- company_or_seller\n- amount_inr\n- incident_date\n- desired_resolution",
+    "checklist": {
+      "reported": [],
+      "collect": [
+        "Order confirmation",
+        "Invoice or receipt",
+        "Payment proof",
+        "Photos/videos (if defects are involved)",
+        "Seller/support communication"
+      ],
+      "unknown": [
+        "Delivery tracking",
+        "Refund requests"
+      ]
+    },
+    "readiness": {
+      "status": "missing",
+      "missing": [
+        "company_or_seller",
+        "desired_resolution",
+        "incident_date",
+        "amount_inr",
+        "evidence_available"
+      ],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "9ac6b66363a1d7ebd66640d9405c37880d813282814389fef9b2eefb6e2be767",
+    "language": "en"
+  },
+  "displayed_reply": "What is the name of the seller or online platform?",
+  "guidance_status": "grounded",
+  "application_error": null,
+  "retrieved_source_ids": [
+    "CPA-DEFECT",
+    "DOCS-EVIDENCE",
+    "RULES-CONTACT"
+  ],
+  "recorded_provider_calls": 1
+}

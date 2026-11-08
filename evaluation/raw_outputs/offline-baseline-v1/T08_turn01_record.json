@@ -1,0 +1,85 @@
+{
+  "run_id": "offline-baseline-v1",
+  "case_id": "T08",
+  "turn": 1,
+  "mode": "offline",
+  "response_origin": "synthetic_mock",
+  "model": "OFFLINE_MOCK_NOT_GEMINI",
+  "timestamp": "2026-11-08T20:38:04.937136+00:00",
+  "input_messages": [
+    {
+      "role": "user",
+      "content": "I am an employee at Fictional Orbit Employer and my salary has not been paid. This is an employment dispute, not a consumer purchase. How can I recover my unpaid salary?"
+    }
+  ],
+  "interface_language": "en",
+  "case_before": {
+    "issue_type": null,
+    "user_language": null,
+    "user_summary": null,
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [],
+    "desired_resolution": null,
+    "unanswered_questions": [],
+    "confidence_or_uncertainty": null,
+    "case_status": "not_started"
+  },
+  "retrieved_records": [],
+  "retrieval_reasons": [],
+  "live_requests_attempted": 0,
+  "provider_response_received": true,
+  "sdk_response_received": false,
+  "parsed_response": {
+    "scope": "out_of_scope",
+    "reply_language": "en",
+    "changes": [],
+    "evidence_missing": [],
+    "missing_details": [],
+    "uncertainty": "User-reported information has not been independently verified.",
+    "case_status": "in_progress",
+    "next_question": null,
+    "guidance": [],
+    "safety_flag": "out_of_scope"
+  },
+  "schema_validation": "passed",
+  "application_processing": "completed",
+  "displayed_reply": "This topic is outside consumer refunds, defective products, non-delivery, and related service complaints. Please consult a qualified professional for this issue.",
+  "displayed_guidance": {
+    "status": "out_of_scope",
+    "language": "en",
+    "message": "This topic is outside consumer refunds, defective products, non-delivery, and related service complaints. Please consult a qualified professional for this issue.",
+    "entries": []
+  },
+  "action_package": null,
+  "original_response_file": "T08_turn01_response.txt",
+  "complete_sdk_response_file": null,
+  "retrieval_safety": "out_of_scope",
+  "original_response_sha256": "d01916168fe2cc29540a6d1ac27d4cc0f0a5dc926d238d91fb6078945eedd396",
+  "intake_error": null,
+  "case_after": {
+    "issue_type": null,
+    "user_language": null,
+    "user_summary": null,
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [],
+    "desired_resolution": null,
+    "unanswered_questions": [],
+    "confidence_or_uncertainty": null,
+    "case_status": "not_started"
+  },
+  "readiness": {
+    "status": "out_of_scope",
+    "missing": [],
+    "review": [],
+    "provisional_allowed": false
+  },
+  "completed_at": "2026-11-08T20:38:04.941652+00:00"
+}

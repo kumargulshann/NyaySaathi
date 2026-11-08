@@ -1,0 +1,6 @@
+*.py text eol=lf
+cases.json text eol=lf
+dataset_manifest.json text eol=lf
+mock_responses.json text eol=lf
+raw_outputs/** -text
+results/** text eol=lf

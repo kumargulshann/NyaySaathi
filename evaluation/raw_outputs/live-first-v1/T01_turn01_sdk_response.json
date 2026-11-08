@@ -1,0 +1,166 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Sun, 08 Nov 2026 20:43:34 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=3963",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"scope\": \"in_scope\",\n  \"reply_language\": \"en\",\n  \"changes\": [\n    {\n      \"field\": \"issue_type\",\n      \"value\": \"defective product\",\n      \"source_quote\": \"They arrived damaged.\"\n    },\n    {\n      \"field\": \"user_language\",\n      \"value\": \"en\",\n      \"source_quote\": \"I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.\"\n    },\n    {\n      \"field\": \"user_summary\",\n      \"value\": \"Bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999, which arrived damaged. Emailed the seller on 5 October 2026 and the refund was refused.\",\n      \"source_quote\": \"I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused.\"\n    },\n    {\n      \"field\": \"company_or_seller\",\n      \"value\": \"Fictional Amber Retail\",\n      \"source_quote\": \"I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.\"\n    },\n    {\n      \"field\": \"amount_inr\",\n      \"value\": \"2999\",\n      \"source_quote\": \"I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.\"\n    },\n    {\n      \"field\": \"incident_date\",\n      \"value\": \"2026-10-03\",\n      \"source_quote\": \"I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999.\"\n    },\n    {\n      \"field\": \"timeline\",\n      \"value\": [\n        \"2026-10-03: Bought headphones from Fictional Amber Retail for Rs 2999\",\n        \"2026-10-05: Emailed the seller about the damaged headphones and the refund was refused\"\n      ],\n      \"source_quote\": \"I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused.\"\n    },\n    {\n      \"field\": \"evidence_available\",\n      \"value\": [\n        \"invoice\",\n        \"photos of the damage\"\n      ],\n      \"source_quote\": \"I have the invoice and photos of the damage.\"\n    },\n    {\n      \"field\": \"desired_resolution\",\n      \"value\": \"refund\",\n      \"source_quote\": \"I want a refund.\"\n    }\n  ],\n  \"evidence_missing\": [\n    \"delivery confirmation or courier tracking records\",\n    \"written email communication and refusal response from the seller\"\n  ],\n  \"missing_details\": [],\n  \"uncertainty\": \"User allegations that the headphones arrived damaged and that the seller refused a refund are unverified.\",\n  \"case_status\": \"ready_for_review\",\n  \"next_question\": \"Would you like to correct any recorded detail before proceeding?\",\n  \"guidance\": [\n    {\n      \"source_id\": \"CPA-DEFECT\",\n      \"explanation\": \"For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome.\"\n    },\n    {\n      \"source_id\": \"RULES-REFUND\",\n      \"explanation\": \"The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.\"\n    },\n    {\n      \"source_id\": \"NCH-PORTAL\",\n      \"explanation\": \"The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund.\"\n    },\n    {\n      \"source_id\": \"DOCS-EVIDENCE\",\n      \"explanation\": \"The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established.\"\n    }\n  ],\n  \"safety_flag\": \"none\"\n}",
+            "thought": null,
+            "thought_signature": "EmAKXgFpFH0Tccj6nR0yJYhhUl1S6bnMDhiRjX1MiPNJD_NxNBrZh2OuVdFY14L_WuSU-wG6zp3LwJex959elBXDlo4B5sUNkbbXTAGQCU7hNtTPaConpFTmKtZkWs-5YHE=",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null,
+            "audio_transcription": null,
+            "media_processing": null,
+            "speech_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null,
+      "continuation_token": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.5-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "897waoKRKr_s694P_Jfm2Ac",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 1062,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 4401,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 4401
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 5463,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [
+      {
+        "field": "issue_type",
+        "value": "defective product",
+        "source_quote": "They arrived damaged."
+      },
+      {
+        "field": "user_language",
+        "value": "en",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999."
+      },
+      {
+        "field": "user_summary",
+        "value": "Bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999, which arrived damaged. Emailed the seller on 5 October 2026 and the refund was refused.",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused."
+      },
+      {
+        "field": "company_or_seller",
+        "value": "Fictional Amber Retail",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999."
+      },
+      {
+        "field": "amount_inr",
+        "value": "2999",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999."
+      },
+      {
+        "field": "incident_date",
+        "value": "2026-10-03",
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999."
+      },
+      {
+        "field": "timeline",
+        "value": [
+          "2026-10-03: Bought headphones from Fictional Amber Retail for Rs 2999",
+          "2026-10-05: Emailed the seller about the damaged headphones and the refund was refused"
+        ],
+        "source_quote": "I bought headphones from Fictional Amber Retail on 3 October 2026 for Rs 2999. They arrived damaged. I have the invoice and photos of the damage. I emailed the seller on 5 October 2026 and the refund was refused."
+      },
+      {
+        "field": "evidence_available",
+        "value": [
+          "invoice",
+          "photos of the damage"
+        ],
+        "source_quote": "I have the invoice and photos of the damage."
+      },
+      {
+        "field": "desired_resolution",
+        "value": "refund",
+        "source_quote": "I want a refund."
+      }
+    ],
+    "evidence_missing": [
+      "delivery confirmation or courier tracking records",
+      "written email communication and refusal response from the seller"
+    ],
+    "missing_details": [],
+    "uncertainty": "User allegations that the headphones arrived damaged and that the seller refused a refund are unverified.",
+    "case_status": "ready_for_review",
+    "next_question": "Would you like to correct any recorded detail before proceeding?",
+    "guidance": [
+      {
+        "source_id": "CPA-DEFECT",
+        "explanation": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome."
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+      },
+      {
+        "source_id": "NCH-PORTAL",
+        "explanation": "The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund."
+      },
+      {
+        "source_id": "DOCS-EVIDENCE",
+        "explanation": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established."
+      }
+    ],
+    "safety_flag": "none"
+  }
+}

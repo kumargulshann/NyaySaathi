@@ -1,0 +1,148 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Sun, 08 Nov 2026 20:43:38 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=3066",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"scope\": \"in_scope\",\n  \"reply_language\": \"hinglish\",\n  \"changes\": [\n    {\n      \"field\": \"issue_type\",\n      \"value\": \"online-shopping non-delivery\",\n      \"source_quote\": \"delivery nahi hui\"\n    },\n    {\n      \"field\": \"user_language\",\n      \"value\": \"hinglish\",\n      \"source_quote\": \"Maine Fictional Saffron Mart se Rs 4500 ka product order kiya tha, lekin delivery nahi hui. Mujhe refund chahiye.\"\n    },\n    {\n      \"field\": \"user_summary\",\n      \"value\": \"User ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.\",\n      \"source_quote\": \"Maine Fictional Saffron Mart se Rs 4500 ka product order kiya tha, lekin delivery nahi hui. Mujhe refund chahiye.\"\n    },\n    {\n      \"field\": \"company_or_seller\",\n      \"value\": \"Fictional Saffron Mart\",\n      \"source_quote\": \"Fictional Saffron Mart\"\n    },\n    {\n      \"field\": \"amount_inr\",\n      \"value\": \"4500\",\n      \"source_quote\": \"Rs 4500\"\n    },\n    {\n      \"field\": \"desired_resolution\",\n      \"value\": \"refund\",\n      \"source_quote\": \"Mujhe refund chahiye.\"\n    }\n  ],\n  \"evidence_missing\": [\n    \"order confirmation or invoice\",\n    \"payment receipt\",\n    \"delivery tracking details or communication with seller\"\n  ],\n  \"missing_details\": [\n    \"incident date\"\n  ],\n  \"uncertainty\": \"Unverified user claims regarding order, payment, and non-delivery. No independent verification has been conducted.\",\n  \"case_status\": \"in_progress\",\n  \"next_question\": \"Kya aap bata sakte hain ki yeh order kis date par kiya gaya tha?\",\n  \"guidance\": [\n    {\n      \"source_id\": \"RULES-NONDELIVERY\",\n      \"explanation\": \"E-commerce rules stated schedule se late delivery par refunds address karte hain, force majeure exception ke saath. Non-delivery par rule apply karne se pehle promised schedule aur order history check karni hogi.\"\n    },\n    {\n      \"source_id\": \"RULES-REFUND\",\n      \"explanation\": \"E-commerce rules kuch situations mein goods wapas lene ya paid price refund karne se refusal ko restrict karte hain, jaise defective ya advertised/agreed features se alag goods. Yeh har purchase par change-of-mind refund right nahi hai.\"\n    },\n    {\n      \"source_id\": \"NCH-PORTAL\",\n      \"explanation\": \"National Consumer Helpline consumer grievances leti hai, process karke concerned entity ko forward karti hai aur responses online track karne deti hai. Registration refund guarantee nahi karta.\"\n    },\n    {\n      \"source_id\": \"DOCS-EVIDENCE\",\n      \"explanation\": \"Act mein complaints ki hearing affidavit aur documentary evidence par hone ka provision hai. Genuine purchase aur communication records rakhna useful preparation hai; allegations apne aap prove nahi hote.\"\n    }\n  ],\n  \"safety_flag\": \"none\"\n}",
+            "thought": null,
+            "thought_signature": "EmAKXgFpFH0TgY5Yowe_5eqlLmuhyDRjLM3uVzofivvnRmQZHnW2zAZb4mb8RB3oiENGZ6mFrNefAzdyqp4klfuqoMp4Vd3-polgS8lvtQnYMIHM4cgh3S6GhxI3OMH-7rw=",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null,
+            "audio_transcription": null,
+            "media_processing": null,
+            "speech_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null,
+      "continuation_token": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.5-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "-N7wavWIKrXu694PtJjYyAM",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 750,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 3375,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 3375
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 4125,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "scope": "in_scope",
+    "reply_language": "hinglish",
+    "changes": [
+      {
+        "field": "issue_type",
+        "value": "online-shopping non-delivery",
+        "source_quote": "delivery nahi hui"
+      },
+      {
+        "field": "user_language",
+        "value": "hinglish",
+        "source_quote": "Maine Fictional Saffron Mart se Rs 4500 ka product order kiya tha, lekin delivery nahi hui. Mujhe refund chahiye."
+      },
+      {
+        "field": "user_summary",
+        "value": "User ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.",
+        "source_quote": "Maine Fictional Saffron Mart se Rs 4500 ka product order kiya tha, lekin delivery nahi hui. Mujhe refund chahiye."
+      },
+      {
+        "field": "company_or_seller",
+        "value": "Fictional Saffron Mart",
+        "source_quote": "Fictional Saffron Mart"
+      },
+      {
+        "field": "amount_inr",
+        "value": "4500",
+        "source_quote": "Rs 4500"
+      },
+      {
+        "field": "desired_resolution",
+        "value": "refund",
+        "source_quote": "Mujhe refund chahiye."
+      }
+    ],
+    "evidence_missing": [
+      "order confirmation or invoice",
+      "payment receipt",
+      "delivery tracking details or communication with seller"
+    ],
+    "missing_details": [
+      "incident date"
+    ],
+    "uncertainty": "Unverified user claims regarding order, payment, and non-delivery. No independent verification has been conducted.",
+    "case_status": "in_progress",
+    "next_question": "Kya aap bata sakte hain ki yeh order kis date par kiya gaya tha?",
+    "guidance": [
+      {
+        "source_id": "RULES-NONDELIVERY",
+        "explanation": "E-commerce rules stated schedule se late delivery par refunds address karte hain, force majeure exception ke saath. Non-delivery par rule apply karne se pehle promised schedule aur order history check karni hogi."
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "E-commerce rules kuch situations mein goods wapas lene ya paid price refund karne se refusal ko restrict karte hain, jaise defective ya advertised/agreed features se alag goods. Yeh har purchase par change-of-mind refund right nahi hai."
+      },
+      {
+        "source_id": "NCH-PORTAL",
+        "explanation": "National Consumer Helpline consumer grievances leti hai, process karke concerned entity ko forward karti hai aur responses online track karne deti hai. Registration refund guarantee nahi karta."
+      },
+      {
+        "source_id": "DOCS-EVIDENCE",
+        "explanation": "Act mein complaints ki hearing affidavit aur documentary evidence par hone ka provision hai. Genuine purchase aur communication records rakhna useful preparation hai; allegations apne aap prove nahi hote."
+      }
+    ],
+    "safety_flag": "none"
+  }
+}

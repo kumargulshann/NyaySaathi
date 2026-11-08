@@ -1,0 +1,396 @@
+[
+  {
+    "source_id": "CPA-SCOPE",
+    "topic": "Consumer grievance overview",
+    "keywords": [
+      "consumer law",
+      "consumer rights",
+      "consumer protection",
+      "उपभोक्ता",
+      "अधिकार",
+      "consumer kanoon",
+      "service",
+      "deficiency",
+      "सेवा"
+    ],
+    "guidance": {
+      "en": "The Consumer Protection Act covers complaints alleging defective goods or deficient services. Consumer status and the transaction's purpose affect applicability; online purchases are included.",
+      "hi": "उपभोक्ता संरक्षण अधिनियम में खराब वस्तुओं या सेवा में कमी की शिकायतों का प्रावधान है। उपभोक्ता की स्थिति और लेनदेन का उद्देश्य लागू होने को प्रभावित करते हैं; ऑनलाइन खरीदारी भी शामिल है।",
+      "hinglish": "Consumer Protection Act mein defective goods ya service mein kami ki complaints ka provision hai. Consumer status aur transaction ka purpose applicability ko affect karte hain; online purchases bhi shamil hain."
+    },
+    "next_step": {
+      "en": "Record what was bought, from whom, for what purpose, and the problem reported.",
+      "hi": "क्या, किससे और किस उद्देश्य से खरीदा तथा क्या समस्या हुई, लिखें।",
+      "hinglish": "Kya, kisse aur kis purpose se khareeda aur kya problem hui, likhein."
+    },
+    "limitation": {
+      "en": "Commercial-purpose and resale exclusions have qualifications. No finding about your eligibility is made.",
+      "hi": "व्यावसायिक उद्देश्य और पुनर्विक्रय के अपवादों की शर्तें हैं। आपकी पात्रता पर कोई निर्णय नहीं दिया गया है।",
+      "hinglish": "Commercial purpose aur resale exclusions ki conditions hain. Aapki eligibility par koi decision nahi diya gaya."
+    },
+    "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=2",
+    "provision_or_location": "Sections 2(6) and 2(7), PDF pages 2–3",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "legal_information"
+  },
+  {
+    "source_id": "CPA-DEFECT",
+    "topic": "Defective products",
+    "keywords": [
+      "defect",
+      "defective",
+      "damaged",
+      "broken",
+      "खराब",
+      "टूटा",
+      "damage",
+      "kharab",
+      "tuta",
+      "toota"
+    ],
+    "guidance": {
+      "en": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome.",
+      "hi": "खराब वस्तु की शिकायत साबित होने पर अधिनियम में वस्तु बदलने या कीमत लौटाने जैसे उपाय हैं। रिफंड अपने आप या निश्चित रूप से मिलने वाला परिणाम नहीं है।",
+      "hinglish": "Defective goods ki complaint prove hone par Act mein replacement ya price wapas karne jaise remedies hain. Refund automatic ya guaranteed outcome nahi hai."
+    },
+    "next_step": {
+      "en": "Describe the defect and request your preferred resolution from the seller, keeping any response.",
+      "hi": "खराबी बताएँ, विक्रेता से अपना इच्छित समाधान माँगें और उत्तर सँभालें।",
+      "hinglish": "Defect batayein, seller se apna desired resolution maangein aur response rakhein."
+    },
+    "limitation": {
+      "en": "The defect and relevant allegations need proof; the app does not decide liability.",
+      "hi": "खराबी और संबंधित आरोपों को साबित करना होगा; ऐप जिम्मेदारी तय नहीं करता।",
+      "hinglish": "Defect aur relevant allegations ko prove karna hoga; app liability decide nahi karta."
+    },
+    "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=21",
+    "provision_or_location": "Sections 2(10) and 39(1)(b)–(c), PDF pages 4 and 21",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "legal_information"
+  },
+  {
+    "source_id": "RULES-NONDELIVERY",
+    "topic": "Non-delivery and late delivery",
+    "keywords": [
+      "non-delivery",
+      "non delivery",
+      "not delivered",
+      "delivery nahi",
+      "delivery nahin",
+      "nahi hui",
+      "नहीं मिला",
+      "डिलीवरी",
+      "late delivery"
+    ],
+    "guidance": {
+      "en": "The e-commerce rules address refunds where delivery is later than the stated schedule, with a force-majeure exception. For non-delivery, the promised schedule and order history need checking before applying that rule.",
+      "hi": "ई-कॉमर्स नियम घोषित समय से देर से डिलीवरी पर रिफंड का प्रावधान करते हैं, जिसमें अप्रत्याशित नियंत्रण-बाह्य घटनाओं का अपवाद है। सामान न मिलने पर यह नियम लगाने से पहले घोषित समय और ऑर्डर का इतिहास जाँचना होगा।",
+      "hinglish": "E-commerce rules stated schedule se late delivery par refunds address karte hain, force majeure exception ke saath. Non-delivery par rule apply karne se pehle promised schedule aur order history check karni hogi."
+    },
+    "next_step": {
+      "en": "Save the stated delivery date and tracking history; ask the seller for delivery status or a refund.",
+      "hi": "घोषित डिलीवरी तारीख और ट्रैकिंग सँभालें; विक्रेता से स्थिति या रिफंड माँगें।",
+      "hinglish": "Stated delivery date aur tracking history rakhein; seller se status ya refund maangein."
+    },
+    "limitation": {
+      "en": "This is not a finding that a missed delivery guarantees a refund. The cause of delay is unknown.",
+      "hi": "इसका अर्थ यह नहीं कि डिलीवरी न होने पर रिफंड निश्चित है। देरी का कारण अज्ञात है।",
+      "hinglish": "Iska matlab yeh nahi ki missed delivery par refund guaranteed hai. Delay ka reason unknown hai."
+    },
+    "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+    "provision_or_location": "Rules 6(3) and 7(4), including force-majeure provisos, PDF pages 10–11",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "legal_information"
+  },
+  {
+    "source_id": "RULES-REFUND",
+    "topic": "Withheld refunds",
+    "keywords": [
+      "refund",
+      "return money",
+      "रिफंड",
+      "पैसे वापस",
+      "paisa wapas",
+      "paise wapas"
+    ],
+    "guidance": {
+      "en": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.",
+      "hi": "ई-कॉमर्स नियम कुछ स्थितियों में वस्तु वापस लेने या भुगतान लौटाने से इनकार पर रोक लगाते हैं, जैसे खराब या विज्ञापन अथवा समझौते से अलग वस्तु। यह हर खरीद पर मन बदलने के कारण रिफंड का सार्वभौमिक अधिकार नहीं है।",
+      "hinglish": "E-commerce rules kuch situations mein goods wapas lene ya paid price refund karne se refusal ko restrict karte hain, jaise defective ya advertised/agreed features se alag goods. Yeh har purchase par change-of-mind refund right nahi hai."
+    },
+    "next_step": {
+      "en": "Keep the refund request, seller response, and any stated refund policy or commitment.",
+      "hi": "रिफंड अनुरोध, विक्रेता का उत्तर और बताई गई रिफंड नीति या वादा सँभालें।",
+      "hinglish": "Refund request, seller response aur stated refund policy ya commitment rakhein."
+    },
+    "limitation": {
+      "en": "Applicability depends on the transaction and facts. No fixed refund-processing deadline is asserted.",
+      "hi": "लागू होना लेनदेन और तथ्यों पर निर्भर है। कोई निश्चित रिफंड-प्रक्रिया समय सीमा नहीं बताई जा रही है।",
+      "hinglish": "Applicability transaction aur facts par depend karti hai. Koi fixed refund-processing deadline claim nahi ki ja rahi."
+    },
+    "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+    "provision_or_location": "Rules 6(3) and 7(4), PDF pages 10–11",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "legal_information"
+  },
+  {
+    "source_id": "DOCS-EVIDENCE",
+    "topic": "Consumer evidence and documentation",
+    "keywords": [
+      "evidence",
+      "proof",
+      "invoice",
+      "receipt",
+      "document",
+      "सबूत",
+      "बिल",
+      "साक्ष्य",
+      "प्रमाण",
+      "saboot"
+    ],
+    "guidance": {
+      "en": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established.",
+      "hi": "अधिनियम में शिकायतों की सुनवाई शपथपत्र और दस्तावेज़ी साक्ष्य के आधार पर करने का प्रावधान है। असली खरीद और बातचीत के रिकॉर्ड सँभालना उपयोगी तैयारी है; इससे आरोप अपने आप साबित नहीं होते।",
+      "hinglish": "Act mein complaints ki hearing affidavit aur documentary evidence par hone ka provision hai. Genuine purchase aur communication records rakhna useful preparation hai; allegations apne aap prove nahi hote."
+    },
+    "next_step": {
+      "en": "Preserve available invoices, payment records, order details, messages, and photos; do not invent missing records.",
+      "hi": "उपलब्ध बिल, भुगतान रिकॉर्ड, ऑर्डर विवरण, संदेश और तस्वीरें सँभालें; गायब रिकॉर्ड न गढ़ें।",
+      "hinglish": "Available invoices, payment records, order details, messages aur photos rakhein; missing records invent na karein."
+    },
+    "limitation": {
+      "en": "This practical list is not a mandatory legal checklist. The app has not inspected or authenticated evidence.",
+      "hi": "यह व्यावहारिक सूची अनिवार्य कानूनी चेकलिस्ट नहीं है। ऐप ने सबूत देखे या प्रमाणित नहीं किए हैं।",
+      "hinglish": "Yeh practical list mandatory legal checklist nahi hai. App ne evidence inspect ya authenticate nahi kiya."
+    },
+    "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=20",
+    "provision_or_location": "Section 38(6), PDF page 20; checklist is practical preparation",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "practical_caution"
+  },
+  {
+    "source_id": "RULES-CONTACT",
+    "topic": "Contacting seller and platform",
+    "keywords": [
+      "seller",
+      "contact",
+      "complain",
+      "complaint",
+      "grievance",
+      "विक्रेता",
+      "शिकायत",
+      "संपर्क",
+      "seller se",
+      "shikayat"
+    ],
+    "guidance": {
+      "en": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact.",
+      "hi": "ई-कॉमर्स संस्थाओं को ग्राहक सेवा और शिकायत अधिकारी की संपर्क जानकारी दिखानी तथा शिकायत व्यवस्था रखनी होती है। मार्केटप्लेस पर विक्रेता का विवरण सही संपर्क पहचानने में मदद करता है।",
+      "hinglish": "E-commerce entities ko customer-care aur grievance-officer contact details dikhani aur grievance mechanism rakhna hota hai. Marketplace seller details sahi contact identify karne mein madad karti hain."
+    },
+    "next_step": {
+      "en": "Use the seller or platform's published support channel, state the problem and requested solution, and keep a copy.",
+      "hi": "विक्रेता या प्लेटफॉर्म के प्रकाशित सहायता माध्यम पर समस्या और इच्छित समाधान बताएँ तथा प्रति रखें।",
+      "hinglish": "Seller ya platform ke published support channel par problem aur requested solution batayein aur copy rakhein."
+    },
+    "limitation": {
+      "en": "A written request is a practical record, not a claim that a formal legal notice is always compulsory.",
+      "hi": "लिखित अनुरोध व्यावहारिक रिकॉर्ड है; औपचारिक कानूनी नोटिस हमेशा अनिवार्य होने का दावा नहीं है।",
+      "hinglish": "Written request practical record hai; formal legal notice hamesha compulsory hone ka claim nahi hai."
+    },
+    "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=8",
+    "provision_or_location": "Rules 4(2), 4(4) and 5(3)(a), PDF pages 8–9",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "legal_information"
+  },
+  {
+    "source_id": "NCH-PORTAL",
+    "topic": "National Consumer Helpline grievance route",
+    "keywords": [
+      "helpline",
+      "nch",
+      "escalate",
+      "escalation",
+      "unresolved",
+      "हेल्पलाइन",
+      "समाधान नहीं",
+      "aage",
+      "kya karu",
+      "what can i do",
+      "options"
+    ],
+    "guidance": {
+      "en": "The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund.",
+      "hi": "राष्ट्रीय उपभोक्ता हेल्पलाइन शिकायतें स्वीकार कर संबंधित संस्था को भेजती है और ऑनलाइन जवाब तथा स्थिति देखने देती है। शिकायत दर्ज करने से रिफंड की गारंटी नहीं होती।",
+      "hinglish": "National Consumer Helpline consumer grievances leti hai, process karke concerned entity ko forward karti hai aur responses online track karne deti hai. Registration refund guarantee nahi karta."
+    },
+    "next_step": {
+      "en": "Use the official NCH portal to register and keep the grievance reference for tracking.",
+      "hi": "आधिकारिक NCH पोर्टल पर शिकायत दर्ज करें और ट्रैकिंग के लिए संदर्भ संख्या रखें।",
+      "hinglish": "Official NCH portal par grievance register karein aur tracking ke liye reference rakhein."
+    },
+    "limitation": {
+      "en": "NCH is a grievance route; this app does not equate it with a consumer commission order.",
+      "hi": "NCH शिकायत का माध्यम है; ऐप इसे उपभोक्ता आयोग के आदेश के समान नहीं मानता।",
+      "hinglish": "NCH grievance route hai; app ise consumer commission ke order ke barabar nahi maanta."
+    },
+    "source_title": "National Consumer Helpline — How NCH Works",
+    "source_url": "https://consumerhelpline.gov.in/",
+    "provision_or_location": "How NCH Works: Register, Process & Forward, Respond, Track",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "official_service"
+  },
+  {
+    "source_id": "NCH-CONTACT",
+    "topic": "National Consumer Helpline contact",
+    "keywords": [
+      "1915",
+      "phone",
+      "call",
+      "contact helpline",
+      "हेल्पलाइन नंबर",
+      "फोन",
+      "number",
+      "helpline number"
+    ],
+    "guidance": {
+      "en": "The official National Consumer Helpline contact page lists 1915 and 1800 11 4000 for grievance registration.",
+      "hi": "राष्ट्रीय उपभोक्ता हेल्पलाइन के आधिकारिक संपर्क पृष्ठ पर शिकायत दर्ज करने के लिए 1915 और 1800 11 4000 दिए हैं।",
+      "hinglish": "National Consumer Helpline ke official contact page par grievance registration ke liye 1915 aur 1800 11 4000 diye hain."
+    },
+    "next_step": {
+      "en": "Check the official contact page for current availability and alternative registration channels.",
+      "hi": "वर्तमान उपलब्धता और अन्य शिकायत माध्यमों के लिए आधिकारिक संपर्क पृष्ठ देखें।",
+      "hinglish": "Current availability aur alternative registration channels ke liye official contact page dekhein."
+    },
+    "limitation": {
+      "en": "Contact details can change; calling does not guarantee resolution or pause a legal deadline.",
+      "hi": "संपर्क विवरण बदल सकते हैं; फोन करने से समाधान की गारंटी या कानूनी समय सीमा रुकने की पुष्टि नहीं होती।",
+      "hinglish": "Contact details badal sakti hain; call se resolution guarantee ya legal deadline pause hone ki confirmation nahi hoti."
+    },
+    "source_title": "National Consumer Helpline — Contact Details",
+    "source_url": "https://consumerhelpline.gov.in/public/contact",
+    "provision_or_location": "Call to Register Your Grievance",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "official_service"
+  },
+  {
+    "source_id": "EJ-HELP",
+    "topic": "e-Jagriti consumer complaint filing guidance",
+    "keywords": [
+      "e-jagriti",
+      "ejagriti",
+      "jagriti",
+      "file complaint",
+      "filing",
+      "commission",
+      "ई-जागृति",
+      "आयोग",
+      "दर्ज",
+      "case file"
+    ],
+    "guidance": {
+      "en": "The official e-Jagriti Help Docs page lists onboarding and Consumer Complaint case-filing guides. These are an official starting point for learning the filing process.",
+      "hi": "आधिकारिक ई-जागृति Help Docs पृष्ठ पर पंजीकरण और उपभोक्ता शिकायत दाखिल करने के मार्गदर्शक सूचीबद्ध हैं। दाखिल करने की प्रक्रिया समझने के लिए यह आधिकारिक शुरुआती स्रोत है।",
+      "hinglish": "Official e-Jagriti Help Docs page par onboarding aur Consumer Complaint case-filing guides listed hain. Filing process samajhne ke liye yeh official starting point hai."
+    },
+    "next_step": {
+      "en": "Open Help Docs and review Onboarding and Consumer Complaint (CC) Case Filing before preparing a filing.",
+      "hi": "दाखिल करने की तैयारी से पहले Help Docs में Onboarding और Consumer Complaint (CC) Case Filing देखें।",
+      "hinglish": "Filing prepare karne se pehle Help Docs mein Onboarding aur Consumer Complaint (CC) Case Filing dekhein."
+    },
+    "limitation": {
+      "en": "Only the indexed help-page listings were verifiable; fees, upload requirements, jurisdiction, and individual eligibility were not verified.",
+      "hi": "केवल अनुक्रमित सहायता पृष्ठ की सूची सत्यापित हुई; शुल्क, अपलोड आवश्यकताएँ, अधिकार क्षेत्र और व्यक्तिगत पात्रता सत्यापित नहीं हैं।",
+      "hinglish": "Sirf indexed help-page listings verify hui; fees, upload requirements, jurisdiction aur individual eligibility verify nahi hui."
+    },
+    "source_title": "e-Jagriti — Help Docs",
+    "source_url": "https://e-jagriti.gov.in/help-docs",
+    "provision_or_location": "Help Documents: 1. Onboarding; 2. Consumer Complaint (CC) Case Filing",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "official_service"
+  },
+  {
+    "source_id": "PRO-HELP",
+    "topic": "When professional legal assistance is advisable",
+    "keywords": [
+      "lawyer",
+      "advocate",
+      "professional",
+      "legal help",
+      "वकील",
+      "कानूनी सहायता",
+      "vakil"
+    ],
+    "guidance": {
+      "en": "The Act contains a limitation provision. Get qualified legal assistance for a notice, disputed time limit, complex facts, or proceedings; this app does not calculate filing or appeal deadlines.",
+      "hi": "अधिनियम में परिसीमा का प्रावधान है। नोटिस, विवादित समय सीमा, जटिल तथ्यों या कार्यवाही के लिए योग्य कानूनी सहायता लें; ऐप दाखिल करने या अपील की समय सीमा नहीं गिनता।",
+      "hinglish": "Act mein limitation provision hai. Notice, disputed time limit, complex facts ya proceedings ke liye qualified legal help lein; app filing ya appeal deadlines calculate nahi karta."
+    },
+    "next_step": {
+      "en": "Keep any notice and relevant records and have a qualified lawyer review them promptly.",
+      "hi": "नोटिस और संबंधित रिकॉर्ड सँभालें तथा जल्द योग्य वकील से उनकी जाँच कराएँ।",
+      "hinglish": "Notice aur relevant records rakhein aur qualified lawyer se jaldi review karayein."
+    },
+    "limitation": {
+      "en": "Seeking help is a safety recommendation, not a finding that a lawyer is legally mandatory.",
+      "hi": "सहायता लेना सुरक्षा संबंधी सुझाव है; वकील कानूनी रूप से अनिवार्य होने का निर्णय नहीं है।",
+      "hinglish": "Help lena safety recommendation hai; lawyer legally mandatory hone ka finding nahi hai."
+    },
+    "source_title": "Consumer Protection Act, 2019 — official Gazette copy",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf#page=28",
+    "provision_or_location": "Section 69, PDF page 28; professional-help recommendation is app caution",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "practical_caution"
+  },
+  {
+    "source_id": "ECOM-2026-STATUS",
+    "topic": "Status of the 2026 e-commerce amendment",
+    "keywords": [
+      "2026",
+      "2027",
+      "amendment",
+      "new rules",
+      "संशोधन",
+      "नए नियम",
+      "naye rules"
+    ],
+    "guidance": {
+      "en": "The published 2026 e-commerce amendment states that it comes into force on 1 January 2027. Its added duties must not be treated as already effective before that date.",
+      "hi": "प्रकाशित 2026 ई-कॉमर्स संशोधन में लागू होने की तारीख 1 जनवरी 2027 है। इससे पहले उसके जोड़े गए दायित्वों को लागू नहीं माना जाना चाहिए।",
+      "hinglish": "Published 2026 e-commerce amendment ki commencement date 1 January 2027 hai. Usse pehle added duties ko already effective nahi maana jana chahiye."
+    },
+    "next_step": {
+      "en": "Check which version applied on the relevant date; obtain updated guidance before relying on a changed rule.",
+      "hi": "संबंधित तारीख पर लागू संस्करण जाँचें; बदले नियम पर भरोसा करने से पहले अद्यतन मार्गदर्शन लें।",
+      "hinglish": "Relevant date par applicable version check karein; changed rule par rely karne se pehle updated guidance lein."
+    },
+    "limitation": {
+      "en": "Commencement was visually verified on PDF page 5. No case-specific application of future provisions is given.",
+      "hi": "लागू होने की तारीख PDF पृष्ठ 5 पर देखकर सत्यापित की गई। भविष्य के प्रावधान किसी विशेष केस पर लागू नहीं किए गए हैं।",
+      "hinglish": "Commencement PDF page 5 par visually verify hua. Future provisions ka case-specific application nahi diya gaya."
+    },
+    "source_title": "Consumer Protection (E-Commerce) (Amendment) Rules, 2026",
+    "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20Commerce%20Amendment%20Rules%202026_1789127949.pdf#page=5",
+    "provision_or_location": "Rule 1(2), English Gazette page 5; G.S.R. 789(E), 9 September 2026",
+    "date_checked": "2026-11-09",
+    "review_after": "2026-12-31",
+    "kind": "legal_information"
+  }
+]

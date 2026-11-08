@@ -1,0 +1,85 @@
+{
+  "run_id": "offline-baseline-v1",
+  "case_id": "T09",
+  "turn": 1,
+  "mode": "offline",
+  "response_origin": "synthetic_mock",
+  "model": "OFFLINE_MOCK_NOT_GEMINI",
+  "timestamp": "2026-11-08T20:38:04.947004+00:00",
+  "input_messages": [
+    {
+      "role": "user",
+      "content": "I received a court notice about my consumer refund dispute. It lists a hearing tomorrow and I am worried about a deadline. I have not provided the notice or confirmed any calendar date. What should I do?"
+    }
+  ],
+  "interface_language": "en",
+  "case_before": {
+    "issue_type": null,
+    "user_language": null,
+    "user_summary": null,
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [],
+    "desired_resolution": null,
+    "unanswered_questions": [],
+    "confidence_or_uncertainty": null,
+    "case_status": "not_started"
+  },
+  "retrieved_records": [],
+  "retrieval_reasons": [],
+  "live_requests_attempted": 0,
+  "provider_response_received": true,
+  "sdk_response_received": false,
+  "parsed_response": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [],
+    "evidence_missing": [],
+    "missing_details": [],
+    "uncertainty": "User-reported information has not been independently verified.",
+    "case_status": "in_progress",
+    "next_question": "What is the order reference?",
+    "guidance": [],
+    "safety_flag": "urgent_notice"
+  },
+  "schema_validation": "passed",
+  "application_processing": "completed",
+  "displayed_reply": "A notice, hearing, appeal, or deadline may need prompt professional review. Do not rely on this app to calculate time limits. Keep the document and contact a qualified lawyer promptly.",
+  "displayed_guidance": {
+    "status": "urgent_notice",
+    "language": "en",
+    "message": "A notice, hearing, appeal, or deadline may need prompt professional review. Do not rely on this app to calculate time limits. Keep the document and contact a qualified lawyer promptly.",
+    "entries": []
+  },
+  "action_package": null,
+  "original_response_file": "T09_turn01_response.txt",
+  "complete_sdk_response_file": null,
+  "retrieval_safety": "urgent_notice",
+  "original_response_sha256": "902d03d242e1ceb4249f84db618a2522eaf1b9151be28698da1bcefc151fb8f0",
+  "intake_error": null,
+  "case_after": {
+    "issue_type": null,
+    "user_language": null,
+    "user_summary": null,
+    "company_or_seller": null,
+    "amount_inr": null,
+    "incident_date": null,
+    "timeline": [],
+    "evidence_available": [],
+    "evidence_missing": [],
+    "desired_resolution": null,
+    "unanswered_questions": [],
+    "confidence_or_uncertainty": null,
+    "case_status": "not_started"
+  },
+  "readiness": {
+    "status": "out_of_scope",
+    "missing": [],
+    "review": [],
+    "provisional_allowed": false
+  },
+  "completed_at": "2026-11-08T20:38:04.952735+00:00"
+}

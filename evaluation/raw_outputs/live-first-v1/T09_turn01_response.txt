@@ -1,0 +1,12 @@
+{
+  "scope": "in_scope",
+  "reply_language": "en",
+  "changes": [],
+  "evidence_missing": [],
+  "missing_details": [],
+  "uncertainty": null,
+  "case_status": "in_progress",
+  "next_question": "Please consult a qualified legal professional or local legal aid immediately regarding your court notice and urgent hearing date.",
+  "guidance": [],
+  "safety_flag": "urgent_notice"
+}

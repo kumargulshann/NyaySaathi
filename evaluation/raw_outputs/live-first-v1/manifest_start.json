@@ -1,0 +1,240 @@
+{
+  "run_id": "live-first-v1",
+  "mode": "live",
+  "model": "gemini-3.5-flash-lite",
+  "started_at": "2026-11-08T20:43:28.926644+00:00",
+  "dataset": {
+    "dataset_version": "1.0",
+    "sha256": "7b8767a30f5c2561d89a00e9456c8b14126602d85cf2d530d6f92757e5b66418",
+    "frozen_at_utc": "2026-11-08T20:37:39.741177+00:00",
+    "frozen_before_phase6_live_outputs": true,
+    "case_count": 10,
+    "turn_count": 12
+  },
+  "selected_cases": [
+    "T01",
+    "T02",
+    "T03",
+    "T04",
+    "T05",
+    "T06",
+    "T07",
+    "T08",
+    "T09",
+    "T10"
+  ],
+  "planned_turns": 12,
+  "provenance": {
+    "python": "3.13.5",
+    "dependencies": {
+      "google-genai": "2.34.0",
+      "pydantic": "2.14.3",
+      "streamlit": "1.67.0"
+    },
+    "file_sha256": {
+      "nyaysaathi/intake.py": "c3dc38040c2fcc9fd48bc802b7e0050891bba81161360ce5e2554deed6c5b0a5",
+      "nyaysaathi/gemini.py": "cf43844a84abbc3074f5751ccacd9cb0042a681ae2141f098c50b9350007e7a2",
+      "nyaysaathi/models.py": "237db29b1054bf3619ce0b0263417ee90d2f59db50b2a7952bfe58dc8eaa85c6",
+      "nyaysaathi/knowledge.py": "d0342e66564b209fb2ed967e7a76ae2dd7ff033ee9fdefbbd3dc67f7b509c641",
+      "nyaysaathi/guidance.py": "cd7172d2857521316bf35af92fa62b28976e8fd8b0c60ffa3c2cec160c911dd2",
+      "nyaysaathi/action_package.py": "5242252f72dad42ac90abfb0b1abebd434272aa1c199d622d7628f0aab6398fb",
+      "evaluation/run.py": "850179aa9f33c8fd853e9e32638860249c17e2e8bd8cf01d85c384c6100cfd6d",
+      "evaluation/scoring.py": "41ba744c8bd44b4fb44a9d346fb4ac51ba7d2b7a8655ea18e6995469637c1be5",
+      "evaluation/mock_responses.json": "6fc8fd21b54a225864bf2c78053eaad2ed8ef79b3d73ebe826bb74521f9e2772"
+    },
+    "knowledge_sha256": "c790a31b7600b76a7850286072fc645b36c70d7135eefb9506dfd09e21868a8a",
+    "system_instruction_sha256": "bedc89d94d17922b7f20841729b15196f3cfccc3d4a12978225b5b5f8bf7f6fb",
+    "response_schema": {
+      "$defs": {
+        "FactChange": {
+          "additionalProperties": false,
+          "description": "A proposed change grounded in the user's words, not an assistant reply.",
+          "properties": {
+            "field": {
+              "enum": [
+                "issue_type",
+                "user_language",
+                "user_summary",
+                "company_or_seller",
+                "amount_inr",
+                "incident_date",
+                "timeline",
+                "evidence_available",
+                "desired_resolution"
+              ],
+              "title": "Field",
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Value"
+            },
+            "source_quote": {
+              "minLength": 1,
+              "title": "Source Quote",
+              "type": "string"
+            },
+            "is_correction": {
+              "default": false,
+              "title": "Is Correction",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "field",
+            "value",
+            "source_quote"
+          ],
+          "title": "FactChange",
+          "type": "object"
+        },
+        "GuidanceSelection": {
+          "additionalProperties": false,
+          "description": "A source choice and an exact, audited plain-language statement.",
+          "properties": {
+            "source_id": {
+              "maxLength": 60,
+              "minLength": 1,
+              "title": "Source Id",
+              "type": "string"
+            },
+            "explanation": {
+              "maxLength": 1800,
+              "minLength": 1,
+              "title": "Explanation",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_id",
+            "explanation"
+          ],
+          "title": "GuidanceSelection",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "One structured model response, including exactly one intake question.",
+      "properties": {
+        "scope": {
+          "enum": [
+            "in_scope",
+            "out_of_scope",
+            "unclear"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "reply_language": {
+          "enum": [
+            "en",
+            "hi",
+            "hinglish"
+          ],
+          "title": "Reply Language",
+          "type": "string"
+        },
+        "changes": {
+          "items": {
+            "$ref": "#/$defs/FactChange"
+          },
+          "maxItems": 20,
+          "title": "Changes",
+          "type": "array"
+        },
+        "evidence_missing": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 15,
+          "title": "Evidence Missing",
+          "type": "array"
+        },
+        "missing_details": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 15,
+          "title": "Missing Details",
+          "type": "array"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty"
+        },
+        "case_status": {
+          "default": "in_progress",
+          "enum": [
+            "in_progress",
+            "ready_for_review"
+          ],
+          "title": "Case Status",
+          "type": "string"
+        },
+        "next_question": {
+          "anyOf": [
+            {
+              "maxLength": 350,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Question"
+        },
+        "guidance": {
+          "items": {
+            "$ref": "#/$defs/GuidanceSelection"
+          },
+          "maxItems": 4,
+          "title": "Guidance",
+          "type": "array"
+        },
+        "safety_flag": {
+          "default": "none",
+          "enum": [
+            "none",
+            "urgent_notice",
+            "threat_or_crime",
+            "out_of_scope",
+            "insufficient_sources"
+          ],
+          "title": "Safety Flag",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scope",
+        "reply_language"
+      ],
+      "title": "IntakeResponse",
+      "type": "object"
+    }
+  },
+  "automatic_retries": 0,
+  "action_policy": "Explicitly request deterministic provisional documents at each turn when production readiness allows.",
+  "capture_format": "Exact response.text UTF-8 bytes plus complete SDK Pydantic serialization; not raw HTTP wire bytes."
+}

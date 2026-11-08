@@ -1,0 +1,348 @@
+{
+  "run_id": "live-first-v1",
+  "case_id": "T06",
+  "turn": 2,
+  "mode": "live",
+  "response_origin": "live_gemini",
+  "model": "gemini-3.5-flash-lite",
+  "timestamp": "2026-11-08T20:44:00.463822+00:00",
+  "input_messages": [
+    {
+      "role": "user",
+      "content": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund. I have not described any evidence yet. What can I do?"
+    },
+    {
+      "role": "assistant",
+      "content": "Have you contacted the seller or received any response about the delivery?"
+    },
+    {
+      "role": "user",
+      "content": "I now have contradictory notes: one says the order date was 3 October 2026 and another says 8 October 2026. I cannot confirm which purchase date is correct. Withdraw my earlier confirmed date and leave it unknown; ask me to clarify rather than choosing a date. Seller and amount are unchanged."
+    }
+  ],
+  "interface_language": "en",
+  "case_before": {
+    "issue_type": "online-shopping non-delivery",
+    "user_language": "en",
+    "user_summary": "The user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.",
+    "company_or_seller": "Fictional Indigo Store",
+    "amount_inr": "1500",
+    "incident_date": "2026-10-03",
+    "timeline": [
+      "2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500."
+    ],
+    "evidence_available": [],
+    "evidence_missing": [
+      "Purchase invoice or receipt",
+      "Payment confirmation record",
+      "Order confirmation or communication records with the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Have you contacted the seller or received any response about the delivery?",
+      "Any communication or responses from the seller regarding the non-delivery"
+    ],
+    "confidence_or_uncertainty": "The facts provided by the user are unverified.",
+    "case_status": "in_progress"
+  },
+  "retrieved_records": [
+    {
+      "source_id": "ECOM-2026-STATUS",
+      "topic": "Status of the 2026 e-commerce amendment",
+      "keywords": [
+        "2026",
+        "2027",
+        "amendment",
+        "new rules",
+        "संशोधन",
+        "नए नियम",
+        "naye rules"
+      ],
+      "guidance": {
+        "en": "The published 2026 e-commerce amendment states that it comes into force on 1 January 2027. Its added duties must not be treated as already effective before that date.",
+        "hi": "प्रकाशित 2026 ई-कॉमर्स संशोधन में लागू होने की तारीख 1 जनवरी 2027 है। इससे पहले उसके जोड़े गए दायित्वों को लागू नहीं माना जाना चाहिए।",
+        "hinglish": "Published 2026 e-commerce amendment ki commencement date 1 January 2027 hai. Usse pehle added duties ko already effective nahi maana jana chahiye."
+      },
+      "next_step": {
+        "en": "Check which version applied on the relevant date; obtain updated guidance before relying on a changed rule.",
+        "hi": "संबंधित तारीख पर लागू संस्करण जाँचें; बदले नियम पर भरोसा करने से पहले अद्यतन मार्गदर्शन लें।",
+        "hinglish": "Relevant date par applicable version check karein; changed rule par rely karne se pehle updated guidance lein."
+      },
+      "limitation": {
+        "en": "Commencement was visually verified on PDF page 5. No case-specific application of future provisions is given.",
+        "hi": "लागू होने की तारीख PDF पृष्ठ 5 पर देखकर सत्यापित की गई। भविष्य के प्रावधान किसी विशेष केस पर लागू नहीं किए गए हैं।",
+        "hinglish": "Commencement PDF page 5 par visually verify hua. Future provisions ka case-specific application nahi diya gaya."
+      },
+      "source_title": "Consumer Protection (E-Commerce) (Amendment) Rules, 2026",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20Commerce%20Amendment%20Rules%202026_1789127949.pdf#page=5",
+      "provision_or_location": "Rule 1(2), English Gazette page 5; G.S.R. 789(E), 9 September 2026",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    },
+    {
+      "source_id": "RULES-CONTACT",
+      "topic": "Contacting seller and platform",
+      "keywords": [
+        "seller",
+        "contact",
+        "complain",
+        "complaint",
+        "grievance",
+        "विक्रेता",
+        "शिकायत",
+        "संपर्क",
+        "seller se",
+        "shikayat"
+      ],
+      "guidance": {
+        "en": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact.",
+        "hi": "ई-कॉमर्स संस्थाओं को ग्राहक सेवा और शिकायत अधिकारी की संपर्क जानकारी दिखानी तथा शिकायत व्यवस्था रखनी होती है। मार्केटप्लेस पर विक्रेता का विवरण सही संपर्क पहचानने में मदद करता है।",
+        "hinglish": "E-commerce entities ko customer-care aur grievance-officer contact details dikhani aur grievance mechanism rakhna hota hai. Marketplace seller details sahi contact identify karne mein madad karti hain."
+      },
+      "next_step": {
+        "en": "Use the seller or platform's published support channel, state the problem and requested solution, and keep a copy.",
+        "hi": "विक्रेता या प्लेटफॉर्म के प्रकाशित सहायता माध्यम पर समस्या और इच्छित समाधान बताएँ तथा प्रति रखें।",
+        "hinglish": "Seller ya platform ke published support channel par problem aur requested solution batayein aur copy rakhein."
+      },
+      "limitation": {
+        "en": "A written request is a practical record, not a claim that a formal legal notice is always compulsory.",
+        "hi": "लिखित अनुरोध व्यावहारिक रिकॉर्ड है; औपचारिक कानूनी नोटिस हमेशा अनिवार्य होने का दावा नहीं है।",
+        "hinglish": "Written request practical record hai; formal legal notice hamesha compulsory hone ka claim nahi hai."
+      },
+      "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=8",
+      "provision_or_location": "Rules 4(2), 4(4) and 5(3)(a), PDF pages 8–9",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    },
+    {
+      "source_id": "RULES-NONDELIVERY",
+      "topic": "Non-delivery and late delivery",
+      "keywords": [
+        "non-delivery",
+        "non delivery",
+        "not delivered",
+        "delivery nahi",
+        "delivery nahin",
+        "nahi hui",
+        "नहीं मिला",
+        "डिलीवरी",
+        "late delivery"
+      ],
+      "guidance": {
+        "en": "The e-commerce rules address refunds where delivery is later than the stated schedule, with a force-majeure exception. For non-delivery, the promised schedule and order history need checking before applying that rule.",
+        "hi": "ई-कॉमर्स नियम घोषित समय से देर से डिलीवरी पर रिफंड का प्रावधान करते हैं, जिसमें अप्रत्याशित नियंत्रण-बाह्य घटनाओं का अपवाद है। सामान न मिलने पर यह नियम लगाने से पहले घोषित समय और ऑर्डर का इतिहास जाँचना होगा।",
+        "hinglish": "E-commerce rules stated schedule se late delivery par refunds address karte hain, force majeure exception ke saath. Non-delivery par rule apply karne se pehle promised schedule aur order history check karni hogi."
+      },
+      "next_step": {
+        "en": "Save the stated delivery date and tracking history; ask the seller for delivery status or a refund.",
+        "hi": "घोषित डिलीवरी तारीख और ट्रैकिंग सँभालें; विक्रेता से स्थिति या रिफंड माँगें।",
+        "hinglish": "Stated delivery date aur tracking history rakhein; seller se status ya refund maangein."
+      },
+      "limitation": {
+        "en": "This is not a finding that a missed delivery guarantees a refund. The cause of delay is unknown.",
+        "hi": "इसका अर्थ यह नहीं कि डिलीवरी न होने पर रिफंड निश्चित है। देरी का कारण अज्ञात है।",
+        "hinglish": "Iska matlab yeh nahi ki missed delivery par refund guaranteed hai. Delay ka reason unknown hai."
+      },
+      "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+      "provision_or_location": "Rules 6(3) and 7(4), including force-majeure provisos, PDF pages 10–11",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    },
+    {
+      "source_id": "RULES-REFUND",
+      "topic": "Withheld refunds",
+      "keywords": [
+        "refund",
+        "return money",
+        "रिफंड",
+        "पैसे वापस",
+        "paisa wapas",
+        "paise wapas"
+      ],
+      "guidance": {
+        "en": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.",
+        "hi": "ई-कॉमर्स नियम कुछ स्थितियों में वस्तु वापस लेने या भुगतान लौटाने से इनकार पर रोक लगाते हैं, जैसे खराब या विज्ञापन अथवा समझौते से अलग वस्तु। यह हर खरीद पर मन बदलने के कारण रिफंड का सार्वभौमिक अधिकार नहीं है।",
+        "hinglish": "E-commerce rules kuch situations mein goods wapas lene ya paid price refund karne se refusal ko restrict karte hain, jaise defective ya advertised/agreed features se alag goods. Yeh har purchase par change-of-mind refund right nahi hai."
+      },
+      "next_step": {
+        "en": "Keep the refund request, seller response, and any stated refund policy or commitment.",
+        "hi": "रिफंड अनुरोध, विक्रेता का उत्तर और बताई गई रिफंड नीति या वादा सँभालें।",
+        "hinglish": "Refund request, seller response aur stated refund policy ya commitment rakhein."
+      },
+      "limitation": {
+        "en": "Applicability depends on the transaction and facts. No fixed refund-processing deadline is asserted.",
+        "hi": "लागू होना लेनदेन और तथ्यों पर निर्भर है। कोई निश्चित रिफंड-प्रक्रिया समय सीमा नहीं बताई जा रही है।",
+        "hinglish": "Applicability transaction aur facts par depend karti hai. Koi fixed refund-processing deadline claim nahi ki ja rahi."
+      },
+      "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+      "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+      "provision_or_location": "Rules 6(3) and 7(4), PDF pages 10–11",
+      "date_checked": "2026-11-09",
+      "review_after": "2026-12-31",
+      "kind": "legal_information"
+    }
+  ],
+  "retrieval_reasons": [
+    "ECOM-2026-STATUS: question=2026; case=2026",
+    "RULES-CONTACT: question=seller; case=",
+    "RULES-NONDELIVERY: question=; case=non-delivery",
+    "RULES-REFUND: question=; case=refund"
+  ],
+  "live_requests_attempted": 1,
+  "provider_response_received": true,
+  "sdk_response_received": true,
+  "parsed_response": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [
+      {
+        "field": "incident_date",
+        "value": null,
+        "source_quote": "I now have contradictory notes: one says the order date was 3 October 2026 and another says 8 October 2026. I cannot confirm which purchase date is correct. Withdraw my earlier confirmed date and leave it unknown; ask me to clarify rather than choosing a date.",
+        "is_correction": true
+      }
+    ],
+    "evidence_missing": [
+      "Purchase invoice or receipt",
+      "Payment confirmation record",
+      "Order confirmation or communication records with the seller"
+    ],
+    "missing_details": [
+      "Purchase or order date",
+      "Whether you have contacted the seller or received any response about the delivery"
+    ],
+    "uncertainty": "The facts provided by the user are unverified. The order date is currently unknown due to conflicting dates provided.",
+    "case_status": "in_progress",
+    "next_question": "Could you please clarify the exact date when you placed the order?",
+    "guidance": [
+      {
+        "source_id": "RULES-CONTACT",
+        "explanation": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact."
+      },
+      {
+        "source_id": "RULES-NONDELIVERY",
+        "explanation": "The e-commerce rules address refunds where delivery is later than the stated schedule, with a force-majeure exception. For non-delivery, the promised schedule and order history need checking before applying that rule."
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+      }
+    ],
+    "safety_flag": "none"
+  },
+  "schema_validation": "passed",
+  "application_processing": "completed",
+  "displayed_reply": "Could you please clarify the exact date when you placed the order?",
+  "displayed_guidance": {
+    "status": "grounded",
+    "language": "en",
+    "message": "",
+    "entries": [
+      {
+        "source_id": "RULES-CONTACT",
+        "explanation": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact.",
+        "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=8",
+        "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+        "next_step": "Use the seller or platform's published support channel, state the problem and requested solution, and keep a copy.",
+        "limitation": "A written request is a practical record, not a claim that a formal legal notice is always compulsory.",
+        "provision_or_location": "Rules 4(2), 4(4) and 5(3)(a), PDF pages 8–9",
+        "date_checked": "2026-11-09"
+      },
+      {
+        "source_id": "RULES-NONDELIVERY",
+        "explanation": "The e-commerce rules address refunds where delivery is later than the stated schedule, with a force-majeure exception. For non-delivery, the promised schedule and order history need checking before applying that rule.",
+        "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+        "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+        "next_step": "Save the stated delivery date and tracking history; ask the seller for delivery status or a refund.",
+        "limitation": "This is not a finding that a missed delivery guarantees a refund. The cause of delay is unknown.",
+        "provision_or_location": "Rules 6(3) and 7(4), including force-majeure provisos, PDF pages 10–11",
+        "date_checked": "2026-11-09"
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.",
+        "source_url": "https://consumeraffairs.gov.in/public/upload/files/E%20commerce%20rules_1732703966.pdf#page=10",
+        "source_title": "Consumer Protection (E-Commerce) Rules, 2020",
+        "next_step": "Keep the refund request, seller response, and any stated refund policy or commitment.",
+        "limitation": "Applicability depends on the transaction and facts. No fixed refund-processing deadline is asserted.",
+        "provision_or_location": "Rules 6(3) and 7(4), PDF pages 10–11",
+        "date_checked": "2026-11-09"
+      }
+    ]
+  },
+  "action_package": {
+    "complaint": "Subject: Consumer complaint — online-shopping non-delivery\n\nTo: Fictional Indigo Store\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nThe user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): [Incident date]\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹1,500\n\nTimeline supplied by me:\n- 2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500.\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+    "summary": "NCH preparation summary\n\nPersonal preparation only. This is not submitted to NCH and is not officially validated. All case facts are the user's account.\n\nCompany/seller:\nFictional Indigo Store\n\nProduct/service:\n[Product/service — confirm from your order]\n\nIssue category:\nonline-shopping non-delivery\n\nTransaction details:\nOrder ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: ₹1,500\n\nReported incident date (type of event to confirm):\n[Incident date]\n\nGrievance — user's account:\nThe user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.\n\nTimeline — user's account:\n- 2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500.\n\nEvidence reported by user; not inspected:\n[Evidence availability not confirmed]\n\nPrevious resolution attempts — user-reported:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nDesired outcome:\nrefund\n\nInformation to review or provide:\n- Incident date and what it refers to\n- Evidence availability\n- Order ID, exact product/service, purchase date, name and contact details\n- Could you please clarify the exact date when you placed the order?\n- Purchase or order date\n- Whether you have contacted the seller or received any response about the delivery",
+    "checklist": {
+      "reported": [],
+      "collect": [
+        "Order confirmation",
+        "Invoice or receipt",
+        "Payment proof",
+        "Delivery tracking",
+        "Refund requests",
+        "Seller/support communication"
+      ],
+      "unknown": [
+        "Photos/videos (if defects are involved)"
+      ]
+    },
+    "readiness": {
+      "status": "missing",
+      "missing": [
+        "incident_date",
+        "evidence_available"
+      ],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "bacf344a53616e682db7d365af64d77077bf89dccc0574b7ca1f046d310320c9",
+    "language": "en"
+  },
+  "original_response_file": "T06_turn02_response.txt",
+  "complete_sdk_response_file": "T06_turn02_sdk_response.json",
+  "retrieval_safety": "none",
+  "original_response_sha256": "ee105c9fcce20688163d6c1642ab75e90c5962e337cbb1473e063dc1ce06cc6d",
+  "intake_error": null,
+  "case_after": {
+    "issue_type": "online-shopping non-delivery",
+    "user_language": "en",
+    "user_summary": "The user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.",
+    "company_or_seller": "Fictional Indigo Store",
+    "amount_inr": "1500",
+    "incident_date": null,
+    "timeline": [
+      "2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500."
+    ],
+    "evidence_available": [],
+    "evidence_missing": [
+      "Purchase invoice or receipt",
+      "Payment confirmation record",
+      "Order confirmation or communication records with the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Could you please clarify the exact date when you placed the order?",
+      "Purchase or order date",
+      "Whether you have contacted the seller or received any response about the delivery"
+    ],
+    "confidence_or_uncertainty": "The facts provided by the user are unverified. The order date is currently unknown due to conflicting dates provided.",
+    "case_status": "in_progress"
+  },
+  "readiness": {
+    "status": "missing",
+    "missing": [
+      "incident_date",
+      "evidence_available"
+    ],
+    "review": [],
+    "provisional_allowed": true
+  },
+  "provisional_generation_explicitly_requested_by_evaluation": true,
+  "completed_at": "2026-11-08T20:44:04.441205+00:00"
+}

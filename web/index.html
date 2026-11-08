@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A multilingual consumer grievance workspace for India. Review your facts, explore checked information, and prepare a complaint.">
+  <title>NyaySaathi AI · Consumer grievance companion</title>
+  <link rel="icon" href="/static/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script type="module" src="/static/app.js"></script>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="/" aria-label="NyaySaathi AI home"><span class="brand-mark" aria-hidden="true">न्याय</span><span>NyaySaathi <small>AI</small></span></a>
+    <div class="header-actions">
+      <label class="sr-only" for="language" data-i18n="interfaceLanguage">Interface language</label>
+      <select id="language"><option value="en">English</option><option value="hi">हिन्दी</option></select>
+      <button id="new-case" class="button secondary" data-i18n="newCase">Start new case</button>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow" data-i18n="eyebrow">A CONSUMER GRIEVANCE COMPANION FOR INDIA</p>
+      <h1 data-i18n="headline">Your story. Clearer next steps.</h1>
+      <p class="lead" data-i18n="purpose">Describe a refund, damaged product or missing delivery in English, Hindi or Hinglish. Review the facts, explore checked information, and prepare your complaint.</p>
+      <div class="notice"><span aria-hidden="true">ⓘ</span><p data-i18n="disclaimer">Legal information assistance only. This is not a substitute for a qualified lawyer. Facts are user-reported; no outcome is guaranteed.</p></div>
+      <p class="session-note" data-i18n="privacy">Temporary workspace · Refreshing clears this case. No server conversation storage. Use fictional details for this demo.</p>
+    </section>
+
+    <div id="request-status" class="request-status" role="status" aria-live="polite" hidden></div>
+    <div id="request-error" class="alert error" role="alert" hidden></div>
+
+    <div class="workspace">
+      <section class="panel conversation-panel" aria-labelledby="conversation-title">
+        <div class="panel-heading"><div><p class="step-label" data-i18n="step1">01 / TELL YOUR STORY</p><h2 id="conversation-title" data-i18n="conversation">Conversation</h2></div><span class="tag" data-i18n="multilingual">EN · हिन्दी · Hinglish</span></div>
+        <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <div id="empty-chat" class="empty-chat"><span class="empty-symbol" aria-hidden="true">“</span><h3 data-i18n="startTitle">Let’s start with what happened.</h3><p data-i18n="startText">What did you order, and what went wrong? Share only the details you know.</p><button id="example" class="example" data-i18n="example">Try: “My ₹2,999 headphones arrived damaged and the seller refused a refund.”</button></div>
+        <form id="chat-form" class="chat-form">
+          <label class="sr-only" for="message" data-i18n="yourMessage">Your message</label>
+          <textarea id="message" rows="3" maxlength="12000" required data-placeholder="messagePlaceholder" placeholder="Describe your consumer problem…"></textarea>
+          <div class="composer-footer"><span data-i18n="unknowns">Unknown details can stay unknown.</span><button id="send" class="button primary" type="submit" data-i18n="send">Send message ↗</button></div>
+        </form>
+        <details class="voice-section" open>
+          <summary data-i18n="voice">Prefer to speak?</summary>
+          <p class="muted small" data-i18n="voiceHelp">Record up to 60 seconds. Transcribe, review and edit, then explicitly send. Audio goes to Google only when you transcribe.</p>
+          <div class="record-controls"><button id="record" class="button secondary" data-i18n="startRecording">Start recording</button><span id="record-time" class="record-time" role="timer" aria-label="Recording duration">00:00</span><span id="record-state" class="small muted" role="status"></span></div>
+          <audio id="audio-preview" controls preload="metadata" aria-label="Preview your recording" hidden></audio>
+          <button id="transcribe" class="button secondary" data-i18n="transcribe" hidden>Transcribe audio</button>
+          <div id="transcript-section" hidden>
+            <label for="transcript" data-i18n="transcriptLabel">Review and edit transcript</label>
+            <textarea id="transcript" rows="4" maxlength="12000"></textarea>
+            <p class="small muted" data-i18n="reviewVoice">Check names, amounts and dates. Intake receives only the text you approve, not your recording.</p>
+            <button id="send-voice" class="button primary" data-i18n="sendVoice">Send approved transcript</button>
+          </div>
+          <p id="voice-error" class="inline-error" role="alert" hidden></p>
+          <p class="small muted" data-i18n="voiceLimit">Mono PCM WAV · 16 kHz · Below 2 MB. Microphone needs permission and localhost or HTTPS. Text chat always remains available.</p>
+        </details>
+      </section>
+
+      <aside class="case-column">
+        <section class="panel" aria-labelledby="case-title">
+          <div class="panel-heading"><div><p class="step-label" data-i18n="step2">02 / REVIEW YOUR FACTS</p><h2 id="case-title" data-i18n="caseFile">Case File</h2></div><span id="case-status" class="tag">Not started</span></div>
+          <p class="muted small" data-i18n="caseHelp">Your account, not independently verified. Correct any mistakes in the conversation.</p>
+          <dl id="case-fields" class="case-fields"></dl>
+          <div id="narrative-warning" class="alert" hidden data-i18n="narrativeWarning">Earlier narrative was cleared after a correction or conflict. Check current facts and add a fresh description when editing your draft.</div>
+          <h3 data-i18n="missing">Details still to clarify</h3><ul id="missing-details" class="plain-list"></ul>
+        </section>
+        <section class="panel guidance-panel" aria-labelledby="guidance-title">
+          <div class="panel-heading"><div><p class="step-label" data-i18n="step3">03 / UNDERSTAND YOUR OPTIONS</p><h2 id="guidance-title" data-i18n="guidance">Legal information</h2></div></div>
+          <div id="guidance-content"></div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="panel package-panel" aria-labelledby="package-title">
+      <div class="panel-heading"><div><p class="step-label" data-i18n="step4">04 / PREPARE YOUR COMPLAINT</p><h2 id="package-title" data-i18n="package">Action Package</h2></div><span class="tag" data-i18n="noExtraAI">Local templates · No extra AI call</span></div>
+      <p class="muted" data-i18n="packageHelp">Editable preparation documents, not a lawyer-issued notice. Nothing is sent or filed. Review every statement and fill the placeholders.</p>
+      <div class="package-controls"><div><label for="document-language" data-i18n="documentLanguage">Document language</label><select id="document-language"><option value="en">English</option><option value="hi">हिन्दी</option></select></div><label class="check-label"><input id="provisional" type="checkbox"><span data-i18n="provisional">Allow a provisional draft with missing-detail placeholders</span></label><button id="generate" class="button primary" data-i18n="generate">Generate complaint package</button></div>
+      <p id="readiness" class="small muted" role="status"></p>
+      <div id="outdated" class="alert" role="status" hidden data-i18n="outdated">This draft may be outdated: case facts or document language changed. Your edits are preserved. Regenerate explicitly to replace them.</div>
+      <div id="documents" hidden>
+        <div class="document-grid">
+          <div><label for="complaint" data-i18n="complaint">Complaint to seller / company</label><textarea id="complaint" class="document-editor" rows="17"></textarea><button id="download-complaint" class="button secondary" data-i18n="downloadComplaint">Download complaint · TXT</button></div>
+          <div><label for="nch-summary" data-i18n="nchSummary">NCH preparation summary</label><p class="small muted" data-i18n="nchHelp">Not submitted to or officially validated by NCH.</p><textarea id="nch-summary" class="document-editor" rows="15"></textarea><button id="download-summary" class="button secondary" data-i18n="downloadSummary">Download summary · TXT</button></div>
+        </div>
+        <h3 data-i18n="checklist">Evidence checklist</h3><p class="small muted" data-i18n="evidenceHelp">Suggestions to check, not mandatory legal requirements or confirmation that evidence exists.</p><div id="checklist" class="checklist-grid"></div>
+      </div>
+    </section>
+    <footer><strong>NyaySaathi AI</strong><p data-i18n="footer">For Indian consumer refunds, defective products, non-delivery and related service complaints. Keep a copy of reviewed drafts before closing this page.</p></footer>
+  </main>
+</body>
+</html>

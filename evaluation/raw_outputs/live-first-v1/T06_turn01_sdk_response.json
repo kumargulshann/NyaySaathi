@@ -1,0 +1,152 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Sun, 08 Nov 2026 20:44:00 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=3127",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"scope\": \"in_scope\",\n  \"reply_language\": \"en\",\n  \"changes\": [\n    {\n      \"field\": \"issue_type\",\n      \"value\": \"online-shopping non-delivery\",\n      \"source_quote\": \"It has not been delivered.\"\n    },\n    {\n      \"field\": \"user_language\",\n      \"value\": \"en\",\n      \"source_quote\": \"I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund. I have not described any evidence yet. What can I do?\"\n    },\n    {\n      \"field\": \"user_summary\",\n      \"value\": \"The user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.\",\n      \"source_quote\": \"I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund.\"\n    },\n    {\n      \"field\": \"company_or_seller\",\n      \"value\": \"Fictional Indigo Store\",\n      \"source_quote\": \"I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500.\"\n    },\n    {\n      \"field\": \"amount_inr\",\n      \"value\": \"1500\",\n      \"source_quote\": \"I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500.\"\n    },\n    {\n      \"field\": \"incident_date\",\n      \"value\": \"2026-10-03\",\n      \"source_quote\": \"I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500.\"\n    },\n    {\n      \"field\": \"timeline\",\n      \"value\": [\n        \"2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500.\"\n      ],\n      \"source_quote\": \"I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500.\"\n    },\n    {\n      \"field\": \"desired_resolution\",\n      \"value\": \"refund\",\n      \"source_quote\": \"I want a refund.\"\n    }\n  ],\n  \"evidence_missing\": [\n    \"Purchase invoice or receipt\",\n    \"Payment confirmation record\",\n    \"Order confirmation or communication records with the seller\"\n  ],\n  \"missing_details\": [\n    \"Any communication or responses from the seller regarding the non-delivery\"\n  ],\n  \"uncertainty\": \"The facts provided by the user are unverified.\",\n  \"case_status\": \"in_progress\",\n  \"next_question\": \"Have you contacted the seller or received any response about the delivery?\",\n  \"guidance\": [\n    {\n      \"source_id\": \"NCH-PORTAL\",\n      \"explanation\": \"The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund.\"\n    },\n    {\n      \"source_id\": \"DOCS-EVIDENCE\",\n      \"explanation\": \"The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established.\"\n    }\n  ],\n  \"safety_flag\": \"none\"\n}",
+            "thought": null,
+            "thought_signature": "EmAKXgFpFH0TA_VzVVWxVwvsw7xuv-pvoPUkj8deuIGIlSKb-WH-Ghz96Qt3-tcrxc_FtZ524_YCCERZYWb-5KLZ2-0stsyW8EuNyEdW7ZebrfNIhBU3LgffO0OtpXtNVqk=",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null,
+            "audio_transcription": null,
+            "media_processing": null,
+            "speech_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null,
+      "continuation_token": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.5-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "Dt_wavLtDu3PmNMPiJjpkAU",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 837,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 3399,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 3399
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 4236,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [
+      {
+        "field": "issue_type",
+        "value": "online-shopping non-delivery",
+        "source_quote": "It has not been delivered."
+      },
+      {
+        "field": "user_language",
+        "value": "en",
+        "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund. I have not described any evidence yet. What can I do?"
+      },
+      {
+        "field": "user_summary",
+        "value": "The user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.",
+        "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund."
+      },
+      {
+        "field": "company_or_seller",
+        "value": "Fictional Indigo Store",
+        "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+      },
+      {
+        "field": "amount_inr",
+        "value": "1500",
+        "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+      },
+      {
+        "field": "incident_date",
+        "value": "2026-10-03",
+        "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+      },
+      {
+        "field": "timeline",
+        "value": [
+          "2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500."
+        ],
+        "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+      },
+      {
+        "field": "desired_resolution",
+        "value": "refund",
+        "source_quote": "I want a refund."
+      }
+    ],
+    "evidence_missing": [
+      "Purchase invoice or receipt",
+      "Payment confirmation record",
+      "Order confirmation or communication records with the seller"
+    ],
+    "missing_details": [
+      "Any communication or responses from the seller regarding the non-delivery"
+    ],
+    "uncertainty": "The facts provided by the user are unverified.",
+    "case_status": "in_progress",
+    "next_question": "Have you contacted the seller or received any response about the delivery?",
+    "guidance": [
+      {
+        "source_id": "NCH-PORTAL",
+        "explanation": "The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund."
+      },
+      {
+        "source_id": "DOCS-EVIDENCE",
+        "explanation": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established."
+      }
+    ],
+    "safety_flag": "none"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "scope": "in_scope",
+  "reply_language": "en",
+  "changes": [
+    {
+      "field": "incident_date",
+      "value": null,
+      "source_quote": "I now have contradictory notes: one says the order date was 3 October 2026 and another says 8 October 2026. I cannot confirm which purchase date is correct. Withdraw my earlier confirmed date and leave it unknown; ask me to clarify rather than choosing a date.",
+      "is_correction": true
+    }
+  ],
+  "evidence_missing": [
+    "Purchase invoice or receipt",
+    "Payment confirmation record",
+    "Order confirmation or communication records with the seller"
+  ],
+  "missing_details": [
+    "Purchase or order date",
+    "Whether you have contacted the seller or received any response about the delivery"
+  ],
+  "uncertainty": "The facts provided by the user are unverified. The order date is currently unknown due to conflicting dates provided.",
+  "case_status": "in_progress",
+  "next_question": "Could you please clarify the exact date when you placed the order?",
+  "guidance": [
+    {
+      "source_id": "RULES-CONTACT",
+      "explanation": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact."
+    },
+    {
+      "source_id": "RULES-NONDELIVERY",
+      "explanation": "The e-commerce rules address refunds where delivery is later than the stated schedule, with a force-majeure exception. For non-delivery, the promised schedule and order history need checking before applying that rule."
+    },
+    {
+      "source_id": "RULES-REFUND",
+      "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+    }
+  ],
+  "safety_flag": "none"
+}

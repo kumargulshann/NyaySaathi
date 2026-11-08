@@ -1,0 +1,12 @@
+{
+  "scope": "out_of_scope",
+  "reply_language": "en",
+  "changes": [],
+  "evidence_missing": [],
+  "missing_details": [],
+  "uncertainty": null,
+  "case_status": "in_progress",
+  "next_question": null,
+  "guidance": [],
+  "safety_flag": "out_of_scope"
+}

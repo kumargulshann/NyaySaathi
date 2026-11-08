@@ -1,0 +1,70 @@
+{
+  "scope": "in_scope",
+  "reply_language": "en",
+  "changes": [
+    {
+      "field": "issue_type",
+      "value": "online-shopping non-delivery",
+      "source_quote": "It has not been delivered."
+    },
+    {
+      "field": "user_language",
+      "value": "en",
+      "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund. I have not described any evidence yet. What can I do?"
+    },
+    {
+      "field": "user_summary",
+      "value": "The user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.",
+      "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund."
+    },
+    {
+      "field": "company_or_seller",
+      "value": "Fictional Indigo Store",
+      "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+    },
+    {
+      "field": "amount_inr",
+      "value": "1500",
+      "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+    },
+    {
+      "field": "incident_date",
+      "value": "2026-10-03",
+      "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+    },
+    {
+      "field": "timeline",
+      "value": [
+        "2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500."
+      ],
+      "source_quote": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500."
+    },
+    {
+      "field": "desired_resolution",
+      "value": "refund",
+      "source_quote": "I want a refund."
+    }
+  ],
+  "evidence_missing": [
+    "Purchase invoice or receipt",
+    "Payment confirmation record",
+    "Order confirmation or communication records with the seller"
+  ],
+  "missing_details": [
+    "Any communication or responses from the seller regarding the non-delivery"
+  ],
+  "uncertainty": "The facts provided by the user are unverified.",
+  "case_status": "in_progress",
+  "next_question": "Have you contacted the seller or received any response about the delivery?",
+  "guidance": [
+    {
+      "source_id": "NCH-PORTAL",
+      "explanation": "The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund."
+    },
+    {
+      "source_id": "DOCS-EVIDENCE",
+      "explanation": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established."
+    }
+  ],
+  "safety_flag": "none"
+}

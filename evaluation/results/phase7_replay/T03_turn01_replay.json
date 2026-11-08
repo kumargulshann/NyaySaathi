@@ -1,0 +1,104 @@
+{
+  "label": "Offline replay of a recorded Phase 6 Gemini response; not a new live result or accuracy score",
+  "case_id": "T03",
+  "turn": 1,
+  "live_requests": 0,
+  "original_response": "raw_outputs\\live-first-v1\\T03_turn01_response.txt",
+  "original_response_sha256": "9a797736184fabd2aa9daf333d9eeb9e3d85e61d70175079bde40ed86379d865",
+  "original_input_messages": [
+    {
+      "role": "user",
+      "content": "मैंने 4 अक्टूबर 2026 को फिक्शनल कमल स्टोर से ₹1800 के हेडफोन खरीदे थे। हेडफोन खराब मिले और विक्रेता रिफंड नहीं दे रहा है। मेरे पास बिल है। मुझे रिफंड चाहिए। मेरे विकल्प क्या हैं?"
+    }
+  ],
+  "before_phase6_case": {
+    "issue_type": "Defective product / non-refund",
+    "user_language": "hi",
+    "user_summary": "User bought headphones for Rs 1800 from Fictional Kamal Store on 4 October 2026, received them defective, seller is refusing refund, and user has the bill.",
+    "company_or_seller": "Fictional Kamal Store",
+    "amount_inr": "1800",
+    "incident_date": "2026-10-04",
+    "timeline": [
+      "2026-10-04: Purchased headphones for 1800 INR from Fictional Kamal Store"
+    ],
+    "evidence_available": [
+      "Bill / Invoice"
+    ],
+    "evidence_missing": [
+      "Photos or videos of the defect",
+      "Copies of communication with the seller"
+    ],
+    "desired_resolution": "Refund",
+    "unanswered_questions": [
+      "क्या आप दर्ज किए गए विवरणों में कोई सुधार करना चाहते हैं?"
+    ],
+    "confidence_or_uncertainty": "User claims the headphones were defective and the seller refused a refund; these details are unverified.",
+    "case_status": "ready_for_review"
+  },
+  "after_fixed_case": {
+    "issue_type": "Defective product / non-refund",
+    "user_language": "hi",
+    "user_summary": "User bought headphones for Rs 1800 from Fictional Kamal Store on 4 October 2026, received them defective, seller is refusing refund, and user has the bill.",
+    "company_or_seller": "Fictional Kamal Store",
+    "amount_inr": "1800",
+    "incident_date": "2026-10-04",
+    "timeline": [
+      "2026-10-04: Purchased headphones for 1800 INR from Fictional Kamal Store"
+    ],
+    "evidence_available": [
+      "Bill / Invoice"
+    ],
+    "evidence_missing": [
+      "Photos or videos of the defect",
+      "Copies of communication with the seller"
+    ],
+    "desired_resolution": "Refund",
+    "unanswered_questions": [
+      "क्या आप दर्ज किए गए विवरणों में कोई सुधार करना चाहते हैं?"
+    ],
+    "confidence_or_uncertainty": "User claims the headphones were defective and the seller refused a refund; these details are unverified.",
+    "case_status": "ready_for_review",
+    "narrative_review_required": false,
+    "uncertain_fields": {}
+  },
+  "before_phase6_complaint": "विषय: उपभोक्ता शिकायत — Defective product / non-refund\n\nप्रति: Fictional Kamal Store\n\nमाननीय ग्राहक सहायता टीम,\n\nमैं अपनी उपभोक्ता शिकायत के संबंध में लिख रहा/रही हूँ। नीचे मेरे बताए अनुसार घटनाओं का विवरण है; इसकी समीक्षा की जानी है:\n\nUser bought headphones for Rs 1800 from Fictional Kamal Store on 4 October 2026, received them defective, seller is refusing refund, and user has the bill.\n\nऑर्डर/संदर्भ संख्या: [ऑर्डर आईडी]\nउत्पाद/सेवा: [उत्पाद/सेवा]\nखरीद/ऑर्डर की तारीख: [खरीद की तारीख]\n\nबताई गई घटना की तारीख (तारीख का संदर्भ स्पष्ट करें): 2026-10-04\n\nशिकायत में बताई गई राशि (कीमत, भुगतान या रिफंड का संदर्भ स्पष्ट करें): ₹1,800\n\nमेरे बताए अनुसार घटनाक्रम:\n- 2026-10-04: Purchased headphones for 1800 INR from Fictional Kamal Store\n\nमेरे बताए अनुसार पिछला संपर्क:\n[पिछला संपर्क हुआ हो तभी लिखें; अन्यथा 'संपर्क नहीं किया' लिखें]\n\nमेरा अनुरोधित समाधान: Refund\n\nकृपया मेरी शिकायत की समीक्षा करें और प्रस्तावित समाधान बताते हुए लिखित उत्तर दें।\n\nधन्यवाद,\n[आपका नाम]\n[आपकी संपर्क जानकारी]",
+  "after_fixed_package": {
+    "complaint": "विषय: उपभोक्ता शिकायत — Defective product / non-refund\n\nप्रति: Fictional Kamal Store\n\nमाननीय ग्राहक सहायता टीम,\n\nमैं अपनी उपभोक्ता शिकायत के संबंध में लिख रहा/रही हूँ। नीचे मेरे बताए अनुसार घटनाओं का विवरण है; इसकी समीक्षा की जानी है:\n\nUser bought headphones for Rs 1800 from Fictional Kamal Store on 4 October 2026, received them defective, seller is refusing refund, and user has the bill.\n\nऑर्डर/संदर्भ संख्या: [ऑर्डर आईडी]\nउत्पाद/सेवा: [उत्पाद/सेवा]\nखरीद/ऑर्डर की तारीख: [खरीद की तारीख]\n\nबताई गई घटना की तारीख (तारीख का संदर्भ स्पष्ट करें): 2026-10-04\n\nशिकायत में बताई गई राशि (कीमत, भुगतान या रिफंड का संदर्भ स्पष्ट करें): ₹1,800\n\nमेरे बताए अनुसार घटनाक्रम:\n- 2026-10-04: Purchased headphones for 1800 INR from Fictional Kamal Store\n\nमेरे बताए अनुसार पिछला संपर्क:\n[पिछला संपर्क हुआ हो तभी लिखें; अन्यथा 'संपर्क नहीं किया' लिखें]\n\nमेरा अनुरोधित समाधान: Refund\n\nकृपया मेरी शिकायत की समीक्षा करें और प्रस्तावित समाधान बताते हुए लिखित उत्तर दें।\n\nधन्यवाद,\n[आपका नाम]\n[आपकी संपर्क जानकारी]",
+    "summary": "NCH के लिए तैयारी सारांश\n\nकेवल व्यक्तिगत तैयारी। यह NCH को प्रस्तुत नहीं किया गया है और आधिकारिक रूप से सत्यापित नहीं है। सभी केस तथ्य उपयोगकर्ता के बताए अनुसार हैं।\n\nकंपनी/विक्रेता:\nFictional Kamal Store\n\nउत्पाद/सेवा:\n[उत्पाद/सेवा — ऑर्डर देखकर पुष्टि करें]\n\nसमस्या की श्रेणी:\nDefective product / non-refund\n\nलेनदेन का विवरण:\nऑर्डर आईडी: [ऑर्डर आईडी]\nखरीद की तारीख: [खरीद की तारीख]\nदर्ज राशि: ₹1,800\n\nबताई गई घटना की तारीख (घटना का प्रकार स्पष्ट करें):\n2026-10-04\n\nशिकायत — उपयोगकर्ता के बताए अनुसार:\nUser bought headphones for Rs 1800 from Fictional Kamal Store on 4 October 2026, received them defective, seller is refusing refund, and user has the bill.\n\nघटनाक्रम — उपयोगकर्ता के बताए अनुसार:\n- 2026-10-04: Purchased headphones for 1800 INR from Fictional Kamal Store\n\nउपयोगकर्ता द्वारा बताए गए साक्ष्य; जाँचे नहीं गए:\n- Bill / Invoice\n\nपिछले समाधान प्रयास — उपयोगकर्ता के बताए अनुसार:\n[पिछला संपर्क हुआ हो तभी लिखें; अन्यथा 'संपर्क नहीं किया' लिखें]\n\nइच्छित परिणाम:\nRefund\n\nसमीक्षा या भरने के लिए जानकारी:\n- ऑर्डर आईडी, सटीक उत्पाद/सेवा, खरीद की तारीख, नाम और संपर्क जानकारी\n- क्या आप दर्ज किए गए विवरणों में कोई सुधार करना चाहते हैं?",
+    "checklist": {
+      "reported": [
+        "Bill / Invoice"
+      ],
+      "collect": [
+        "ऑर्डर की पुष्टि",
+        "भुगतान का प्रमाण",
+        "फोटो/वीडियो (खराबी होने पर)",
+        "रिफंड के अनुरोध",
+        "विक्रेता/सहायता से बातचीत"
+      ],
+      "unknown": [
+        "डिलीवरी ट्रैकिंग"
+      ]
+    },
+    "readiness": {
+      "status": "ready",
+      "missing": [],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "6bc9f4dfc7052d4ed619e9fcb769b6697f61a83eaa19e9dc6268e4f072999713",
+    "language": "hi"
+  },
+  "displayed_reply": "क्या आप दर्ज किए गए विवरणों में कोई सुधार करना चाहते हैं?",
+  "guidance_status": "grounded",
+  "application_error": null,
+  "retrieved_source_ids": [
+    "CPA-DEFECT",
+    "DOCS-EVIDENCE",
+    "ECOM-2026-STATUS",
+    "NCH-CONTACT",
+    "RULES-CONTACT",
+    "RULES-REFUND"
+  ],
+  "recorded_provider_calls": 1
+}

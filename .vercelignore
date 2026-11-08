@@ -1,0 +1,17 @@
+.env
+.env.*
+.venv/
+.pytest_cache/
+.streamlit/
+.vscode/
+**/__pycache__/
+evaluation/
+tests/
+examples/
+*.pdf
+# Vercel uses the web-only dependencies in pyproject.toml.
+# Keep requirements.txt locally for Streamlit + pytest + web development.
+requirements.txt
+app.py
+publication-audit.local.json
+scripts/

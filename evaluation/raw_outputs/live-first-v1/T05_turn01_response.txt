@@ -1,0 +1,83 @@
+{
+  "scope": "in_scope",
+  "reply_language": "en",
+  "changes": [
+    {
+      "field": "issue_type",
+      "value": "defective product",
+      "source_quote": "It arrived broken."
+    },
+    {
+      "field": "user_language",
+      "value": "en",
+      "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken. I have the invoice. I want a refund. What are my options?"
+    },
+    {
+      "field": "user_summary",
+      "value": "User ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.",
+      "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken. I have the invoice. I want a refund."
+    },
+    {
+      "field": "company_or_seller",
+      "value": "Fictional Cedar Shop",
+      "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000."
+    },
+    {
+      "field": "amount_inr",
+      "value": "2000",
+      "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000."
+    },
+    {
+      "field": "incident_date",
+      "value": "2026-10-06",
+      "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000."
+    },
+    {
+      "field": "timeline",
+      "value": [
+        "2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken."
+      ],
+      "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken."
+    },
+    {
+      "field": "evidence_available",
+      "value": [
+        "invoice"
+      ],
+      "source_quote": "I have the invoice."
+    },
+    {
+      "field": "desired_resolution",
+      "value": "refund",
+      "source_quote": "I want a refund."
+    }
+  ],
+  "evidence_missing": [
+    "photos of the broken kettle",
+    "delivery confirmation or tracking details",
+    "communication with the seller"
+  ],
+  "missing_details": [],
+  "uncertainty": "User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.",
+  "case_status": "ready_for_review",
+  "next_question": "Do you want to correct any recorded detail before proceeding further?",
+  "guidance": [
+    {
+      "source_id": "CPA-DEFECT",
+      "explanation": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome."
+    },
+    {
+      "source_id": "RULES-REFUND",
+      "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+    },
+    {
+      "source_id": "NCH-PORTAL",
+      "explanation": "The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund."
+    },
+    {
+      "source_id": "DOCS-EVIDENCE",
+      "explanation": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established."
+    }
+  ],
+  "safety_flag": "none"
+}

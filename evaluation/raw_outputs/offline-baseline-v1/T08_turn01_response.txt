@@ -1,0 +1,1 @@
+{"scope": "out_of_scope", "reply_language": "en", "changes": [], "uncertainty": "User-reported information has not been independently verified.", "case_status": "in_progress", "next_question": null, "guidance": [], "safety_flag": "out_of_scope"}

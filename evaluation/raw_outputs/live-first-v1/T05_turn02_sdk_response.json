@@ -1,0 +1,118 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Sun, 08 Nov 2026 20:43:56 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=2552",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"scope\": \"in_scope\",\n  \"reply_language\": \"en\",\n  \"changes\": [\n    {\n      \"field\": \"amount_inr\",\n      \"value\": \"2500\",\n      \"source_quote\": \"Correction: the amount was Rs 2500, not Rs 2000.\",\n      \"is_correction\": true\n    }\n  ],\n  \"evidence_missing\": [\n    \"photos of the broken kettle\",\n    \"delivery confirmation or tracking details\",\n    \"communication with the seller\"\n  ],\n  \"missing_details\": [],\n  \"uncertainty\": \"User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.\",\n  \"case_status\": \"ready_for_review\",\n  \"next_question\": \"Do you want to correct any recorded detail before proceeding further?\",\n  \"guidance\": [\n    {\n      \"source_id\": \"RULES-CONTACT\",\n      \"explanation\": \"E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact.\"\n    },\n    {\n      \"source_id\": \"CPA-DEFECT\",\n      \"explanation\": \"For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome.\"\n    },\n    {\n      \"source_id\": \"RULES-REFUND\",\n      \"explanation\": \"The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.\"\n    }\n  ],\n  \"safety_flag\": \"none\"\n}",
+            "thought": null,
+            "thought_signature": "EmAKXgFpFH0Tb7x2oLjYOR7iBonmcBMyhJXJTeE9LWosYbfQP5jQOVCQDNZRPxWFm4h7aX00cH0uvP2p1zBFstYYCoABsCxzcOOEoDiGCr4rvMpP6SrBZey2RiojFZPe23U=",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null,
+            "audio_transcription": null,
+            "media_processing": null,
+            "speech_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null,
+      "continuation_token": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.5-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "Ct_warDcE5nA3LUPs6u7oQs",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 407,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 3660,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 3660
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 4067,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [
+      {
+        "field": "amount_inr",
+        "value": "2500",
+        "source_quote": "Correction: the amount was Rs 2500, not Rs 2000.",
+        "is_correction": true
+      }
+    ],
+    "evidence_missing": [
+      "photos of the broken kettle",
+      "delivery confirmation or tracking details",
+      "communication with the seller"
+    ],
+    "missing_details": [],
+    "uncertainty": "User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.",
+    "case_status": "ready_for_review",
+    "next_question": "Do you want to correct any recorded detail before proceeding further?",
+    "guidance": [
+      {
+        "source_id": "RULES-CONTACT",
+        "explanation": "E-commerce entities must display customer-care and grievance-officer contact information and maintain a grievance mechanism. Marketplace seller details can help identify whom to contact."
+      },
+      {
+        "source_id": "CPA-DEFECT",
+        "explanation": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome."
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+      }
+    ],
+    "safety_flag": "none"
+  }
+}

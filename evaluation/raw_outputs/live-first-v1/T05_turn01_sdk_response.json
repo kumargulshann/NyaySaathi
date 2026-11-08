@@ -1,0 +1,165 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Sun, 08 Nov 2026 20:43:52 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=3418",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"scope\": \"in_scope\",\n  \"reply_language\": \"en\",\n  \"changes\": [\n    {\n      \"field\": \"issue_type\",\n      \"value\": \"defective product\",\n      \"source_quote\": \"It arrived broken.\"\n    },\n    {\n      \"field\": \"user_language\",\n      \"value\": \"en\",\n      \"source_quote\": \"I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken. I have the invoice. I want a refund. What are my options?\"\n    },\n    {\n      \"field\": \"user_summary\",\n      \"value\": \"User ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.\",\n      \"source_quote\": \"I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken. I have the invoice. I want a refund.\"\n    },\n    {\n      \"field\": \"company_or_seller\",\n      \"value\": \"Fictional Cedar Shop\",\n      \"source_quote\": \"I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000.\"\n    },\n    {\n      \"field\": \"amount_inr\",\n      \"value\": \"2000\",\n      \"source_quote\": \"I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000.\"\n    },\n    {\n      \"field\": \"incident_date\",\n      \"value\": \"2026-10-06\",\n      \"source_quote\": \"I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000.\"\n    },\n    {\n      \"field\": \"timeline\",\n      \"value\": [\n        \"2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken.\"\n      ],\n      \"source_quote\": \"I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken.\"\n    },\n    {\n      \"field\": \"evidence_available\",\n      \"value\": [\n        \"invoice\"\n      ],\n      \"source_quote\": \"I have the invoice.\"\n    },\n    {\n      \"field\": \"desired_resolution\",\n      \"value\": \"refund\",\n      \"source_quote\": \"I want a refund.\"\n    }\n  ],\n  \"evidence_missing\": [\n    \"photos of the broken kettle\",\n    \"delivery confirmation or tracking details\",\n    \"communication with the seller\"\n  ],\n  \"missing_details\": [],\n  \"uncertainty\": \"User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.\",\n  \"case_status\": \"ready_for_review\",\n  \"next_question\": \"Do you want to correct any recorded detail before proceeding further?\",\n  \"guidance\": [\n    {\n      \"source_id\": \"CPA-DEFECT\",\n      \"explanation\": \"For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome.\"\n    },\n    {\n      \"source_id\": \"RULES-REFUND\",\n      \"explanation\": \"The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right.\"\n    },\n    {\n      \"source_id\": \"NCH-PORTAL\",\n      \"explanation\": \"The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund.\"\n    },\n    {\n      \"source_id\": \"DOCS-EVIDENCE\",\n      \"explanation\": \"The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established.\"\n    }\n  ],\n  \"safety_flag\": \"none\"\n}",
+            "thought": null,
+            "thought_signature": "EmAKXgFpFH0T4-NOsk7kYwjAfOhiUJmgs6K-zihyQNasDBhXQVZ9_aXfexnrZYYBs4XkNtQXI_RkcfZsQ8IHxnxoe3K3fz23lV6WI_O3qsqnIL0ochO5qNEFgnRSBYSJ4lE=",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null,
+            "audio_transcription": null,
+            "media_processing": null,
+            "speech_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null,
+      "continuation_token": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.5-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "Bd_waqLMD9fxv_gPyInoiQc",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 1001,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 3869,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 3869
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 4870,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "scope": "in_scope",
+    "reply_language": "en",
+    "changes": [
+      {
+        "field": "issue_type",
+        "value": "defective product",
+        "source_quote": "It arrived broken."
+      },
+      {
+        "field": "user_language",
+        "value": "en",
+        "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken. I have the invoice. I want a refund. What are my options?"
+      },
+      {
+        "field": "user_summary",
+        "value": "User ordered a kettle for Rs 2000 from Fictional Cedar Shop on 6 October 2026, which arrived broken, and the user wants a refund.",
+        "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken. I have the invoice. I want a refund."
+      },
+      {
+        "field": "company_or_seller",
+        "value": "Fictional Cedar Shop",
+        "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000."
+      },
+      {
+        "field": "amount_inr",
+        "value": "2000",
+        "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000."
+      },
+      {
+        "field": "incident_date",
+        "value": "2026-10-06",
+        "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000."
+      },
+      {
+        "field": "timeline",
+        "value": [
+          "2026-10-06: Ordered a kettle from Fictional Cedar Shop for Rs 2000, which arrived broken."
+        ],
+        "source_quote": "I ordered a kettle from Fictional Cedar Shop on 6 October 2026 for Rs 2000. It arrived broken."
+      },
+      {
+        "field": "evidence_available",
+        "value": [
+          "invoice"
+        ],
+        "source_quote": "I have the invoice."
+      },
+      {
+        "field": "desired_resolution",
+        "value": "refund",
+        "source_quote": "I want a refund."
+      }
+    ],
+    "evidence_missing": [
+      "photos of the broken kettle",
+      "delivery confirmation or tracking details",
+      "communication with the seller"
+    ],
+    "missing_details": [],
+    "uncertainty": "User reports that the kettle arrived broken and that they possess an invoice, but these details are unverified.",
+    "case_status": "ready_for_review",
+    "next_question": "Do you want to correct any recorded detail before proceeding further?",
+    "guidance": [
+      {
+        "source_id": "CPA-DEFECT",
+        "explanation": "For a proved defective-goods complaint, the Act provides possible remedies including replacement or return of the price. A refund is not an automatic or guaranteed outcome."
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "The e-commerce rules restrict refusal to take back goods or refund a paid price in specified situations, including defective goods or goods not matching what was advertised or agreed. This is not a universal change-of-mind refund right."
+      },
+      {
+        "source_id": "NCH-PORTAL",
+        "explanation": "The National Consumer Helpline accepts consumer grievances, processes and forwards them to the concerned entity, and lets consumers track responses online. Registration does not guarantee a refund."
+      },
+      {
+        "source_id": "DOCS-EVIDENCE",
+        "explanation": "The Act provides for complaints to be heard on affidavit and documentary evidence. Preserving genuine purchase and communication records is useful preparation, not proof that the allegations are established."
+      }
+    ],
+    "safety_flag": "none"
+  }
+}

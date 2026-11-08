@@ -1,0 +1,164 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "x-gemini-service-tier": "standard",
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Sun, 08 Nov 2026 20:43:43 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=3563",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"scope\": \"in_scope\",\n  \"reply_language\": \"hi\",\n  \"changes\": [\n    {\n      \"field\": \"issue_type\",\n      \"value\": \"Defective product / non-refund\",\n      \"source_quote\": \"हेडफोन खराब मिले और विक्रेता रिफंड नहीं दे रहा है।\"\n    },\n    {\n      \"field\": \"user_language\",\n      \"value\": \"hi\",\n      \"source_quote\": \"मैंने 4 अक्टूबर 2026 को फिक्शनल कमल स्टोर से ₹1800 के हेडफोन खरीदे थे।\"\n    },\n    {\n      \"field\": \"user_summary\",\n      \"value\": \"User bought headphones for Rs 1800 from Fictional Kamal Store on 4 October 2026, received them defective, seller is refusing refund, and user has the bill.\",\n      \"source_quote\": \"मैंने 4 अक्टूबर 2026 को फिक्शनल कमल स्टोर से ₹1800 के हेडफोन खरीदे थे। हेडफोन खराब मिले और विक्रेता रिफंड नहीं दे रहा है। मेरे पास बिल है। मुझे रिफंड चाहिए।\"\n    },\n    {\n      \"field\": \"company_or_seller\",\n      \"value\": \"Fictional Kamal Store\",\n      \"source_quote\": \"फिक्शनल कमल स्टोर\"\n    },\n    {\n      \"field\": \"amount_inr\",\n      \"value\": \"1800\",\n      \"source_quote\": \"₹1800\"\n    },\n    {\n      \"field\": \"incident_date\",\n      \"value\": \"2026-10-04\",\n      \"source_quote\": \"4 अक्टूबर 2026\"\n    },\n    {\n      \"field\": \"timeline\",\n      \"value\": [\n        \"2026-10-04: Purchased headphones for 1800 INR from Fictional Kamal Store\"\n      ],\n      \"source_quote\": \"मैंने 4 अक्टूबर 2026 को फिक्शनल कमल स्टोर से ₹1800 के हेडफोन खरीदे थे।\"\n    },\n    {\n      \"field\": \"evidence_available\",\n      \"value\": [\n        \"Bill / Invoice\"\n      ],\n      \"source_quote\": \"मेरे पास बिल है।\"\n    },\n    {\n      \"field\": \"desired_resolution\",\n      \"value\": \"Refund\",\n      \"source_quote\": \"मुझे रिफंड चाहिए।\"\n    }\n  ],\n  \"evidence_missing\": [\n    \"Photos or videos of the defect\",\n    \"Copies of communication with the seller\"\n  ],\n  \"missing_details\": [],\n  \"uncertainty\": \"User claims the headphones were defective and the seller refused a refund; these details are unverified.\",\n  \"case_status\": \"ready_for_review\",\n  \"next_question\": \"क्या आप दर्ज किए गए विवरणों में कोई सुधार करना चाहते हैं?\",\n  \"guidance\": [\n    {\n      \"source_id\": \"CPA-DEFECT\",\n      \"explanation\": \"खराब वस्तु की शिकायत साबित होने पर अधिनियम में वस्तु बदलने या कीमत लौटाने जैसे उपाय हैं। रिफंड अपने आप या निश्चित रूप से मिलने वाला परिणाम नहीं है।\"\n    },\n    {\n      \"source_id\": \"RULES-REFUND\",\n      \"explanation\": \"ई-कॉमर्स नियम कुछ स्थितियों में वस्तु वापस लेने या भुगतान लौटाने से इनकार पर रोक लगाते हैं, जैसे खराब या विज्ञापन अथवा समझौते से अलग वस्तु। यह हर खरीद पर मन बदलने के कारण रिफंड का सार्वभौमिक अधिकार नहीं है।\"\n    },\n    {\n      \"source_id\": \"DOCS-EVIDENCE\",\n      \"explanation\": \"अधिनियम में शिकायतों की सुनवाई शपथपत्र और दस्तावेज़ी साक्ष्य के आधार पर करने का प्रावधान है। असली खरीद और बातचीत के रिकॉर्ड सँभालना उपयोगी तैयारी है; इससे आरोप अपने आप साबित नहीं होते।\"\n    },\n    {\n      \"source_id\": \"RULES-CONTACT\",\n      \"explanation\": \"ई-कॉमर्स संस्थाओं को ग्राहक सेवा और शिकायत अधिकारी की संपर्क जानकारी दिखानी तथा शिकायत व्यवस्था रखनी होती है। मार्केटप्लेस पर विक्रेता का विवरण सही संपर्क पहचानने में मदद करता है।\"\n    }\n  ],\n  \"safety_flag\": \"none\"\n}",
+            "thought": null,
+            "thought_signature": "EmAKXgFpFH0TMYT0KIKGn0FZdNc5LdADIqPykZuNDMcHHH1WgxGt11EOM6n8L5ffOMmkHIBBGGyJ6UDqqlT0OxA4VDOjQOeJNX_h0i04hlOz6u6_R8xo322HGqwIkSuKT7I=",
+            "video_metadata": null,
+            "tool_call": null,
+            "tool_response": null,
+            "part_metadata": null,
+            "audio_transcription": null,
+            "media_processing": null,
+            "speech_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null,
+      "continuation_token": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3.5-flash-lite",
+  "prompt_feedback": null,
+  "response_id": "_N7wap_GM4CQ3LUPuc2KoQ4",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 968,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 4370,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 4370
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 5338,
+    "traffic_type": null
+  },
+  "model_status": null,
+  "automatic_function_calling_history": [],
+  "parsed": {
+    "scope": "in_scope",
+    "reply_language": "hi",
+    "changes": [
+      {
+        "field": "issue_type",
+        "value": "Defective product / non-refund",
+        "source_quote": "हेडफोन खराब मिले और विक्रेता रिफंड नहीं दे रहा है।"
+      },
+      {
+        "field": "user_language",
+        "value": "hi",
+        "source_quote": "मैंने 4 अक्टूबर 2026 को फिक्शनल कमल स्टोर से ₹1800 के हेडफोन खरीदे थे।"
+      },
+      {
+        "field": "user_summary",
+        "value": "User bought headphones for Rs 1800 from Fictional Kamal Store on 4 October 2026, received them defective, seller is refusing refund, and user has the bill.",
+        "source_quote": "मैंने 4 अक्टूबर 2026 को फिक्शनल कमल स्टोर से ₹1800 के हेडफोन खरीदे थे। हेडफोन खराब मिले और विक्रेता रिफंड नहीं दे रहा है। मेरे पास बिल है। मुझे रिफंड चाहिए।"
+      },
+      {
+        "field": "company_or_seller",
+        "value": "Fictional Kamal Store",
+        "source_quote": "फिक्शनल कमल स्टोर"
+      },
+      {
+        "field": "amount_inr",
+        "value": "1800",
+        "source_quote": "₹1800"
+      },
+      {
+        "field": "incident_date",
+        "value": "2026-10-04",
+        "source_quote": "4 अक्टूबर 2026"
+      },
+      {
+        "field": "timeline",
+        "value": [
+          "2026-10-04: Purchased headphones for 1800 INR from Fictional Kamal Store"
+        ],
+        "source_quote": "मैंने 4 अक्टूबर 2026 को फिक्शनल कमल स्टोर से ₹1800 के हेडफोन खरीदे थे।"
+      },
+      {
+        "field": "evidence_available",
+        "value": [
+          "Bill / Invoice"
+        ],
+        "source_quote": "मेरे पास बिल है।"
+      },
+      {
+        "field": "desired_resolution",
+        "value": "Refund",
+        "source_quote": "मुझे रिफंड चाहिए।"
+      }
+    ],
+    "evidence_missing": [
+      "Photos or videos of the defect",
+      "Copies of communication with the seller"
+    ],
+    "missing_details": [],
+    "uncertainty": "User claims the headphones were defective and the seller refused a refund; these details are unverified.",
+    "case_status": "ready_for_review",
+    "next_question": "क्या आप दर्ज किए गए विवरणों में कोई सुधार करना चाहते हैं?",
+    "guidance": [
+      {
+        "source_id": "CPA-DEFECT",
+        "explanation": "खराब वस्तु की शिकायत साबित होने पर अधिनियम में वस्तु बदलने या कीमत लौटाने जैसे उपाय हैं। रिफंड अपने आप या निश्चित रूप से मिलने वाला परिणाम नहीं है।"
+      },
+      {
+        "source_id": "RULES-REFUND",
+        "explanation": "ई-कॉमर्स नियम कुछ स्थितियों में वस्तु वापस लेने या भुगतान लौटाने से इनकार पर रोक लगाते हैं, जैसे खराब या विज्ञापन अथवा समझौते से अलग वस्तु। यह हर खरीद पर मन बदलने के कारण रिफंड का सार्वभौमिक अधिकार नहीं है।"
+      },
+      {
+        "source_id": "DOCS-EVIDENCE",
+        "explanation": "अधिनियम में शिकायतों की सुनवाई शपथपत्र और दस्तावेज़ी साक्ष्य के आधार पर करने का प्रावधान है। असली खरीद और बातचीत के रिकॉर्ड सँभालना उपयोगी तैयारी है; इससे आरोप अपने आप साबित नहीं होते।"
+      },
+      {
+        "source_id": "RULES-CONTACT",
+        "explanation": "ई-कॉमर्स संस्थाओं को ग्राहक सेवा और शिकायत अधिकारी की संपर्क जानकारी दिखानी तथा शिकायत व्यवस्था रखनी होती है। मार्केटप्लेस पर विक्रेता का विवरण सही संपर्क पहचानने में मदद करता है।"
+      }
+    ],
+    "safety_flag": "none"
+  }
+}

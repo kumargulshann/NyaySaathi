@@ -1,0 +1,103 @@
+{
+  "label": "Offline replay of a recorded Phase 6 Gemini response; not a new live result or accuracy score",
+  "case_id": "T06",
+  "turn": 1,
+  "live_requests": 0,
+  "original_response": "raw_outputs\\live-first-v1\\T06_turn01_response.txt",
+  "original_response_sha256": "94049c7137f93d397ab2270760afaf22e89b7c63f720cb4516d7b012a702108b",
+  "original_input_messages": [
+    {
+      "role": "user",
+      "content": "I ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500. It has not been delivered. I want a refund. I have not described any evidence yet. What can I do?"
+    }
+  ],
+  "before_phase6_case": {
+    "issue_type": "online-shopping non-delivery",
+    "user_language": "en",
+    "user_summary": "The user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.",
+    "company_or_seller": "Fictional Indigo Store",
+    "amount_inr": "1500",
+    "incident_date": "2026-10-03",
+    "timeline": [
+      "2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500."
+    ],
+    "evidence_available": [],
+    "evidence_missing": [
+      "Purchase invoice or receipt",
+      "Payment confirmation record",
+      "Order confirmation or communication records with the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Have you contacted the seller or received any response about the delivery?",
+      "Any communication or responses from the seller regarding the non-delivery"
+    ],
+    "confidence_or_uncertainty": "The facts provided by the user are unverified.",
+    "case_status": "in_progress"
+  },
+  "after_fixed_case": {
+    "issue_type": "online-shopping non-delivery",
+    "user_language": "en",
+    "user_summary": "The user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.",
+    "company_or_seller": "Fictional Indigo Store",
+    "amount_inr": "1500",
+    "incident_date": "2026-10-03",
+    "timeline": [
+      "2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500."
+    ],
+    "evidence_available": [],
+    "evidence_missing": [
+      "Purchase invoice or receipt",
+      "Payment confirmation record",
+      "Order confirmation or communication records with the seller"
+    ],
+    "desired_resolution": "refund",
+    "unanswered_questions": [
+      "Have you contacted the seller or received any response about the delivery?",
+      "Any communication or responses from the seller regarding the non-delivery"
+    ],
+    "confidence_or_uncertainty": "The facts provided by the user are unverified.",
+    "case_status": "in_progress",
+    "narrative_review_required": false,
+    "uncertain_fields": {}
+  },
+  "before_phase6_complaint": "Subject: Consumer complaint — online-shopping non-delivery\n\nTo: Fictional Indigo Store\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nThe user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): 2026-10-03\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹1,500\n\nTimeline supplied by me:\n- 2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500.\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+  "after_fixed_package": {
+    "complaint": "Subject: Consumer complaint — online-shopping non-delivery\n\nTo: Fictional Indigo Store\n\nDear Customer Support Team,\n\nI am writing about my consumer grievance. The following is my account of events, subject to review:\n\nThe user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.\n\nOrder/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]\n\nReported incident date (confirm what this date refers to): 2026-10-03\n\nAmount reported for this grievance (confirm whether price, payment or refund): ₹1,500\n\nTimeline supplied by me:\n- 2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500.\n\nPrevious communication reported by me:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nMy requested resolution: refund\n\nPlease review my concern and provide a written response explaining the proposed resolution.\n\nThank you,\n[Your name]\n[Your contact details]",
+    "summary": "NCH preparation summary\n\nPersonal preparation only. This is not submitted to NCH and is not officially validated. All case facts are the user's account.\n\nCompany/seller:\nFictional Indigo Store\n\nProduct/service:\n[Product/service — confirm from your order]\n\nIssue category:\nonline-shopping non-delivery\n\nTransaction details:\nOrder ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: ₹1,500\n\nReported incident date (type of event to confirm):\n2026-10-03\n\nGrievance — user's account:\nThe user ordered a bag from Fictional Indigo Store on 3 October 2026 for Rs 1500, which has not been delivered, and desires a refund.\n\nTimeline — user's account:\n- 2026-10-03: Ordered a bag from Fictional Indigo Store for Rs 1500.\n\nEvidence reported by user; not inspected:\n[Evidence availability not confirmed]\n\nPrevious resolution attempts — user-reported:\n[Add previous communication only if it happened; otherwise say 'not contacted']\n\nDesired outcome:\nrefund\n\nInformation to review or provide:\n- Evidence availability\n- Order ID, exact product/service, purchase date, name and contact details\n- Have you contacted the seller or received any response about the delivery?\n- Any communication or responses from the seller regarding the non-delivery",
+    "checklist": {
+      "reported": [],
+      "collect": [
+        "Order confirmation",
+        "Invoice or receipt",
+        "Payment proof",
+        "Delivery tracking",
+        "Refund requests",
+        "Seller/support communication"
+      ],
+      "unknown": [
+        "Photos/videos (if defects are involved)"
+      ]
+    },
+    "readiness": {
+      "status": "missing",
+      "missing": [
+        "evidence_available"
+      ],
+      "review": [],
+      "provisional_allowed": true
+    },
+    "fingerprint": "01f63f0a9333af38a0e4c970b2ad2ff43010385279379ea3c243324096b50e9e",
+    "language": "en"
+  },
+  "displayed_reply": "Have you contacted the seller or received any response about the delivery?",
+  "guidance_status": "grounded",
+  "application_error": null,
+  "retrieved_source_ids": [
+    "DOCS-EVIDENCE",
+    "ECOM-2026-STATUS",
+    "NCH-PORTAL",
+    "RULES-REFUND"
+  ],
+  "recorded_provider_calls": 1
+}

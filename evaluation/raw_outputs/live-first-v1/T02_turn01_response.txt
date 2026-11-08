@@ -1,0 +1,66 @@
+{
+  "scope": "in_scope",
+  "reply_language": "hinglish",
+  "changes": [
+    {
+      "field": "issue_type",
+      "value": "online-shopping non-delivery",
+      "source_quote": "delivery nahi hui"
+    },
+    {
+      "field": "user_language",
+      "value": "hinglish",
+      "source_quote": "Maine Fictional Saffron Mart se Rs 4500 ka product order kiya tha, lekin delivery nahi hui. Mujhe refund chahiye."
+    },
+    {
+      "field": "user_summary",
+      "value": "User ordered a product from Fictional Saffron Mart for Rs 4500, but it was not delivered and they are seeking a refund.",
+      "source_quote": "Maine Fictional Saffron Mart se Rs 4500 ka product order kiya tha, lekin delivery nahi hui. Mujhe refund chahiye."
+    },
+    {
+      "field": "company_or_seller",
+      "value": "Fictional Saffron Mart",
+      "source_quote": "Fictional Saffron Mart"
+    },
+    {
+      "field": "amount_inr",
+      "value": "4500",
+      "source_quote": "Rs 4500"
+    },
+    {
+      "field": "desired_resolution",
+      "value": "refund",
+      "source_quote": "Mujhe refund chahiye."
+    }
+  ],
+  "evidence_missing": [
+    "order confirmation or invoice",
+    "payment receipt",
+    "delivery tracking details or communication with seller"
+  ],
+  "missing_details": [
+    "incident date"
+  ],
+  "uncertainty": "Unverified user claims regarding order, payment, and non-delivery. No independent verification has been conducted.",
+  "case_status": "in_progress",
+  "next_question": "Kya aap bata sakte hain ki yeh order kis date par kiya gaya tha?",
+  "guidance": [
+    {
+      "source_id": "RULES-NONDELIVERY",
+      "explanation": "E-commerce rules stated schedule se late delivery par refunds address karte hain, force majeure exception ke saath. Non-delivery par rule apply karne se pehle promised schedule aur order history check karni hogi."
+    },
+    {
+      "source_id": "RULES-REFUND",
+      "explanation": "E-commerce rules kuch situations mein goods wapas lene ya paid price refund karne se refusal ko restrict karte hain, jaise defective ya advertised/agreed features se alag goods. Yeh har purchase par change-of-mind refund right nahi hai."
+    },
+    {
+      "source_id": "NCH-PORTAL",
+      "explanation": "National Consumer Helpline consumer grievances leti hai, process karke concerned entity ko forward karti hai aur responses online track karne deti hai. Registration refund guarantee nahi karta."
+    },
+    {
+      "source_id": "DOCS-EVIDENCE",
+      "explanation": "Act mein complaints ki hearing affidavit aur documentary evidence par hone ka provision hai. Genuine purchase aur communication records rakhna useful preparation hai; allegations apne aap prove nahi hote."
+    }
+  ],
+  "safety_flag": "none"
+}
