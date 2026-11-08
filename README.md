@@ -10,9 +10,15 @@ Action Package creates editable consumer preparation documents without model cal
 Publication/verification instructions and the completed-intake 502 fix are in
 [DEPLOYMENT.md](DEPLOYMENT.md). Authorized source repository:
 [kumargulshann/NyaySaathi](https://github.com/kumargulshann/NyaySaathi).
-A production HTTPS URL is not claimed until an actual deployment is verified.
+The actual HTTPS deployment results and remaining limits are linked below.
 Earlier exposed example credentials require revocation, not just removal; the
 user confirmed rotation during Phase 10. Never commit real keys.
+
+**Verified public prototype:** [Open NyaySaathi AI](https://nyay-saathi-psi.vercel.app/).
+The deployed endpoints and two real fictional Gemini cases were checked on
+9 November 2026. See [DEPLOYMENT_VERIFICATION.md](DEPLOYMENT_VERIFICATION.md)
+for results, the refund-intent inference requiring review, and voice limitations.
+Share as a limited prototype; live voice recognition remains unverified.
 
 ## Web application: FastAPI + vanilla browser frontend
 
@@ -114,7 +120,7 @@ validation error while retaining the previous case and independently checked
 guidance, consistent with the production pipeline. No application retries occur.
 SDK calls retain their 45-second timeout; the browser stops waiting after 55 seconds.
 
-### Vercel preparation — not deployed
+### Vercel deployment configuration
 
 Configuration follows the current [Vercel FastAPI documentation](https://vercel.com/docs/frameworks/backend/fastapi):
 `pyproject.toml` explicitly sets `tool.vercel.entrypoint = "backend.main:app"`,
@@ -133,12 +139,12 @@ bundle. No writable working directory or server session is required. The securit
 middleware may keep static assets in the function rather than promoting them to
 the CDN; either way they are served at the same `/static/...` paths.
 
-For a future deployment, use the repository root, the FastAPI framework preset,
+For a new deployment, use the repository root, the FastAPI framework preset,
 and server-side Vercel environment settings for the three Gemini variables. Keep
-secrets out of source/assets. The code/configuration are prepared and locally
-tested, but **no Vercel build, push or deployment has been performed**. Confirm
-dependency selection, bundle size, static routing and the function budget in a
-preview build before publishing. Existing legal-source review cutoffs still apply.
+secrets out of source/assets. Phase 9 prepared this configuration without deploying.
+Phase 10 subsequently verified the actual public deployment linked above. Review
+dependency selection, bundle size, static routing and the function budget for
+future preview builds. Existing legal-source review cutoffs still apply.
 
 ### Web verification and limits
 
@@ -158,10 +164,12 @@ encoding/resampling, resource cleanup and DOM/event logic for edited drafts,
 outdated warnings, approved transcripts, duplicate prevention and new-case reset.
 The small DOM harness is **not a real browser**, CSS rendering or permission test.
 Local HTTP checks verify the production routes/assets with mocked model outputs.
-The browser automation service timed out during both in-app-browser initialization
-and Chrome window capture, so real desktop/mobile visuals, microphone permission,
-downloads and browser AudioWorklet compatibility **still need manual verification**.
-No live Gemini calls were made for Phase 9.
+Browser automation timed out in Phase 9. In Phase 10 it successfully checked the
+public desktop/mobile layouts, language controls, example prefill and reset.
+Microphone permission, real recording/preview, browser downloads and genuine
+transcription **still need manual verification**. No live Gemini calls were made
+for Phase 9; exactly two fictional chat calls were made for Phase 10. See the
+verification report for their actual results and limitations.
 
 Final Phase 9 checks: **201 Python tests passed** (the existing 169 plus 32 API
 tests), **8 JavaScript tests passed**, syntax/import checks passed, and `pip check`

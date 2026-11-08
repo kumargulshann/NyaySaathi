@@ -2,7 +2,9 @@
 
 Authorized repository: https://github.com/kumargulshann/NyaySaathi
 
-No public application URL is claimed until its actual HTTPS endpoints are checked.
+Verified public prototype: https://nyay-saathi-psi.vercel.app/.
+The actual HTTPS checks and limitations are recorded in
+[DEPLOYMENT_VERIFICATION.md](DEPLOYMENT_VERIFICATION.md).
 The repository did not have local Git history when Phase 10 started. An earlier
 development key had appeared in `.env.example` and
 `.streamlit/secrets.toml.example`; the examples now contain placeholders. The user
