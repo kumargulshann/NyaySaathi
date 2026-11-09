@@ -568,9 +568,9 @@ def run_turn(
             updated.desired_resolution != case.desired_resolution
         ):
             reply = f"{remedy_acknowledgment(updated.desired_resolution, result.reply_language)} {reply}".strip()
-        if guidance.status == "insufficient_sources" and result.safety_flag == "none" and (
-            result.turn_intent in ("summary", "draft", "evidence")
-            or (result.remedy_selection and result.turn_intent == "intake" and result.scope == "in_scope")
+        if (case_request and result.turn_intent in ("summary", "draft", "evidence")) or (
+            guidance.status == "insufficient_sources" and result.safety_flag == "none"
+            and result.remedy_selection and result.turn_intent == "intake" and result.scope == "in_scope"
         ):
             guidance = _case_guidance(result.reply_language)
     return TurnResult(updated, reply, guidance, intake_error)

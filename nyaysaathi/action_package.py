@@ -129,13 +129,14 @@ class EvidenceChecklist:
 
 
 EVIDENCE = (
-    (labels("Order confirmation", "ऑर्डर की पुष्टि"), ("order confirmation", "order email", "order details", "ऑर्डर पुष्टि"), "base"),
+    (labels("Order confirmation", "ऑर्डर की पुष्टि"), ("order confirmation", "order email", "order emails", "order details", "ऑर्डर पुष्टि"), "base"),
     (labels("Invoice or receipt", "बिल या रसीद"), ("invoice", "receipt", "bill", "बिल", "रसीद", "चालान"), "base"),
     (labels("Payment proof", "भुगतान का प्रमाण"), ("payment", "bank statement", "upi", "भुगतान"), "base"),
     (labels("Delivery tracking", "डिलीवरी ट्रैकिंग"), ("tracking", "shipment record", "ट्रैकिंग"), "delivery"),
     (labels("Photos/videos (if defects are involved)", "फोटो/वीडियो (खराबी होने पर)"), ("photo", "video", "फोटो", "तस्वीर", "वीडियो"), "defect"),
     (labels("Refund requests", "रिफंड के अनुरोध"), ("refund request", "return request", "refund email", "रिफंड अनुरोध", "वापसी अनुरोध"), "refund"),
-    (labels("Seller/support communication", "विक्रेता/सहायता से बातचीत"), ("chat", "email", "message", "communication", "whatsapp", "संदेश", "पत्राचार"), "base"),
+    (labels("Seller/support communication", "विक्रेता/सहायता से बातचीत"),
+     ("chat", "chats", "email", "emails", "message", "messages", "communication", "whatsapp", "संदेश", "पत्राचार"), "base"),
 )
 
 

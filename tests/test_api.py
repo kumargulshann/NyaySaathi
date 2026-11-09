@@ -367,7 +367,7 @@ def test_natural_remedy_correction_and_legal_question_share_one_call(client, mon
 
 
 @pytest.mark.parametrize("intent,message,expected,source", [
-    ("evidence", "What should I keep handy from my emails and order records?", "invoice", None),
+    ("evidence", "What should I keep handy from my emails and order records?", "invoice", "CPA-DEFECT"),
     ("summary", "Could you recap the details you've picked up so far?", "Example Shop", None),
     ("draft", "Put this into something I can send the shop.", "Action Package", None),
     ("next", "How do I move this forward from here?", "Action Package", "CPA-DEFECT"),
@@ -375,7 +375,8 @@ def test_natural_remedy_correction_and_legal_question_share_one_call(client, mon
 ])
 def test_freeform_case_requests_answer_instead_of_repeating_intake(client, monkeypatch, intent, message, expected, source):
     question = CLARIFY["en"]["desired_resolution"]
-    case = complete_case().model_copy(update={"desired_resolution": None, "unanswered_questions": [question]})
+    case = complete_case().model_copy(update={"desired_resolution": None, "unanswered_questions": [question],
+                                             "evidence_available": ["invoice", "seller emails"]})
     provider = mock_intake(monkeypatch, source=source, turn_intent=intent, next_question=None)
     body = client.post("/api/chat", json={"message": message, **signed(case), "history": [
         {"role": "assistant", "content": question},
@@ -383,7 +384,10 @@ def test_freeform_case_requests_answer_instead_of_repeating_intake(client, monke
     provider.assert_called_once()
     assert body["error"] is None and expected in body["reply"] and question not in body["reply"]
     assert body["case"] == case.model_dump(mode="json")
-    assert body["guidance"]["status"] == ("grounded" if source else "case_only")
+    assert body["guidance"]["status"] == ("grounded" if intent in ("next", "legal_question") else "case_only")
+    if intent == "evidence":
+        assert "seller emails" in body["reply"] and "Payment proof" in body["reply"]
+        assert all(label not in body["reply"] for label in ("Seller/support communication", "Delivery tracking", "Refund requests"))
 
 
 def test_natural_remedy_can_resume_after_an_evidence_question(client, monkeypatch):

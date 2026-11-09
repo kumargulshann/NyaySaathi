@@ -122,9 +122,9 @@ def case_preview(case: CaseFile, language: str) -> str:
 def evidence_reply(case: CaseFile, language: str) -> str:
     checklist = evidence_checklist(case, "hi" if language == "hi" else "en")
     reported = ", ".join(checklist.reported)
-    possible = ", ".join(dict.fromkeys((*checklist.collect, *checklist.unknown)))
-    lines = [localized(language, f"You report having {reported}.", f"आपके अनुसार आपके पास {reported} है।",
-                       f"Aapne bataya ki aapke paas {reported} hai.") if reported else localized(
+    possible = ", ".join(checklist.collect)
+    lines = [localized(language, f"You report having {reported}.", f"आपने {reported} होने की जानकारी दी है।",
+                       f"Aapne {reported} hone ki baat kahi.") if reported else localized(
         language, "No evidence has been reported yet.", "अभी कोई साक्ष्य दर्ज नहीं है।",
         "Abhi koi evidence record nahi hua hai.")]
     if possible:
