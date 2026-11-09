@@ -200,6 +200,163 @@ def test_washer_followups_complete_purchase_year_without_assigning_an_incident_d
         assert "Flipkart" in document and "washing machine" in document
 
 
+def test_corrected_washer_conversation_moves_forward_without_restoring_old_prose(client, monkeypatch):
+    history = []
+    body = None
+
+    def turn(message, **model_output):
+        nonlocal body
+        provider = mock_intake(monkeypatch, source="CPA-DEFECT", **model_output)
+        response = client.post("/api/chat", json={"message": message, "history": history[-12:],
+            **(returned_case(body) if body else {})})
+        assert response.status_code == 200
+        body = response.json()
+        assert body["error"] is None
+        history.extend([{"role": "user", "content": message}, {"role": "assistant", "content": body["reply"]}])
+        return body, provider
+
+    first, _ = turn(WASHER_STORY, changes=washer_changes())
+    assert first["case"]["purchase_date_text"] == "October 15" and first["case"]["incident_date"] is None
+    assert first["reply"] == "Which seller or platform did you order from?"
+    seller, _ = turn("Amazon", changes=[{"field": "company_or_seller", "value": "Amazon", "source_quote": "Amazon"}])
+    assert seller["reply"] == "What resolution are you requesting now?"
+    remedy, _ = turn("Replacement", changes=[{"field": "desired_resolution", "value": "replacement", "source_quote": "Replacement"}])
+    assert remedy["reply"] == "What year did you place the order?"
+    year, _ = turn("2026", changes=[{"field": "incident_date", "value": "2026-10-15", "source_quote": "2026"}])
+    assert year["case"]["purchase_date_text"] == "October 15, 2026" and year["case"]["incident_date"] is None
+    assert "Action Package" in year["reply"]
+    old_draft = client.post("/api/action-package", json={**returned_case(year), "provisional": True}).json()["package"]
+    assert "October 15, 2026" in old_draft["complaint"]
+
+    message = "Sorry I mistyped the year, actually I order in 2025"
+    correction, _ = turn(message, changes=[
+        {"field": "incident_date", "value": "2025-10-15", "source_quote": message, "is_correction": True},
+        {"field": "amount_inr", "value": "2025", "source_quote": message, "is_correction": True},
+    ], next_question="Would you review the current case fields and add a fresh description when editing your draft?")
+    corrected = correction["case"]
+    assert correction["guidance"]["status"] == "grounded"
+    assert correction["guidance"]["citations"][0]["source_id"] == "CPA-DEFECT"
+    assert corrected["purchase_date_text"] == "October 15, 2025" and corrected["incident_date"] is None
+    assert corrected["company_or_seller"] == "Amazon" and corrected["amount_inr"] == "18000"
+    assert corrected["product_or_service"] == "washing machine" and corrected["desired_resolution"] == "replacement"
+    assert corrected["evidence_available"] == WASHER_EVIDENCE
+    assert corrected["narrative_review_required"] and corrected["user_summary"] is None and corrected["timeline"] == []
+    assert corrected["case_status"] == "ready_for_review" and correction["readiness"]["status"] == "missing"
+    assert "Action Package" in correction["reply"] and "Would you review" not in correction["reply"]
+
+    for message in ("yes", "what happened", "yes"):
+        result, provider = turn(message)
+        provider.assert_not_called()
+        assert result["case"] == corrected and "Would you review" not in result["reply"]
+        if message == "what happened":
+            assert all(value in result["reply"] for value in (
+                "you reported", "Amazon", "washing machine", "₹18,000", "replacement", "October 15, 2025",
+                "Incident date: unknown", "earlier description and timeline were cleared", *WASHER_EVIDENCE,
+            ))
+            assert "2026" not in result["reply"]
+
+    draft = client.post("/api/action-package", json={**returned_case(body), "provisional": True}).json()["package"]
+    assert old_draft["fingerprint"] != draft["fingerprint"]
+    for document in (draft["complaint"], draft["summary"]):
+        assert "2026" not in document and "October 15, 2025" in document and "[Incident date]" in document
+        assert "₹18,000" in document and "Amazon" in document and "replacement" in document
+        assert "earlier narrative was invalidated" in document
+    assert draft["checklist"]["reported"] == WASHER_EVIDENCE
+
+    next_step, provider = turn("What should I do next?", next_question="Would you review the current facts?")
+    provider.assert_called_once()
+    assert next_step["guidance"]["status"] == "grounded" and "Action Package" in next_step["reply"]
+    next_step, provider = turn("Can you prepare the complaint?")
+    provider.assert_not_called()
+    assert "Action Package" in next_step["reply"] and next_step["case"] == corrected
+    delivery = "It arrived damaged on October 21, 2025."
+    continued, _ = turn(delivery, changes=[{"field": "incident_date", "value": "2025-10-21", "source_quote": delivery}])
+    assert continued["case"]["incident_date"] == "2025-10-21"
+    assert continued["case"]["purchase_date_text"] == "October 15, 2025"
+
+
+@pytest.mark.parametrize("language,message", [
+    ("hi", "माफ़ कीजिए, साल गलत था। मैंने ऑर्डर २०२५ में किया था।"),
+    ("hinglish", "Sorry, saal galat tha. Maine order 2025 mein kiya tha."),
+])
+def test_localized_order_year_corrections_keep_distinct_incident_date(client, monkeypatch, language, message):
+    case = complete_case().model_copy(update={"purchase_date_text": "October 15, 2026", "product_or_service": "washing machine"})
+    mock_intake(monkeypatch, language=language, changes=[])
+    result = client.post("/api/chat", json={"message": message, "language": language, **signed(case)}).json()
+    assert result["error"] is None and result["case"]["purchase_date_text"] == "October 15, 2025"
+    assert result["case"]["incident_date"] == "2026-10-03"  # A separately reported event is preserved.
+    assert result["case"]["company_or_seller"] == "Example Shop" and result["case"]["narrative_review_required"]
+    assert "Action Package" in result["reply"] and "?" not in result["reply"]
+
+
+@pytest.mark.parametrize("message", ["I ordered in 2025 or 2026, I am not sure.", "I ordered in 2025."])
+def test_conflicting_order_year_stays_unknown_until_specific_confirmation(client, monkeypatch, message):
+    case = complete_case().model_copy(update={"purchase_date_text": "October 15, 2026", "incident_date": None})
+    mock_intake(monkeypatch, changes=[{"field": "incident_date", "value": "2025-10-15",
+                                      "source_quote": message, "is_correction": True}])
+    body = client.post("/api/chat", json={"message": message, **signed(case)}).json()
+    assert body["case"]["uncertain_fields"] == {"purchase_date_text": "conflicting"}
+    assert body["case"]["purchase_date_text"] == "October 15" and body["case"]["incident_date"] is None
+    assert body["case"]["case_status"] == "in_progress" and body["reply"] == "What year did you place the order?"
+    draft = client.post("/api/action-package", json={**returned_case(body), "provisional": True}).json()["package"]
+    assert "October 15 [Year]" in draft["complaint"] and "2026" not in draft["complaint"] + draft["summary"]
+
+    mock_intake(monkeypatch)
+    resolved = client.post("/api/chat", json={"message": "2025", **returned_case(body),
+        "history": [{"role": "assistant", "content": body["reply"]}]}).json()
+    assert resolved["case"]["purchase_date_text"] == "October 15, 2025"
+    assert resolved["case"]["uncertain_fields"] == {} and resolved["case"]["incident_date"] is None
+
+
+def test_unspecified_date_error_asks_for_the_correct_date_before_drafting(client, monkeypatch):
+    case = complete_case().model_copy(update={"purchase_date_text": "October 15, 2026", "incident_date": None})
+    provider = mock_intake(monkeypatch)
+    body = client.post("/api/chat", json={"message": "I made a mistake in the date.", **signed(case)}).json()
+    provider.assert_not_called()
+    assert "purchase date" in body["reply"] and body["reply"].count("?") == 1
+    assert body["case"]["uncertain_fields"] == {"purchase_date_text": "withdrawn"}
+    assert body["case"]["purchase_date_text"] is None
+    assert body["case"]["case_status"] == "in_progress"
+
+    new_date = "October 16, 2025"
+    mock_intake(monkeypatch, changes=[{"field": "incident_date", "value": "2025-10-16", "source_quote": new_date}])
+    resolved = client.post("/api/chat", json={"message": new_date, **returned_case(body),
+        "history": [{"role": "assistant", "content": body["reply"]}]}).json()
+    assert resolved["case"]["purchase_date_text"] == new_date and resolved["case"]["incident_date"] is None
+    assert resolved["case"]["uncertain_fields"] == {}
+
+
+def test_a_full_order_date_cannot_be_used_as_a_delivery_incident_date(client, monkeypatch):
+    order = "I ordered a washing machine from Amazon on October 15, 2025."
+    changes = washer_changes()[:1] + [
+        {"field": "incident_date", "value": "2025-10-15", "source_quote": "October 15, 2025"},
+        {"field": "user_summary", "value": "The item arrived on October 15, 2025.", "source_quote": "It arrived damaged."},
+    ]
+    mock_intake(monkeypatch, changes=changes)
+    result = client.post("/api/chat", json={"message": order + " It arrived damaged."}).json()
+    assert result["error"] is None and result["case"]["purchase_date_text"] == "October 15, 2025"
+    assert result["case"]["incident_date"] is None and result["case"]["user_summary"] == "It arrived damaged."
+
+
+@pytest.mark.parametrize("answer,expected", [("Yes", "Which case detail"), ("No", "Action Package")])
+def test_short_answer_uses_the_preceding_correction_offer(client, monkeypatch, answer, expected):
+    case = complete_case()
+    provider = mock_intake(monkeypatch)
+    result = client.post("/api/chat", json={"message": answer, **signed(case),
+        "history": [{"role": "assistant", "content": "Do you want to correct any recorded detail before we conclude?"}]}).json()
+    provider.assert_not_called()
+    assert expected in result["reply"] and CaseFile.model_validate(result["case"]) == case
+
+
+def test_local_case_summary_respects_recent_urgent_safety_context(client, monkeypatch):
+    provider = mock_intake(monkeypatch)
+    result = client.post("/api/chat", json={"message": "Summarize my case.", **signed(complete_case()),
+        "history": [{"role": "user", "content": "A court notice lists a hearing tomorrow."}]}).json()
+    provider.assert_not_called()
+    assert result["guidance"]["status"] == "urgent_notice" and not result["guidance"]["citations"]
+    assert result["readiness"]["status"] == "out_of_scope" and "professional review" in result["reply"]
+
+
 @pytest.mark.parametrize("endpoint", ["/api/chat", "/api/action-package"])
 @pytest.mark.parametrize("include_signature", [False, True])
 def test_browser_cannot_supply_unvalidated_case_facts(client, monkeypatch, endpoint, include_signature):

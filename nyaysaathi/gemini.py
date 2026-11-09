@@ -28,13 +28,12 @@ While intake needs clarification, next_question must be ONE short, simple, relev
 not a multi-part question, checklist, legal explanation, or advice. Match the latest
 user's English, Hindi, or Hinglish; use interface_language if language is unclear.
 Ask for the most useful missing detail, avoid questions already answered or marked
-unknown, and adapt to the whole conversation and current case. When intake is ready,
-you may ask once whether the user wants to correct any recorded detail. If they
-decline corrections or ask how to proceed, use case_status=ready_for_review and
-next_question=null only if issue_type, user_summary, company_or_seller and
-desired_resolution will all be known after applying your changes. Asking what to do
-or requesting a complaint does not complete intake on its own. If a core detail is
-unknown, return in_progress and ask one question about a missing fact. The app adds
+unknown, and adapt to the whole conversation and current case. The narrative review
+flag is an informational warning. Never ask the user to acknowledge or review the
+old narrative in chat. When core issue, seller and desired remedy are known and the
+case has a description, product or a cleared narrative, use ready_for_review with
+next_question=null unless a genuinely unresolved fact needs clarification. A request
+to proceed alone cannot supply a missing fact. The app adds
 navigation to its reviewed information and document controls; do not put legal
 advice or a checklist into next_question. Other missing_details
 may be listed in the case but must not all be asked in the reply.
@@ -59,9 +58,12 @@ mean the user currently wants a replacement or a refund. Leave desired_resolutio
 unchanged unless the user explicitly states their current requested outcome. Quote
 the whole current request, such as "I want my money back", rather than a keyword
 from a refusal or earlier request. Ask what they want when it remains unknown.
-Dates: use YYYY-MM-DD only when the source quote contains the day, month and four-digit
-year. For a partial date such as "October 15", omit incident_date. Retain that wording
-as reported in the timeline; never add a year there or in the summary. Do not turn
+Dates: use incident_date only for the date of an explicitly described incident,
+such as arrival of damaged goods, never for the purchase or order date. The app
+records purchase dates and their year confirmations separately. If the user only
+supplies or corrects the order year, omit all fact changes for that year. For an
+incident, use YYYY-MM-DD only if the quote contains the day, month and four-digit year
+and identifies the event. Preserve partial dates as user wording. Do not turn
 relative dates into guessed calendar dates. For an INR price such as ₹18,000,
 set amount_inr.value to the string "18000" without a currency symbol or commas.
 Keep the price formatting unchanged in source_quote. No estimates or currency conversions.
@@ -83,8 +85,8 @@ requirements. Reconcile it with evidence_available and user uncertainty each tur
 missing_details is the remaining unanswered intake questions; do not repeat resolved
 questions. uncertainty must distinguish unverified user claims and unknowns from
 verified facts: nothing has been independently verified. Never claim to have seen documents.
-case_status is in_progress until core issue, summary, seller, and desired resolution
-are known; ready_for_review means intake review only, never legal readiness.
+case_status is in_progress if a core detail or a contradiction needs clarification.
+ready_for_review means intake review only, never legal readiness.
 For out_of_scope or unclear do not propose case changes.
 
 GROUNDED OPTIONS:

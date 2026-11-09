@@ -26,6 +26,10 @@ MONTH = (
     r"September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|"
     r"जनवरी|फरवरी|मार्च|अप्रैल|मई|जून|जुलाई|अगस्त|सितंबर|अक्टूबर|नवंबर|दिसंबर)"
 )
+DAY = r"(?:3[01]|[12][0-9]|0?[1-9])"
+PURCHASE_DATE_VALUE = re.compile(
+    rf"(?<!\w)(?P<day_month>{MONTH}\s+{DAY}|{DAY}\s+{MONTH})(?:,?\s+(?P<year>\d{{4}}))?(?!\w)", re.IGNORECASE,
+)
 DATE_MENTION = re.compile(
     rf"\b(?:\d{{4}}-\d{{2}}-\d{{2}}|\d{{1,2}}\s+{MONTH}\s+\d{{4}}|{MONTH}\s+\d{{1,2}},?\s+\d{{4}})\b",
     re.IGNORECASE,
@@ -43,6 +47,7 @@ CLARIFY = {
     "en": {
         "amount_inr": "What amount can you confirm for this grievance?",
         "incident_date": "Which incident date can you confirm from your records?",
+        "purchase_date_text": "What purchase date can you confirm from the order record?",
         "company_or_seller": "Which seller or platform did you order from?",
         "desired_resolution": "What resolution are you requesting now?",
         "issue_type": "What consumer problem can you confirm?",
@@ -50,6 +55,7 @@ CLARIFY = {
     "hi": {
         "amount_inr": "इस शिकायत के लिए किस राशि की पुष्टि कर सकते हैं?",
         "incident_date": "अपने रिकॉर्ड से किस घटना की तारीख की पुष्टि कर सकते हैं?",
+        "purchase_date_text": "ऑर्डर रिकॉर्ड से आप खरीद की कौन-सी तारीख की पुष्टि कर सकते हैं?",
         "company_or_seller": "आपने किस विक्रेता या प्लेटफ़ॉर्म से ऑर्डर किया था?",
         "desired_resolution": "अब आप क्या समाधान चाहते हैं?",
         "issue_type": "किस उपभोक्ता समस्या की पुष्टि कर सकते हैं?",
@@ -57,6 +63,7 @@ CLARIFY = {
     "hinglish": {
         "amount_inr": "Is grievance ke liye kaunsi amount confirm kar sakte hain?",
         "incident_date": "Apne records se kaunsi incident date confirm kar sakte hain?",
+        "purchase_date_text": "Order record se kaunsi purchase date confirm kar sakte hain?",
         "company_or_seller": "Aapne kis seller ya platform se order kiya tha?",
         "desired_resolution": "Ab aap kya resolution chahte hain?",
         "issue_type": "Kaunsi consumer problem confirm kar sakte hain?",
@@ -76,7 +83,11 @@ def possible_stale_assertion(case: CaseFile, text: str) -> bool:
                 return True
         except InvalidOperation:
             return True
-    return case.incident_date is None and DATE_MENTION.search(text) is not None
+    if case.incident_date is not None:
+        return False
+    purchase_date = " ".join((case.purchase_date_text or "").replace(",", "").casefold().split())
+    return any(" ".join(match[0].replace(",", "").casefold().split()) != purchase_date
+               for match in DATE_MENTION.finditer(text))
 
 
 def unresolved_fields(text: str) -> set[str]:
@@ -104,15 +115,16 @@ def protect_narratives(case: CaseFile) -> CaseFile:
         return safe
     safe.narrative_review_required = True
     for field in safe.uncertain_fields:
-        setattr(safe, field, None)
+        if field == "purchase_date_text":
+            # An unresolved year may still have a confirmed day and month.
+            partial = PURCHASE_DATE_VALUE.fullmatch(safe.purchase_date_text or "")
+            safe.purchase_date_text = partial["day_month"] if partial else None
+        else:
+            setattr(safe, field, None)
     safe.user_summary = None
     safe.timeline = []
-    if "incident_date" in safe.uncertain_fields:
-        safe.purchase_date_text = None
     safe.evidence_missing = []
-    safe.unanswered_questions = [consistency_question(safe, safe.user_language or "en")]
     safe.confidence_or_uncertainty = REVIEW_NOTICE[safe.user_language or "en"]
-    safe.case_status = "in_progress"
     # These free-text descriptors can also embed a superseded price/date.
     # Drop the complete descriptor/entry when dependence cannot be established.
     for field in ("issue_type", "desired_resolution"):
@@ -125,15 +137,12 @@ def protect_narratives(case: CaseFile) -> CaseFile:
     return safe
 
 
-def consistency_question(case: CaseFile, language: str) -> str:
+def consistency_question(case: CaseFile, language: str) -> str | None:
+    """Ask for an unresolved fact. Narrative review by itself is a notice."""
     language = language if language in CLARIFY else "en"
     if case.uncertain_fields:
         return CLARIFY[language][next(iter(case.uncertain_fields))]
-    for field in ("amount_inr", "incident_date", "company_or_seller", "desired_resolution", "issue_type"):
+    for field in ("company_or_seller", "desired_resolution", "issue_type"):
         if getattr(case, field) is None:
             return CLARIFY[language][field]
-    return {
-        "en": "Would you review the current case fields and add a fresh description when editing your draft?",
-        "hi": "क्या आप वर्तमान केस फ़ील्ड जाँचकर मसौदा संपादित करते समय नया विवरण जोड़ सकते हैं?",
-        "hinglish": "Kya aap current case fields review karke draft edit karte waqt fresh description add kar sakte hain?",
-    }[language]
+    return None

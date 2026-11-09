@@ -145,12 +145,14 @@ async function submitMessage(text, voiceId = null) {
   text = text.trim(); if (!text || state.busy || state.recording || state.starting) return;
   if (voiceId && state.voice.submitted.has(voiceId)) return;
   const history = boundedHistory();
+  const previousGuidance = state.guidance;
   if (voiceId) state.voice.submitted.add(voiceId);
   state.messages.push({role:"user",content:text}); state.guidance = null; $("message").value = "";
   renderMessages(); renderGuidance(); setBusy(true);
   try {
     const result = await api("/api/chat", {message:text, language:language(), case:state.case, case_signature:state.caseSignature, history});
-    state.case = result.case; state.caseSignature = result.case_signature; state.guidance = result.guidance; state.readiness = result.readiness; state.fingerprint = result.fingerprint;
+    const keepGuidance = result.guidance?.status === "case_only" && previousGuidance?.status === "grounded" && result.fingerprint === state.fingerprint;
+    state.case = result.case; state.caseSignature = result.case_signature; state.guidance = keepGuidance ? previousGuidance : result.guidance; state.readiness = result.readiness; state.fingerprint = result.fingerprint;
     if (result.reply) state.messages.push({role:"assistant",content:result.reply});
     renderMessages(); renderCase(); renderGuidance(); renderPackageStatus();
     if (result.error) showError(result.error);

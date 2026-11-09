@@ -51,6 +51,7 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
     if(path==="/api/transcribe")return transcriptionError ? {ok:false,json:async()=>({error:{code:"empty_transcription",message:"Provider returned no transcript; this does not confirm silence."}})} : {ok:true,json:async()=>({transcript:"Mera 2000 ka refund pending hai"})};
     if(path==="/api/chat"){
       if(body.message.includes("2500"))amount="2500";
+      if(body.message==="what happened")return{ok:true,json:async()=>({case:caseData(),case_signature:`signature-${amount}`,reply:"Current case facts you reported",guidance:{status:"case_only",language:"en",message:"Ask about your legal options",citations:[]},readiness,fingerprint:amount,error:null})};
       return{ok:true,json:async()=>({case:caseData(),case_signature:`signature-${amount}`,reply:"<img src=x onerror=alert(1)> Which seller?",guidance:{status:"grounded",language:"en",message:"",citations:[
         {source_id:"OFFLINE-FIXTURE",title:"Official fixture",url:"https://consumeraffairs.gov.in/",explanation:"Checked fixture explanation",next_step:"Review the records",limitation:"Not an outcome guarantee",location:"Fixture only",date_checked:"2026-11-09"},
         {source_id:"UNSAFE-FIXTURE",title:"Unsafe fixture",url:"javascript:alert(1)",explanation:"Do not render this link"},
@@ -66,6 +67,9 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
   await emit("chat-form","submit");await emit("chat-form","submit");await until(()=>!$("send").disabled);
   assert.equal(calls.length,1);assert.match($("messages").children[1].children[1].textContent,/<img/);
   assert.equal($("guidance-content").children.length,1);
+  assert.equal($("guidance-content").children[0].children[1].href,"https://consumeraffairs.gov.in/");
+  $("message").value="what happened";await emit("chat-form","submit");await until(()=>!$("send").disabled);
+  assert.equal($("messages").children.at(-1).children[1].textContent,"Current case facts you reported");
   assert.equal($("guidance-content").children[0].children[1].href,"https://consumeraffairs.gov.in/");
   $("provisional").checked=true;await emit("generate");
   assert.equal(calls.at(-1).body.case_signature,"signature-2999");

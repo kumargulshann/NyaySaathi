@@ -8,14 +8,15 @@ from typing import Protocol
 
 from pydantic import ValidationError
 
-from nyaysaathi.case_facts import REMEDY_SHIFT, material_questions, named_seller, record_purchase_details, requested_remedy
+from nyaysaathi.case_facts import (
+    PURCHASE_CONTEXT, PURCHASE_YEAR_QUESTION, REMEDY_SHIFT, is_purchase_date_proposal, material_questions, named_seller,
+    record_purchase_date_reply, record_purchase_details, requested_remedy,
+)
+from nyaysaathi.conversation import core_details_known, document_handoff, followup_intent, local_reply, localized, next_fact_question
 from nyaysaathi.models import CaseFile, FactChange, IntakeResponse
 from nyaysaathi.guidance import UNSUPPORTED_LEGAL_TEXT, ValidatedGuidance, notice, validate_guidance
-from nyaysaathi.knowledge import RetrievalContext, retrieve
-from nyaysaathi.consistency import (
-    CLARIFY, MONEY, SCALAR_FACTS, consistency_question, possible_stale_assertion,
-    protect_narratives, unresolved_fields,
-)
+from nyaysaathi.knowledge import RetrievalContext, detect_safety, retrieve
+from nyaysaathi.consistency import CLARIFY, MONEY, SCALAR_FACTS, possible_stale_assertion, protect_narratives, unresolved_fields
 
 
 logger = logging.getLogger(__name__)
@@ -75,15 +76,6 @@ SCOPE_MESSAGES = {
                 "aur related service complaints ki details le sakta hoon. Yeh topic is scope se bahar hai.",
 }
 
-
-COMPLETION_MESSAGES = {
-    "en": "Review your Case File and the checked legal information below. Then generate an Action Package; "
-          "select the provisional option if details are missing. Review and complete the draft before using it.",
-    "hi": "अपनी केस फ़ाइल और नीचे जाँची गई कानूनी जानकारी देखें। फिर Action Package बनाएँ; "
-          "विवरण अधूरे हों तो अस्थायी मसौदे का विकल्प चुनें। उपयोग से पहले मसौदा जाँचें और पूरा करें।",
-    "hinglish": "Apni Case File aur neeche checked legal information review karein. Phir Action Package banayein; "
-                "details missing hon to provisional option chunein. Use karne se pehle draft review aur complete karein.",
-}
 
 PARTIAL_MESSAGES = {
     "en": "I saved the details I could check against your message. Some details still need review.",
@@ -231,7 +223,7 @@ def _recover_intake(
                      if change.field in CLARIFY[language] and getattr(updated, change.field) is None), None)
     if not question:
         question = (CLARIFY[language]["company_or_seller"] if updated.company_or_seller is None
-                    else consistency_question(updated, language))
+                    else next_fact_question(updated, language) or CLARIFY[language]["incident_date"])
     updated.unanswered_questions = list(dict.fromkeys([question, *material_questions(updated, language)]))
     # Old suggestions may no longer be missing after accepting evidence.
     if "evidence_available" in fields:
@@ -247,23 +239,28 @@ def _apply_intake(
     try:
         if result.scope == "out_of_scope":
             return case.model_copy(deep=True), SCOPE_MESSAGES[result.reply_language]
-        if result.scope == "unclear":
-            return case.model_copy(deep=True), result.next_question.strip()
-
         protected = protect_narratives(case)
-        candidate = protected.model_dump()
         user_texts = [message["content"] for message in messages if message["role"] == "user"]
         unresolved = unresolved_fields(user_texts[-1])
         seen, failed, accepted = set(), [], []
         latest = user_texts[-1]
         resolution_question = CLARIFY[result.reply_language]["desired_resolution"]
         prior_question = next((item["content"] for item in reversed(messages[:-1]) if item["role"] == "assistant"), "")
-        if not case.unanswered_questions or not prior_question.endswith(case.unanswered_questions[0]):
-            prior_question = ""
+        prior_question = (case.unanswered_questions[0]
+                          if case.unanswered_questions and prior_question.endswith(case.unanswered_questions[0]) else "")
+        purchase_updated = record_purchase_date_reply(protected, latest, prior_question)
+        if result.scope == "unclear" and not purchase_updated:
+            return case.model_copy(deep=True), result.next_question.strip()
+        candidate = protected.model_dump()
+        if protected.purchase_date_text and PURCHASE_CONTEXT.search(latest):
+            # A purchase-year disagreement cannot invalidate a separate incident date.
+            unresolved.discard("incident_date")
         rejected_meaning = False
         # Validate the full proposal before changing anything. Pre-marking accepted
         # correction turns makes invalidation independent of model change ordering.
-        for change in result.changes:
+        # A locally confirmed order-date reply changes only that field. Model
+        # proposals on the same reply cannot rewrite the other signed facts.
+        for change in (() if purchase_updated else result.changes):
             if change.field in seen:
                 if not recover or change.field != "timeline":
                     raise _invalid("fact_proposal", "duplicate_field", change.field)
@@ -278,6 +275,12 @@ def _apply_intake(
                     raise _invalid("fact_proposal", rule, change.field)
                 _diagnostic("fact_proposal", rule, change.field)
                 failed.append(change)
+            elif change.field == "incident_date" and (change.value is not None or protected.purchase_date_text) and (
+                is_purchase_date_proposal(protected, change.source_quote, change.value, user_texts, prior_question)
+            ):
+                _diagnostic("fact_proposal", "incident_date_not_established", change.field)
+                rejected_meaning = True
+                continue
             elif change.field == "company_or_seller" and change.value is not None and not named_seller(
                 change.value, change.source_quote,
             ):
@@ -303,10 +306,9 @@ def _apply_intake(
             candidate["narrative_review_required"] = True
 
         for change in accepted:
-            if change.is_correction and change.field in ("user_summary", "timeline", "incident_date"):
+            if change.is_correction and change.field in ("user_summary", "timeline"):
                 candidate["purchase_date_text"] = None
-                if change.field != "incident_date":
-                    candidate["product_or_service"] = None
+                candidate["product_or_service"] = None
             if (candidate["narrative_review_required"] or rejected_meaning) and change.field in ("user_summary", "timeline"):
                 continue  # Never restore unproven derived prose from older messages.
 
@@ -362,13 +364,10 @@ def _apply_intake(
             confidence_or_uncertainty=result.uncertainty,
             case_status=result.case_status,
         )
-        # Readiness is intake review only, never legal verification or an outcome.
-        if candidate["case_status"] == "ready_for_review" and not all(
-            candidate[name] is not None and candidate[name] != ""
-            for name in ("issue_type", "user_summary", "company_or_seller", "desired_resolution")
-        ):
-            candidate["case_status"] = "in_progress"
-        updated = protect_narratives(CaseFile.model_validate(candidate))
+        updated = CaseFile.model_validate(candidate)
+        if not purchase_updated:
+            record_purchase_details(updated, latest)
+        updated = protect_narratives(updated)
         if rejected_meaning and not updated.narrative_review_required:
             # A paraphrase may repeat the same rejected assertion. Use only
             # full user statements for this turn's narrative in that case.
@@ -376,12 +375,26 @@ def _apply_intake(
             if not updated.user_summary and summaries:
                 updated.user_summary = summaries[0]
             updated.timeline = list(dict.fromkeys([*updated.timeline, *_quoted_statements(updated, accepted, latest)]))
-        record_purchase_details(updated, latest, prior_question)
-        gaps = material_questions(updated, result.reply_language)
-        if updated.narrative_review_required:
-            _diagnostic("narrative", "review_required")
-            question = consistency_question(updated, result.reply_language)
+        language = result.reply_language
+        gaps = material_questions(updated, language)
+        if updated.narrative_review_required or purchase_updated or (
+            core_details_known(updated) and PURCHASE_YEAR_QUESTION[language] in gaps
+        ):
+            if updated.narrative_review_required:
+                _diagnostic("narrative", "review_required")
+            question = next_fact_question(updated, language)
+            if not question and core_details_known(updated):
+                updated.case_status = "ready_for_review"
+                updated.unanswered_questions = gaps
+                return updated, document_handoff(language)
+            updated.case_status = "in_progress"
+            question = question or (gaps[0] if gaps else CLARIFY[language]["issue_type"])
             updated.unanswered_questions = list(dict.fromkeys([question, *gaps]))
+        elif updated.case_status == "ready_for_review" and not core_details_known(updated):
+            updated.case_status = "in_progress"
+            if gaps and (question or rejected_meaning):
+                question = gaps[0]
+                updated.unanswered_questions = gaps
         elif gaps:
             updated.unanswered_questions = gaps
             if question or rejected_meaning:
@@ -389,7 +402,7 @@ def _apply_intake(
         if not question:
             if updated.case_status != "ready_for_review":
                 raise _invalid("completion", "incomplete_case_without_question")
-            question = COMPLETION_MESSAGES[result.reply_language]
+            question = document_handoff(language)
         return updated, question
     except (ValidationError, ValueError, TypeError):
         raise _invalid("fact_merge", "case_validation_failed") from None
@@ -406,9 +419,32 @@ class TurnResult:
 def run_turn(
     case: CaseFile, messages: list[dict[str, str]], language: str, provider: ModelProvider,
 ) -> TurnResult:
-    """Retrieve once, make one request, and keep legal validation separate from facts."""
+    """Use one model request for intake or legal guidance and answer narrow case queries locally."""
     _require_user_turn(messages)
-    context = retrieve(messages[-1]["content"], case)
+    latest = messages[-1]["content"]
+    intent = followup_intent(latest)
+    if intent and intent != "next":
+        # Summaries and acknowledgments are not proposals to change facts. Keep
+        # recent safety context and answer these narrow intents from the case.
+        safety = detect_safety(" ".join(item["content"] for item in messages if item["role"] == "user"))
+        if safety != "none":
+            message = notice(safety, language)
+            return TurnResult(case.model_copy(deep=True), message,
+                              ValidatedGuidance(language=language, status=safety, message=message))
+        updated = protect_narratives(case)
+        prior = messages[-2]["content"] if len(messages) > 1 and messages[-2]["role"] == "assistant" else ""
+        reply_language = case.user_language or language
+        if re.search(r"[\u0900-\u097f]", latest):
+            reply_language = "hi"
+        elif re.search(r"\b(?:kya|maine|mere|mera|batao|haan|nahi|nahin|bana|galti)\b", latest, re.IGNORECASE):
+            reply_language = "hinglish"
+        message = localized(reply_language, "Ask about your legal options to see checked sources.",
+                            "जाँचे गए स्रोतों के लिए अपने कानूनी विकल्प पूछें।",
+                            "Checked sources ke liye apne legal options poochhein.")
+        reply = local_reply(updated, intent, prior, reply_language)
+        return TurnResult(protect_narratives(updated), reply,
+                          ValidatedGuidance(language=reply_language, status="case_only", message=message))
+    context = retrieve(latest, case)
     try:
         response = provider.analyze(case.model_copy(deep=True), messages, language, context)
     except IntakeError as error:
@@ -436,14 +472,20 @@ def run_turn(
         ))
 
     intake_error = None
-    try:
-        updated, reply = _apply_intake(case, messages, result, recover=True)
-    except IntakeError:
-        # Source-checked general information does not require accepting an
-        # ungrounded fact update. Preserve the ENTIRE case; report the failure.
-        updated = case.model_copy(deep=True)
-        reply = ""
-        intake_error = "invalid_output"
+    if intent == "next" and core_details_known(case):
+        # A request for options can get newly checked guidance, but it is not
+        # a statement of new facts or consent to restore any old narrative.
+        updated = protect_narratives(case)
+        reply = next_fact_question(updated, result.reply_language) or document_handoff(result.reply_language)
+    else:
+        try:
+            updated, reply = _apply_intake(case, messages, result, recover=True)
+        except IntakeError:
+            # Source-checked general information does not require accepting an
+            # ungrounded fact update. Preserve the ENTIRE case; report the failure.
+            updated = case.model_copy(deep=True)
+            reply = ""
+            intake_error = "invalid_output"
     guidance = validate_guidance(result, context)
     if guidance.status == "invalid_citation":
         _diagnostic("legal", "invalid_citation")

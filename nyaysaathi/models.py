@@ -32,7 +32,7 @@ class CaseFile(BaseModel):
     # App-owned consistency metadata; Gemini's FactChange cannot set these fields.
     narrative_review_required: bool = False
     uncertain_fields: dict[
-        Literal["issue_type", "company_or_seller", "amount_inr", "incident_date", "desired_resolution"],
+        Literal["issue_type", "company_or_seller", "amount_inr", "incident_date", "purchase_date_text", "desired_resolution"],
         Literal["withdrawn", "conflicting"],
     ] = Field(default_factory=dict)
 

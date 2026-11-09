@@ -99,7 +99,11 @@ def assess_readiness(case: CaseFile, *, out_of_scope: bool = False) -> Readiness
             known = clean(value) is not None
         if not known:
             missing.append(name)
-    if not clean(case.user_summary):
+    if case.narrative_review_required and all(clean(value) for value in (
+        case.issue_type, case.company_or_seller, case.desired_resolution,
+    )):
+        status = "missing"  # Structured facts can support a provisional draft.
+    elif not clean(case.user_summary):
         status = "insufficient"
     else:
         status = "missing" if missing else "ready"
@@ -257,7 +261,8 @@ def generate_package(
         missing.append(t("Purchase date", "खरीद की तारीख"))
     if not product:
         missing.append(t("Exact product/service", "सटीक उत्पाद/सेवा"))
-    missing += [clean(item) for item in case.unanswered_questions if clean(item)]
+    if not case.narrative_review_required:
+        missing += [clean(item) for item in case.unanswered_questions if clean(item)]
     sections = (
         (t("Company/seller", "कंपनी/विक्रेता"), seller),
         (t("Product/service", "उत्पाद/सेवा"), product or t("[Product/service — confirm from your order]", "[उत्पाद/सेवा — ऑर्डर देखकर पुष्टि करें]")),
