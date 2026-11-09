@@ -44,6 +44,141 @@ def complete_case():
                     desired_resolution="refund", evidence_available=["invoice"])
 
 
+WASHER_STORY = (
+    "I ordered a washing machine worth ₹18,000 from an online seller on October 15. "
+    "It arrived damaged. I have the invoice, photographs and customer support emails. "
+    "The seller has refused a replacement. What are my options, and can you prepare a complaint?"
+)
+WASHER_EVIDENCE = ["invoice", "photographs", "customer support emails"]
+
+
+def washer_changes():
+    return [
+        {"field": "issue_type", "value": "defective product", "source_quote": "It arrived damaged."},
+        {"field": "amount_inr", "value": "18000", "source_quote": "worth ₹18,000"},
+        {"field": "user_summary", "value": "The user reports that the washing machine arrived damaged.",
+         "source_quote": "It arrived damaged."},
+        {"field": "timeline", "value": ["The seller has refused a replacement."],
+         "source_quote": "The seller has refused a replacement."},
+        {"field": "evidence_available", "value": WASHER_EVIDENCE,
+         "source_quote": "I have the invoice, photographs and customer support emails"},
+    ]
+
+
+def test_washer_intake_preserves_reported_facts_and_grounded_options(client, monkeypatch):
+    provider = mock_intake(monkeypatch, source="CPA-DEFECT", changes=washer_changes(),
+                           missing_details=["Which year was the order placed?", "What outcome are you seeking?"])
+    response = client.post("/api/chat", json={"message": WASHER_STORY})
+    assert response.status_code == 200
+    body = response.json()
+    case = body["case"]
+    assert body["error"] is None
+    assert case["issue_type"] == "defective product" and case["amount_inr"] == "18000"
+    assert case["timeline"] == ["The seller has refused a replacement."]
+    assert case["evidence_available"] == WASHER_EVIDENCE
+    assert all(case[field] is None for field in ("company_or_seller", "incident_date", "desired_resolution"))
+    assert body["reply"] == "Which seller did you order from?"
+    assert len(body["missing_information"]) == 3
+    assert body["guidance"]["status"] == "grounded"
+    assert body["guidance"]["citations"][0]["source_id"] == "CPA-DEFECT"
+    provider.assert_called_once()
+
+
+@pytest.mark.parametrize("value,quote,rule", [
+    ("2026-10-15", "October 15… washing machine", "nonverbatim_quote"),
+    ("2026-10-15", "October 15", "unquoted_date_year"),
+    ("2026-02-30", "October 15", "invalid_date"),
+])
+def test_washer_mixed_output_recovers_independent_facts_only(client, monkeypatch, caplog, value, quote, rule):
+    changes = washer_changes()
+    changes[2]["value"] = "Washer ordered on October 15, 2026."
+    changes.append({"field": "incident_date", "value": value, "source_quote": quote})
+    provider = mock_intake(monkeypatch, source="CPA-DEFECT", changes=changes,
+                           missing_details=["Wrong year 2026?"], uncertainty="Private model sentinel")
+    response = client.post("/api/chat", json={"message": WASHER_STORY})
+    assert response.status_code == 200
+    body = response.json()
+    case = body["case"]
+    assert body["error"] is None and "Some details still need review" in body["reply"]
+    assert body["reply"].count("?") == 1 and "date" in body["reply"]
+    assert case["amount_inr"] == "18000" and case["evidence_available"] == WASHER_EVIDENCE
+    assert case["user_summary"] is None and case["timeline"] == [] and case["incident_date"] is None
+    assert case["desired_resolution"] is None and case["case_status"] == "in_progress"
+    assert body["guidance"]["status"] == "grounded"
+    assert "2026" not in json.dumps(case)
+    assert f"rule={rule} field=incident_date" in caplog.text
+    assert "rule=partial_acceptance field=incident_date" in caplog.text
+    assert all(secret not in caplog.text for secret in (WASHER_STORY, quote, "Private model sentinel", "test-private-key"))
+    assert rule not in response.text
+    provider.assert_called_once()
+
+
+def test_partial_intake_does_not_save_a_price_just_because_its_quote_is_verbatim(client, monkeypatch):
+    changes = washer_changes()
+    changes[1]["value"] = "19000"
+    changes.append({"field": "incident_date", "value": "2026-10-15", "source_quote": "October 15"})
+    mock_intake(monkeypatch, changes=changes)
+    response = client.post("/api/chat", json={"message": WASHER_STORY})
+    assert response.status_code == 200
+    case = response.json()["case"]
+    assert case["amount_inr"] is None and case["evidence_available"] == WASHER_EVIDENCE
+    assert "19000" not in json.dumps(case)
+
+
+def test_month_first_invented_year_is_removed_from_draft_inputs(client, monkeypatch, caplog):
+    changes = washer_changes()
+    changes[2]["value"] = "Washer ordered on October 15, 2026."
+    mock_intake(monkeypatch, changes=changes)
+    response = client.post("/api/chat", json={"message": WASHER_STORY})
+    assert response.status_code == 200
+    case = response.json()["case"]
+    assert case["incident_date"] is None and case["user_summary"] is None and case["timeline"] == []
+    assert case["narrative_review_required"]
+    assert "stage=narrative rule=review_required" in caplog.text
+
+
+@pytest.mark.parametrize("kind,rule", [
+    ("broken_json", "malformed_json"), ("unknown_schema_field", "schema_mismatch"),
+    ("no_question", "missing_question"), ("two_questions", "multiple_questions"),
+    ("false_completion", "incomplete_case_without_question"), ("duplicate", "duplicate_field"),
+    ("unverified_correction", "inseparable_proposal"), ("invented_law", "unsupported_intake_text"),
+])
+def test_washer_invalid_output_never_commits_unsafe_changes(client, monkeypatch, caplog, kind, rule):
+    changes = washer_changes()
+    options = {}
+    if kind == "unknown_schema_field":
+        options["PRIVATE_SCHEMA_KEY"] = WASHER_STORY
+    elif kind == "no_question":
+        options["next_question"] = None
+    elif kind == "two_questions":
+        options["next_question"] = "Which date? Which seller?"
+    elif kind == "false_completion":
+        options.update(case_status="ready_for_review", next_question=None)
+    elif kind == "duplicate":
+        changes.append(changes[1])
+    elif kind == "unverified_correction":
+        changes.append({"field": "incident_date", "value": "2026-10-15", "source_quote": "fabricated",
+                        "is_correction": True})
+    elif kind == "invented_law":
+        options["next_question"] = "Section 999 guarantees a refund. Which seller?"
+    provider = mock_intake(monkeypatch, changes=changes, **options)
+    if kind == "broken_json":
+        provider.return_value = "{ " + WASHER_STORY
+    original = CaseFile(evidence_missing=["order record"])
+    response = client.post("/api/chat", json={"message": WASHER_STORY, "case": original.model_dump(mode="json")})
+    body = response.json()
+    if "case" in body:
+        assert CaseFile.model_validate(body["case"]) == original
+    if kind == "invented_law":
+        assert body["guidance"]["status"] == "invalid_citation" and not body["guidance"]["citations"]
+        assert "999" not in response.text
+    else:
+        assert body["error"]["code"] == "invalid_output"
+    assert f"rule={rule}" in caplog.text and rule not in response.text
+    assert WASHER_STORY not in caplog.text and "PRIVATE_SCHEMA_KEY" not in caplog.text
+    provider.assert_called_once()
+
+
 def test_health_and_frontend_assets_are_safe(client):
     assert client.get("/api/health").json() == {"status":"ok","application":"NyaySaathi AI"}
     html = client.get("/")

@@ -26,7 +26,8 @@ ERRORS = {
     "rate_limit": "The provider quota or rate limit was reached. Wait and check your quota before trying again.",
     "timeout": "The provider timed out. No automatic retry was made.",
     "model_error": "The provider could not complete this request. Check model access and connection.",
-    "invalid_output": "The response could not be safely validated. Your previous case is unchanged.",
+    "invalid_output": "The response could not be safely validated. Your previous case is unchanged. "
+                      "Try sharing one case detail at a time.",
     "empty_audio": "The recording is empty. Record again or use text chat.",
     "audio_too_large": "Audio must be below 2 MB. Record a shorter message.",
     "audio_too_long": "Audio must be at most 60 seconds long.",

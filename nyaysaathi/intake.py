@@ -1,14 +1,26 @@
 """Transactional case intake, independent of the UI and model vendor."""
 
 from dataclasses import dataclass
+from decimal import Decimal
+import logging
+import re
 from typing import Protocol
 
 from pydantic import ValidationError
 
-from nyaysaathi.models import CaseFile, IntakeResponse
+from nyaysaathi.models import CaseFile, FactChange, IntakeResponse
 from nyaysaathi.guidance import UNSUPPORTED_LEGAL_TEXT, ValidatedGuidance, notice, validate_guidance
 from nyaysaathi.knowledge import RetrievalContext, retrieve
-from nyaysaathi.consistency import SCALAR_FACTS, consistency_question, protect_narratives, unresolved_fields
+from nyaysaathi.consistency import CLARIFY, MONEY, SCALAR_FACTS, consistency_question, protect_narratives, unresolved_fields
+
+
+logger = logging.getLogger(__name__)
+
+
+def _diagnostic(stage: str, rule: str, field: str = "-") -> None:
+    # Vercel associates this line with the request. Never log exception text,
+    # rejected values, or free-form schema keys from the model.
+    logger.warning("intake_validation stage=%s rule=%s field=%s", stage, rule, field)
 
 
 class IntakeError(Exception):
@@ -17,6 +29,30 @@ class IntakeError(Exception):
     def __init__(self, code: str):
         self.code = code
         super().__init__(code)
+
+
+def _invalid(stage: str, rule: str, field: str = "-") -> IntakeError:
+    _diagnostic(stage, rule, field)
+    return IntakeError("invalid_output")
+
+
+def _parse_response(response: str) -> IntakeResponse:
+    try:
+        return IntakeResponse.model_validate_json(response)
+    except ValidationError as error:
+        for item in error.errors(include_input=False, include_context=False, include_url=False):
+            location = item["loc"]
+            root = location[0] if location and location[0] in IntakeResponse.model_fields else "-"
+            rule = {
+                "json_invalid": "malformed_json",
+                "json_type": "invalid_json_type",
+                "missing_intake_question": "missing_question",
+                "multiple_intake_questions": "multiple_questions",
+            }.get(item["type"], "schema_mismatch")
+            if root == "changes" and location[-1] == "source_quote" and item["type"] == "string_too_short":
+                rule = "empty_source_quote"
+            _diagnostic("response_schema", rule, root)
+        raise IntakeError("invalid_output") from None
 
 
 class ModelProvider(Protocol):
@@ -45,6 +81,12 @@ COMPLETION_MESSAGES = {
                 "details missing hon to provisional option chunein. Use karne se pehle draft review aur complete karein.",
 }
 
+PARTIAL_MESSAGES = {
+    "en": "I saved the details I could check against your message. Some details still need review.",
+    "hi": "आपके संदेश से मिलान हुए विवरण दर्ज किए हैं। कुछ विवरणों की जाँच बाकी है।",
+    "hinglish": "Aapke message se match hui details save ki hain. Kuch details abhi review karni hain.",
+}
+
 
 def run_intake(
     case: CaseFile,
@@ -58,20 +100,105 @@ def run_intake(
     """
     _require_user_turn(messages)
     response = provider.analyze(case.model_copy(deep=True), messages, language)
-    try:
-        result = IntakeResponse.model_validate_json(response)
-        return _apply_intake(case, messages, result)
-    except (ValidationError, ValueError, TypeError):
-        raise IntakeError("invalid_output") from None
+    return _apply_intake(case, messages, _parse_response(response))
 
 
 def _require_user_turn(messages: list[dict[str, str]]) -> None:
     if not messages or messages[-1]["role"] != "user":
-        raise IntakeError("invalid_output")
+        raise _invalid("input", "missing_user_turn")
+
+
+def _change_rule(change: FactChange, user_texts: list[str], unresolved: set[str]) -> str | None:
+    quote = change.source_quote
+    if not quote.strip() or not any(quote in content for content in user_texts):
+        return "nonverbatim_quote"
+    if change.is_correction and quote not in user_texts[-1]:
+        return "correction_requires_current_quote"
+    if change.value is None and not change.is_correction:
+        return "null_without_retraction"
+
+    value = change.value
+    if value is None and change.field in ("timeline", "evidence_available"):
+        value = []  # Explicit list retraction.
+    try:
+        normalized = CaseFile.model_validate({change.field: value})
+    except ValidationError:
+        return "invalid_date" if change.field == "incident_date" else "invalid_field_value"
+    if change.field == "incident_date" and value is not None and change.field not in unresolved:
+        if value != normalized.incident_date.isoformat():
+            return "invalid_date"
+        # A full year must appear in this field's own evidence. The current
+        # calendar year, the assistant, or another fact cannot supply it.
+        if not any(int(year) == normalized.incident_date.year for year in re.findall(r"(?<!\d)\d{4}(?!\d)", quote)):
+            return "unquoted_date_year"
+    return None
+
+
+def _independent_value(change: FactChange, latest: str) -> Decimal | list[str] | None:
+    """Narrow recovery: only a quoted price or an affirmative evidence list.
+
+    Never copy model prose, conclusions, date/seller/remedy guesses, or metadata
+    from a mixed response. Compare values only; provenance was checked verbatim.
+    """
+    if change.source_quote not in latest:
+        return None
+    if change.field == "amount_inr":
+        # Price must be in a positive purchase/payment statement in the latest
+        # message, not merely a number mentioned by the user or assistant.
+        prices = list(re.finditer(
+            rf"(?:^|[.!?]\s+)I (?:paid\s+|(?:ordered|bought) [^.!?\n]+? worth\s+)(?P<price>{MONEY.pattern})(?![\d,]|\.\d)",
+            latest, re.IGNORECASE,
+        ))
+        if len(prices) == 1 and prices[0]["price"] in change.source_quote:
+            amount = Decimal(prices[0][2].replace(",", ""))
+            if amount == Decimal(change.value):
+                return amount
+    if change.field == "evidence_available" and change.value:
+        # Restrict recovery to a simple, explicit inventory in a single clause.
+        # Unknown phrasings remain eligible on ordinary, fully valid turns.
+        clause = re.fullmatch(r"I have (?:the )?([^.;!?\n]+)[.]?", change.source_quote, re.IGNORECASE)
+        if clause and change.source_quote.rstrip(".") in re.split(r"[.!?]\s+", latest.rstrip(".?!")):
+            items = re.split(r",\s*(?:and\s+)?|\s+and\s+", clause[1])
+            if items == change.value and all(item.casefold() in {
+                "invoice", "receipt", "photographs", "photos", "customer support emails",
+                "order confirmation", "payment proof", "delivery receipt",
+            } for item in items):
+                return change.value
+    return None
+
+
+def _recover_intake(
+    case: CaseFile, result: IntakeResponse, latest: str, unresolved: set[str],
+    valid: list[FactChange], failed: list[FactChange],
+) -> tuple[CaseFile, str]:
+    # Never recover across a correction, existing/uncertain fact, contradiction,
+    # or more than one invalid proposal. Those failures can affect other fields.
+    if len(failed) != 1 or unresolved or case.uncertain_fields or case.narrative_review_required or any(
+        change.is_correction or getattr(case, change.field) not in (None, [])
+        for change in result.changes
+    ):
+        raise _invalid("recovery", "inseparable_proposal")
+    fields = {}
+    for change in valid:
+        value = _independent_value(change, latest)
+        if value is not None:
+            fields[change.field] = value
+    if not fields:
+        raise _invalid("recovery", "no_independent_facts")
+    language = result.reply_language
+    updated = CaseFile.model_validate({**case.model_dump(), **fields, "case_status": "in_progress"})
+    question = CLARIFY[language].get(failed[0].field) or consistency_question(updated, language)
+    updated.unanswered_questions = [question]
+    # Old suggestions may no longer be missing after accepting evidence.
+    if "evidence_available" in fields:
+        updated.evidence_missing = []
+    updated.confidence_or_uncertainty = PARTIAL_MESSAGES[language]
+    _diagnostic("recovery", "partial_acceptance", failed[0].field)
+    return updated, f"{PARTIAL_MESSAGES[language]} {question}"
 
 
 def _apply_intake(
-    case: CaseFile, messages: list[dict[str, str]], result: IntakeResponse,
+    case: CaseFile, messages: list[dict[str, str]], result: IntakeResponse, *, recover: bool = False,
 ) -> tuple[CaseFile, str]:
     try:
         if result.scope == "out_of_scope":
@@ -79,24 +206,29 @@ def _apply_intake(
         if result.scope == "unclear":
             return case.model_copy(deep=True), result.next_question.strip()
 
-        candidate = protect_narratives(case).model_dump()
+        protected = protect_narratives(case)
+        candidate = protected.model_dump()
         user_texts = [message["content"] for message in messages if message["role"] == "user"]
-        seen = set()
+        unresolved = unresolved_fields(user_texts[-1])
+        seen, valid, failed = set(), [], []
         # Validate the full proposal before changing anything. Pre-marking accepted
         # correction turns makes invalidation independent of model change ordering.
         for change in result.changes:
             if change.field in seen:
-                raise ValueError("Conflicting field changes")
+                raise _invalid("fact_proposal", "duplicate_field", change.field)
             seen.add(change.field)
-            if not change.source_quote.strip() or not any(
-                change.source_quote in content for content in user_texts
-            ):
-                raise ValueError("Fact changes require a verbatim user quote")
-            if change.is_correction and change.source_quote not in messages[-1]["content"]:
-                raise ValueError("Corrections must come from the current user turn")
+            rule = _change_rule(change, user_texts, unresolved)
+            if rule is not None:
+                if not recover:
+                    raise _invalid("fact_proposal", rule, change.field)
+                _diagnostic("fact_proposal", rule, change.field)
+                failed.append(change)
+            else:
+                valid.append(change)
+        if failed:
+            return _recover_intake(protected, result, user_texts[-1], unresolved, valid, failed)
         if any(change.is_correction and change.field != "user_language" for change in result.changes):
             candidate["narrative_review_required"] = True
-        unresolved = unresolved_fields(messages[-1]["content"])
         for field in sorted(unresolved):
             candidate[field] = None
             candidate["uncertain_fields"][field] = "conflicting"
@@ -112,7 +244,7 @@ def _apply_intake(
                 if value is None and change.is_correction:
                     value = []
                 if not isinstance(value, list):
-                    raise ValueError("List fields require lists")
+                    raise _invalid("fact_merge", "invalid_list", change.field)
                 if not change.is_correction:
                     value = list(dict.fromkeys(previous + value))
             proposed = {**candidate, change.field: value}
@@ -133,7 +265,7 @@ def _apply_intake(
                     normalized[change.field] = None
                 elif previous is not None and normalized[change.field] != previous:
                     if change.source_quote not in messages[-1]["content"]:
-                        raise ValueError("An apparent conflict must be supported by the current user turn")
+                        raise _invalid("fact_merge", "conflict_requires_current_quote", change.field)
                     # A new conflicting value is not automatically a correction.
                     # Confirm neither alternative until the user resolves it.
                     normalized[change.field] = None
@@ -146,7 +278,7 @@ def _apply_intake(
                 and not change.is_correction
                 and change.field not in SCALAR_FACTS
             ):
-                raise ValueError("Existing facts require an explicit correction")
+                raise _invalid("fact_merge", "explicit_correction_required", change.field)
             normalized["narrative_review_required"] = candidate["narrative_review_required"]
             normalized["uncertain_fields"] = uncertain
             candidate = normalized
@@ -166,15 +298,16 @@ def _apply_intake(
             candidate["case_status"] = "in_progress"
         updated = protect_narratives(CaseFile.model_validate(candidate))
         if updated.narrative_review_required:
+            _diagnostic("narrative", "review_required")
             question = consistency_question(updated, result.reply_language)
             updated.unanswered_questions = [question]
         if not question:
             if updated.case_status != "ready_for_review":
-                raise ValueError("Incomplete intake still needs a relevant question")
+                raise _invalid("completion", "incomplete_case_without_question")
             question = COMPLETION_MESSAGES[result.reply_language]
         return updated, question
     except (ValidationError, ValueError, TypeError):
-        raise IntakeError("invalid_output") from None
+        raise _invalid("fact_merge", "case_validation_failed") from None
 
 
 @dataclass(frozen=True)
@@ -191,11 +324,13 @@ def run_turn(
     """Retrieve once, make one request, and keep legal validation separate from facts."""
     _require_user_turn(messages)
     context = retrieve(messages[-1]["content"], case)
-    response = provider.analyze(case.model_copy(deep=True), messages, language, context)
     try:
-        result = IntakeResponse.model_validate_json(response)
-    except (ValidationError, ValueError, TypeError):
-        raise IntakeError("invalid_output") from None
+        response = provider.analyze(case.model_copy(deep=True), messages, language, context)
+    except IntakeError as error:
+        if error.code == "invalid_output":
+            _diagnostic("provider", "no_usable_output")
+        raise
+    result = _parse_response(response)
 
     # Generated intake fields cannot become an alternative channel for legal
     # assertions, made-up sections, URLs, or guaranteed outcomes.
@@ -209,6 +344,7 @@ def run_turn(
             if isinstance(value, str) and value not in change.source_quote
         )
     if UNSUPPORTED_LEGAL_TEXT.search(intake_text):
+        _diagnostic("legal", "unsupported_intake_text")
         message = notice("invalid_citation", result.reply_language)
         return TurnResult(case.model_copy(deep=True), message, ValidatedGuidance(
             language=result.reply_language, status="invalid_citation", message=message,
@@ -216,14 +352,16 @@ def run_turn(
 
     intake_error = None
     try:
-        updated, reply = _apply_intake(case, messages, result)
+        updated, reply = _apply_intake(case, messages, result, recover=True)
     except IntakeError:
         # Source-checked general information does not require accepting an
         # ungrounded fact update. Preserve the ENTIRE case; report the failure.
         updated = case.model_copy(deep=True)
-        reply = result.next_question.strip() if result.next_question else ""
+        reply = ""
         intake_error = "invalid_output"
     guidance = validate_guidance(result, context)
+    if guidance.status == "invalid_citation":
+        _diagnostic("legal", "invalid_citation")
     if guidance.status in ("urgent_notice", "threat_or_crime", "out_of_scope"):
         # Keep critical warnings visible in chat as well as the options panel.
         reply = guidance.message

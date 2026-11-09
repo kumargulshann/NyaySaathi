@@ -5,6 +5,7 @@ from decimal import Decimal
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic_core import PydanticCustomError
 
 
 class CaseFile(BaseModel):
@@ -81,7 +82,7 @@ class IntakeResponse(BaseModel):
         if self.scope != "out_of_scope":
             completed = self.scope == "in_scope" and self.case_status == "ready_for_review"
             if (not self.next_question or not self.next_question.strip()) and not completed:
-                raise ValueError("An intake turn must ask one question")
+                raise PydanticCustomError("missing_intake_question", "An intake turn must ask one question")
             if self.next_question and self.next_question.count("?") + self.next_question.count("？") > 1:
-                raise ValueError("Ask one question at a time")
+                raise PydanticCustomError("multiple_intake_questions", "Ask one question at a time")
         return self

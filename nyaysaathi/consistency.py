@@ -21,10 +21,13 @@ FIELD_WORDS = {
     "issue_type": r"\bissue type\b|समस्या की श्रेणी",
 }
 MONEY = re.compile(r"(?:₹|\bRs\.?|\bINR)\s*([0-9][0-9,]*(?:\.[0-9]+)?)", re.IGNORECASE)
-DATE_MENTION = re.compile(
-    r"\b\d{4}-\d{2}-\d{2}\b|\b\d{1,2}\s+(?:January|February|March|April|May|June|July|August|"
+MONTH = (
+    r"(?:January|February|March|April|May|June|July|August|"
     r"September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|"
-    r"जनवरी|फरवरी|मार्च|अप्रैल|मई|जून|जुलाई|अगस्त|सितंबर|अक्टूबर|नवंबर|दिसंबर)\s+\d{4}\b",
+    r"जनवरी|फरवरी|मार्च|अप्रैल|मई|जून|जुलाई|अगस्त|सितंबर|अक्टूबर|नवंबर|दिसंबर)"
+)
+DATE_MENTION = re.compile(
+    rf"\b(?:\d{{4}}-\d{{2}}-\d{{2}}|\d{{1,2}}\s+{MONTH}\s+\d{{4}}|{MONTH}\s+\d{{1,2}},?\s+\d{{4}})\b",
     re.IGNORECASE,
 )
 
