@@ -1,7 +1,7 @@
 """Answers that can be given from current case facts without model prose."""
 
 from nyaysaathi.action_package import clean
-from nyaysaathi.case_facts import PURCHASE_YEAR_QUESTION
+from nyaysaathi.case_facts import PURCHASE_YEAR_QUESTION, material_questions
 from nyaysaathi.consistency import CLARIFY, DATE_MENTION, consistency_question
 from nyaysaathi.models import CaseFile
 
@@ -62,6 +62,21 @@ def document_handoff(language: str) -> str:
         "जानकारी अधूरी हो तो अस्थायी मसौदे का विकल्प चुनें, खाली स्थान जाँचें और अपना नया विवरण जोड़ें।",
         "Case File aur Legal Information panel dekhein. Editable complaint ke liye Action Package kholein. "
         "Details missing hon to provisional option chunein, placeholders check karein aur apna fresh description add karein.")
+
+
+def record_remedy_reply(case: CaseFile, remedy: str, language: str) -> str:
+    case.desired_resolution = remedy
+    case.uncertain_fields.pop("desired_resolution", None)
+    question = next_fact_question(case, language)
+    case.case_status = "ready_for_review" if not question and core_details_known(case) else "in_progress"
+    case.unanswered_questions = list(dict.fromkeys(
+        ([question] if question else []) + material_questions(case, language)
+    ))
+    remedy_hi = {"refund": "रिफंड", "replacement": "बदली", "repair": "मरम्मत"}[remedy]
+    acknowledgment = localized(language, f"I’ve recorded that you’re asking for a {remedy}.",
+                               f"मैंने दर्ज किया है कि आप {remedy_hi} चाहते हैं।",
+                               f"Maine note kar liya hai ki aapko {remedy} chahiye.")
+    return f"{acknowledgment} {question or document_handoff(language)}"
 
 
 def case_preview(case: CaseFile, language: str) -> str:

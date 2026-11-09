@@ -7,6 +7,8 @@ import pytest
 
 from backend.main import app, server_settings, sign_case
 from nyaysaathi.action_package import generate_package
+from nyaysaathi.case_facts import PURCHASE_YEAR_QUESTION
+from nyaysaathi.consistency import CLARIFY
 from nyaysaathi.intake import IntakeError
 from nyaysaathi.knowledge import load_knowledge
 from nyaysaathi.models import CaseFile
@@ -187,7 +189,7 @@ def test_washer_followups_complete_purchase_year_without_assigning_an_incident_d
         mock_intake(monkeypatch, changes=[{"field": field, "value": value, "source_quote": message}])
         body = client.post("/api/chat", json={"message": message, **returned_case(body),
             "history": [{"role": "assistant", "content": body["reply"]}]}).json()
-        assert body["case"][field] == value and body["reply"] == followup
+        assert body["case"][field] == value and body["reply"].endswith(followup)
 
     mock_intake(monkeypatch, case_status="ready_for_review", next_question=None)
     body = client.post("/api/chat", json={"message": "2025.", **returned_case(body),
@@ -198,6 +200,61 @@ def test_washer_followups_complete_purchase_year_without_assigning_an_incident_d
     for document in (package["complaint"], package["summary"]):
         assert "October 15, 2025" in document and "[Year]" not in document
         assert "Flipkart" in document and "washing machine" in document
+
+
+@pytest.mark.parametrize("language,answer,confirmation", [
+    ("en", "replacement", "you’re asking for a replacement"),
+    ("hi", "बदली", "आप बदली चाहते हैं"),
+    ("hinglish", "Mujhe replacement chahiye", "aapko replacement chahiye"),
+])
+def test_short_remedy_answer_after_bilingual_seller_reply(client, monkeypatch, language, answer, confirmation):
+    mock_intake(monkeypatch, changes=washer_changes())
+    first = client.post("/api/chat", json={"message": WASHER_STORY}).json()
+    seller_reply = "So I ordered from Amazon. मैंने Amazon से ऑर्डर किया था।"
+    mock_intake(monkeypatch, language=language,
+                changes=[{"field": "company_or_seller", "value": "Amazon", "source_quote": seller_reply}])
+    seller = client.post("/api/chat", json={"message": seller_reply, **returned_case(first), "history": [
+        {"role": "user", "content": WASHER_STORY}, {"role": "assistant", "content": first["reply"]},
+    ]}).json()
+    assert seller["reply"] == CLARIFY[language]["desired_resolution"]
+    # Gemini need not propose the field, keep the previous language, or even be available for this direct answer.
+    provider = mock_intake(monkeypatch, language="hi" if language == "en" else "en", scope="unclear")
+    response = client.post("/api/chat", json={"message": answer, **returned_case(seller), "history": [
+        {"role": "user", "content": seller_reply}, {"role": "assistant", "content": seller["reply"]},
+    ]})
+    provider.assert_not_called()
+    assert response.status_code == 200
+    body = response.json()
+    assert body["error"] is None and body["guidance"]["language"] == language
+    assert confirmation in body["reply"] and body["reply"].endswith(PURCHASE_YEAR_QUESTION[language])
+    assert body["case"] == {**seller["case"], "desired_resolution": "replacement",
+                            "unanswered_questions": [PURCHASE_YEAR_QUESTION[language]]}
+
+    provider = mock_intake(monkeypatch, source="CPA-DEFECT")
+    options = client.post("/api/chat", json={"message": "What should I do next?", **returned_case(body)}).json()
+    provider.assert_called_once()
+    assert options["guidance"]["status"] == "grounded" and "Action Package" in options["reply"]
+    assert options["case"] == body["case"]
+
+
+@pytest.mark.parametrize("answer,asked,known", [
+    ("replacement", False, None),
+    ("replacement", True, "refund"),
+    ("refund or replacement", True, None),
+    ("The seller refused a replacement.", True, None),
+    ("replacement?", True, None),
+])
+def test_remedy_answer_needs_context_and_cannot_guess_or_overwrite(client, monkeypatch, answer, asked, known):
+    question = CLARIFY["en"]["desired_resolution"]
+    case = complete_case().model_copy(update={"desired_resolution": known, "unanswered_questions": [question]})
+    provider = mock_intake(monkeypatch, changes=[
+        {"field": "desired_resolution", "value": "replacement", "source_quote": answer},
+    ])
+    result = client.post("/api/chat", json={"message": answer, **signed(case), "history": [
+        {"role": "assistant", "content": question if asked else CLARIFY["en"]["issue_type"]},
+    ]}).json()
+    provider.assert_called_once()
+    assert result["case"]["desired_resolution"] == known
 
 
 def test_corrected_washer_conversation_moves_forward_without_restoring_old_prose(client, monkeypatch):
@@ -220,8 +277,9 @@ def test_corrected_washer_conversation_moves_forward_without_restoring_old_prose
     assert first["reply"] == "Which seller or platform did you order from?"
     seller, _ = turn("Amazon", changes=[{"field": "company_or_seller", "value": "Amazon", "source_quote": "Amazon"}])
     assert seller["reply"] == "What resolution are you requesting now?"
-    remedy, _ = turn("Replacement", changes=[{"field": "desired_resolution", "value": "replacement", "source_quote": "Replacement"}])
-    assert remedy["reply"] == "What year did you place the order?"
+    remedy, provider = turn("Replacement")
+    provider.assert_not_called()
+    assert "replacement" in remedy["reply"] and remedy["reply"].endswith("What year did you place the order?")
     year, _ = turn("2026", changes=[{"field": "incident_date", "value": "2026-10-15", "source_quote": "2026"}])
     assert year["case"]["purchase_date_text"] == "October 15, 2026" and year["case"]["incident_date"] is None
     assert "Action Package" in year["reply"]

@@ -46,6 +46,15 @@ def _remedy_key(text: str) -> str:
     return next((key for key, variants in REMEDIES.items() if re.fullmatch(variants, text)), text)
 
 
+def direct_remedy_answer(text: str) -> str | None:
+    """Recognize a single supported outcome in an answer to a remedy question."""
+    statement = text.strip().rstrip(".!।")
+    match = REMEDY_REQUEST.fullmatch(statement)
+    target = next(item for item in match.groups() if item is not None) if match else statement
+    key = _remedy_key(target)
+    return key if key in REMEDIES else None
+
+
 def requested_remedy(value: str, quote: str, latest: str, *, answering_remedy_question: bool = False) -> bool:
     # Match a complete clause in the latest user turn. This prevents a quote
     # such as "replacement" from borrowing meaning from a seller's refusal.

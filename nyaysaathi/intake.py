@@ -9,10 +9,12 @@ from typing import Protocol
 from pydantic import ValidationError
 
 from nyaysaathi.case_facts import (
-    PURCHASE_CONTEXT, PURCHASE_YEAR_QUESTION, REMEDY_SHIFT, is_purchase_date_proposal, material_questions, named_seller,
-    record_purchase_date_reply, record_purchase_details, requested_remedy,
+    PURCHASE_CONTEXT, PURCHASE_YEAR_QUESTION, REMEDY_SHIFT, direct_remedy_answer, is_purchase_date_proposal,
+    material_questions, named_seller, record_purchase_date_reply, record_purchase_details, requested_remedy,
 )
-from nyaysaathi.conversation import core_details_known, document_handoff, followup_intent, local_reply, localized, next_fact_question
+from nyaysaathi.conversation import (
+    core_details_known, document_handoff, followup_intent, local_reply, localized, next_fact_question, record_remedy_reply,
+)
 from nyaysaathi.models import CaseFile, FactChange, IntakeResponse
 from nyaysaathi.guidance import UNSUPPORTED_LEGAL_TEXT, ValidatedGuidance, notice, validate_guidance
 from nyaysaathi.knowledge import RetrievalContext, detect_safety, retrieve
@@ -233,6 +235,17 @@ def _recover_intake(
     return updated, f"{PARTIAL_MESSAGES[language]} {question}"
 
 
+def _pending_question(case: CaseFile, messages: list[dict[str, str]]) -> str:
+    prior = next((item["content"] for item in reversed(messages[:-1]) if item["role"] == "assistant"), "")
+    if case.unanswered_questions and prior.endswith(case.unanswered_questions[0]):
+        return case.unanswered_questions[0]
+    return ""
+
+
+def _remedy_question_language(question: str) -> str | None:
+    return next((lang for lang, questions in CLARIFY.items() if question == questions["desired_resolution"]), None)
+
+
 def _apply_intake(
     case: CaseFile, messages: list[dict[str, str]], result: IntakeResponse, *, recover: bool = False,
 ) -> tuple[CaseFile, str]:
@@ -244,10 +257,8 @@ def _apply_intake(
         unresolved = unresolved_fields(user_texts[-1])
         seen, failed, accepted = set(), [], []
         latest = user_texts[-1]
-        resolution_question = CLARIFY[result.reply_language]["desired_resolution"]
-        prior_question = next((item["content"] for item in reversed(messages[:-1]) if item["role"] == "assistant"), "")
-        prior_question = (case.unanswered_questions[0]
-                          if case.unanswered_questions and prior_question.endswith(case.unanswered_questions[0]) else "")
+        prior_question = _pending_question(case, messages)
+        answering_remedy = protected.desired_resolution is None and _remedy_question_language(prior_question) is not None
         purchase_updated = record_purchase_date_reply(protected, latest, prior_question)
         if result.scope == "unclear" and not purchase_updated:
             return case.model_copy(deep=True), result.next_question.strip()
@@ -289,7 +300,7 @@ def _apply_intake(
                 continue
             elif change.field == "desired_resolution" and change.value is not None:
                 if not requested_remedy(change.value, change.source_quote, latest,
-                                        answering_remedy_question=prior_question.endswith(resolution_question)):
+                                        answering_remedy_question=answering_remedy):
                     _diagnostic("fact_proposal", "current_remedy_unconfirmed", change.field)
                     rejected_meaning = True
                     continue
@@ -423,9 +434,10 @@ def run_turn(
     _require_user_turn(messages)
     latest = messages[-1]["content"]
     intent = followup_intent(latest)
-    if intent and intent != "next":
-        # Summaries and acknowledgments are not proposals to change facts. Keep
-        # recent safety context and answer these narrow intents from the case.
+    remedy_language = _remedy_question_language(_pending_question(case, messages))
+    remedy = direct_remedy_answer(latest) if remedy_language and case.desired_resolution is None else None
+    if remedy or (intent and intent != "next"):
+        # Use recent safety context for deterministic turns too.
         safety = detect_safety(" ".join(item["content"] for item in messages if item["role"] == "user"))
         if safety != "none":
             message = notice(safety, language)
@@ -433,15 +445,16 @@ def run_turn(
                               ValidatedGuidance(language=language, status=safety, message=message))
         updated = protect_narratives(case)
         prior = messages[-2]["content"] if len(messages) > 1 and messages[-2]["role"] == "assistant" else ""
-        reply_language = case.user_language or language
-        if re.search(r"[\u0900-\u097f]", latest):
+        reply_language = remedy_language if remedy else (case.user_language or language)
+        if not remedy and re.search(r"[\u0900-\u097f]", latest):
             reply_language = "hi"
-        elif re.search(r"\b(?:kya|maine|mere|mera|batao|haan|nahi|nahin|bana|galti)\b", latest, re.IGNORECASE):
+        elif not remedy and re.search(r"\b(?:kya|maine|mere|mera|batao|haan|nahi|nahin|bana|galti)\b", latest, re.IGNORECASE):
             reply_language = "hinglish"
         message = localized(reply_language, "Ask about your legal options to see checked sources.",
                             "जाँचे गए स्रोतों के लिए अपने कानूनी विकल्प पूछें।",
                             "Checked sources ke liye apne legal options poochhein.")
-        reply = local_reply(updated, intent, prior, reply_language)
+        reply = (record_remedy_reply(updated, remedy, reply_language) if remedy
+                 else local_reply(updated, intent, prior, reply_language))
         return TurnResult(protect_narratives(updated), reply,
                           ValidatedGuidance(language=reply_language, status="case_only", message=message))
     context = retrieve(latest, case)
@@ -476,7 +489,7 @@ def run_turn(
         # A request for options can get newly checked guidance, but it is not
         # a statement of new facts or consent to restore any old narrative.
         updated = protect_narratives(case)
-        reply = next_fact_question(updated, result.reply_language) or document_handoff(result.reply_language)
+        reply = document_handoff(result.reply_language)
     else:
         try:
             updated, reply = _apply_intake(case, messages, result, recover=True)
