@@ -98,9 +98,15 @@ before clearing or closing. This differs from Streamlit's server session state.
 | Endpoint | Request | Response |
 | --- | --- | --- |
 | `GET /api/health` | None | Safe application status; no credential/configuration values |
-| `POST /api/chat` | JSON: `message`, `language` (`en`/`hi`/`hinglish`), `case`, `history` | Updated case, reply, checked guidance/citations, missing information, readiness, fingerprint and optional safe error |
+| `POST /api/chat` | JSON: `message`, `language` (`en`/`hi`/`hinglish`), `case`, `case_signature`, `history` | Updated case and signature, reply, checked guidance/citations, missing information, readiness, fingerprint and optional safe error |
 | `POST /api/transcribe` | **Raw PCM WAV bytes**, `Content-Type: audio/wav` | Structured transcript/model/audio metadata and review-required flag; no case update |
-| `POST /api/action-package` | JSON: `case`, `language` (`en`/`hi`), `provisional`, optional `history` | Readiness and deterministic package, or `package: null` if blocked/incomplete |
+| `POST /api/action-package` | JSON: `case`, `case_signature`, `language` (`en`/`hi`), `provisional`, optional `history` | Readiness and deterministic package, or `package: null` if blocked/incomplete |
+
+Start chat with an empty case and no signature. Send back the case and its signature
+from the latest chat response together for follow-ups or drafts. The signature
+protects the server-issued facts from browser edits without storing a session. Make
+fact corrections through chat and document edits in the draft editors. Start a new
+case after a deployment or configuration change that invalidates an old signature.
 
 JSON requests use Pydantic with extra fields forbidden. `case` is the existing
 CaseFile schema, limited to 24 KB serialized. History has at most 12 user/assistant

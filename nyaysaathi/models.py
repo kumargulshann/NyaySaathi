@@ -19,6 +19,9 @@ class CaseFile(BaseModel):
     company_or_seller: str | None = None
     amount_inr: Decimal | None = Field(default=None, ge=0)
     incident_date: date | None = None
+    # App-owned literal purchase details. A partial date is never an incident date.
+    product_or_service: str | None = None
+    purchase_date_text: str | None = None
     timeline: list[str] = Field(default_factory=list)
     evidence_available: list[str] = Field(default_factory=list)
     evidence_missing: list[str] = Field(default_factory=list)

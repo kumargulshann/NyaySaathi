@@ -21,6 +21,7 @@ class Message(RequestModel):
 
 class CaseRequest(RequestModel):
     case: CaseFile = Field(default_factory=CaseFile)
+    case_signature: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     history: list[Message] = Field(default_factory=list, max_length=12)
 
     @field_validator("case")
@@ -80,6 +81,7 @@ class GuidanceResponse(BaseModel):
 
 class ChatResponse(BaseModel):
     case: CaseFile
+    case_signature: str
     reply: str
     guidance: GuidanceResponse
     missing_information: list[str]

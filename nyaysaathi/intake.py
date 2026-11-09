@@ -8,6 +8,7 @@ from typing import Protocol
 
 from pydantic import ValidationError
 
+from nyaysaathi.case_facts import REMEDY_SHIFT, material_questions, named_seller, record_purchase_details, requested_remedy
 from nyaysaathi.models import CaseFile, FactChange, IntakeResponse
 from nyaysaathi.guidance import UNSUPPORTED_LEGAL_TEXT, ValidatedGuidance, notice, validate_guidance
 from nyaysaathi.knowledge import RetrievalContext, retrieve
@@ -184,10 +185,10 @@ def _independent_value(change: FactChange, latest: str) -> Decimal | list[str] |
     return None
 
 
-def _quoted_timeline(case: CaseFile, changes: list[FactChange], latest: str) -> list[str]:
+def _quoted_statements(case: CaseFile, changes: list[FactChange], latest: str, field: str = "timeline") -> list[str]:
     # Recover complete user statements in the original order. Discard the
     # model's malformed values, paraphrases, and stitched or partial quotes.
-    quotes = {change.source_quote for change in changes if change.field == "timeline" and change.value}
+    quotes = {change.source_quote for change in changes if change.field == field and change.value}
     events = []
     for sentence in re.split(r"(?<=[.!?।])\s+|\n+", latest):
         if (sentence in quotes or sentence.rstrip(".।") in quotes) and not (
@@ -216,13 +217,14 @@ def _recover_intake(
             fields[change.field] = value
     updated = CaseFile.model_validate({**case.model_dump(), **fields, "case_status": "in_progress"})
     failed_fields = {change.field for change in failed}
-    events = (_quoted_timeline(updated, result.changes, latest)
+    events = (_quoted_statements(updated, result.changes, latest)
               if "timeline" in failed_fields and "incident_date" not in failed_fields else [])
     if not fields and not events:
         raise _invalid("recovery", "no_independent_facts")
     if events:
         updated.timeline = events
     language = result.reply_language
+    record_purchase_details(updated, latest)
     # Ask about a rejected structured detail if it remains unknown. For a
     # rejected narrative or a repaired price, prioritize a missing core fact.
     question = next((CLARIFY[language][change.field] for change in failed
@@ -230,7 +232,7 @@ def _recover_intake(
     if not question:
         question = (CLARIFY[language]["company_or_seller"] if updated.company_or_seller is None
                     else consistency_question(updated, language))
-    updated.unanswered_questions = [question]
+    updated.unanswered_questions = list(dict.fromkeys([question, *material_questions(updated, language)]))
     # Old suggestions may no longer be missing after accepting evidence.
     if "evidence_available" in fields:
         updated.evidence_missing = []
@@ -252,7 +254,13 @@ def _apply_intake(
         candidate = protected.model_dump()
         user_texts = [message["content"] for message in messages if message["role"] == "user"]
         unresolved = unresolved_fields(user_texts[-1])
-        seen, failed = set(), []
+        seen, failed, accepted = set(), [], []
+        latest = user_texts[-1]
+        resolution_question = CLARIFY[result.reply_language]["desired_resolution"]
+        prior_question = next((item["content"] for item in reversed(messages[:-1]) if item["role"] == "assistant"), "")
+        if not case.unanswered_questions or not prior_question.endswith(case.unanswered_questions[0]):
+            prior_question = ""
+        rejected_meaning = False
         # Validate the full proposal before changing anything. Pre-marking accepted
         # correction turns makes invalidation independent of model change ordering.
         for change in result.changes:
@@ -270,17 +278,36 @@ def _apply_intake(
                     raise _invalid("fact_proposal", rule, change.field)
                 _diagnostic("fact_proposal", rule, change.field)
                 failed.append(change)
+            elif change.field == "company_or_seller" and change.value is not None and not named_seller(
+                change.value, change.source_quote,
+            ):
+                _diagnostic("fact_proposal", "seller_name_unconfirmed", change.field)
+                rejected_meaning = True
+                continue
+            elif change.field == "desired_resolution" and change.value is not None:
+                if not requested_remedy(change.value, change.source_quote, latest,
+                                        answering_remedy_question=prior_question.endswith(resolution_question)):
+                    _diagnostic("fact_proposal", "current_remedy_unconfirmed", change.field)
+                    rejected_meaning = True
+                    continue
+                if candidate["desired_resolution"] is not None and REMEDY_SHIFT.search(latest):
+                    change = change.model_copy(update={"is_correction": True})
+            accepted.append(change)
         if failed:
-            return _recover_intake(protected, result, user_texts[-1], unresolved, failed)
-        if any(change.is_correction and change.field != "user_language" for change in result.changes):
+            return _recover_intake(protected, result.model_copy(update={"changes": accepted}), latest, unresolved, failed)
+        if any(change.is_correction and change.field != "user_language" for change in accepted):
             candidate["narrative_review_required"] = True
         for field in sorted(unresolved):
             candidate[field] = None
             candidate["uncertain_fields"][field] = "conflicting"
             candidate["narrative_review_required"] = True
 
-        for change in result.changes:
-            if candidate["narrative_review_required"] and change.field in ("user_summary", "timeline"):
+        for change in accepted:
+            if change.is_correction and change.field in ("user_summary", "timeline", "incident_date"):
+                candidate["purchase_date_text"] = None
+                if change.field != "incident_date":
+                    candidate["product_or_service"] = None
+            if (candidate["narrative_review_required"] or rejected_meaning) and change.field in ("user_summary", "timeline"):
                 continue  # Never restore unproven derived prose from older messages.
 
             previous = candidate[change.field]
@@ -342,10 +369,23 @@ def _apply_intake(
         ):
             candidate["case_status"] = "in_progress"
         updated = protect_narratives(CaseFile.model_validate(candidate))
+        if rejected_meaning and not updated.narrative_review_required:
+            # A paraphrase may repeat the same rejected assertion. Use only
+            # full user statements for this turn's narrative in that case.
+            summaries = _quoted_statements(updated, accepted, latest, "user_summary")
+            if not updated.user_summary and summaries:
+                updated.user_summary = summaries[0]
+            updated.timeline = list(dict.fromkeys([*updated.timeline, *_quoted_statements(updated, accepted, latest)]))
+        record_purchase_details(updated, latest, prior_question)
+        gaps = material_questions(updated, result.reply_language)
         if updated.narrative_review_required:
             _diagnostic("narrative", "review_required")
             question = consistency_question(updated, result.reply_language)
-            updated.unanswered_questions = [question]
+            updated.unanswered_questions = list(dict.fromkeys([question, *gaps]))
+        elif gaps:
+            updated.unanswered_questions = gaps
+            if question or rejected_meaning:
+                question = gaps[0]
         if not question:
             if updated.case_status != "ready_for_review":
                 raise _invalid("completion", "incomplete_case_without_question")

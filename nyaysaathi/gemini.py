@@ -50,11 +50,15 @@ a change, check the quote appears character for character, including punctuation
 currency signs and spacing. Use a longer exact span if evidence items occur together;
 never join fragments, insert ellipses, translate, or normalize the quote. If the
 value cannot be supported with one exact span, omit that change.
-Only record a named company or seller, not a description such as "an online seller".
+Only record a named company, seller, or platform. Copy the name as supplied, in
+the user's script, and use a quote containing it. Never use "an online seller"
+or another generic description as a name. Keep the online purchase in the account.
 A request to prepare a complaint is not a requested remedy. A seller refusing a
 replacement is a reported event for the summary or timeline; it does not by itself
 mean the user currently wants a replacement or a refund. Leave desired_resolution
-unchanged unless the user explicitly states their requested outcome.
+unchanged unless the user explicitly states their current requested outcome. Quote
+the whole current request, such as "I want my money back", rather than a keyword
+from a refusal or earlier request. Ask what they want when it remains unknown.
 Dates: use YYYY-MM-DD only when the source quote contains the day, month and four-digit
 year. For a partial date such as "October 15", omit incident_date. Retain that wording
 as reported in the timeline; never add a year there or in the summary. Do not turn

@@ -1,4 +1,6 @@
 """Vercel/local FastAPI entrypoint. No sessions, case storage or new AI logic."""
+import hmac
+import json
 from typing import Annotated
 from pathlib import Path
 
@@ -16,6 +18,7 @@ from nyaysaathi.action_package import assess_readiness, case_fingerprint, genera
 from nyaysaathi.gemini import GeminiProvider
 from nyaysaathi.intake import IntakeError, run_turn
 from nyaysaathi.knowledge import detect_safety
+from nyaysaathi.models import CaseFile
 from nyaysaathi.settings import Settings, get_settings
 from nyaysaathi.transcription import MAX_AUDIO_BYTES, TranscriptionError, TranscriptionResult, transcribe_audio
 
@@ -37,6 +40,7 @@ ERRORS = {
     "empty_transcription": "The transcription provider returned no transcript. This does not confirm silence. Check the preview and try again later; nothing was sent to intake.",
     "unintelligible_audio": "No usable speech transcript was returned. Record again or type your message.",
     "invalid_request": "The request is invalid or exceeds the case/conversation limits.",
+    "invalid_case": "This case could not be verified. Start a new case to continue.",
     "request_too_large": "The request exceeds the size limit. Shorten the recording or conversation.",
     "internal_error": "The request could not be completed. Your existing browser data is kept.",
 }
@@ -118,7 +122,22 @@ def server_settings() -> Settings:
         return Settings()
 
 
-def blocked_from_context(case, history) -> bool:
+def sign_case(case: CaseFile, key: str) -> str:
+    # Derive a purpose-specific key from the existing server-only configuration.
+    # Sign every field, including consistency metadata. The draft fingerprint
+    # intentionally excludes some fields and is only for comparing drafts.
+    signing_key = hmac.digest(key.encode(), b"nyaysaathi:case-signing:v1", "sha256")
+    canonical = json.dumps(case.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+    return hmac.digest(signing_key, canonical.encode(), "sha256").hex()
+
+
+def verified_case(case: CaseFile, signature: str | None, key: str | None) -> bool:
+    if signature is None:
+        return case == CaseFile()
+    return bool(key and hmac.compare_digest(sign_case(case, key), signature))
+
+
+def blocked_from_context(history) -> bool:
     # Reuse the existing safety classifier. No client guidance/status flags accepted.
     text = " ".join(item.content for item in history if item.role == "user")
     return detect_safety(text) in ("out_of_scope", "urgent_notice", "threat_or_crime")
@@ -134,6 +153,10 @@ def chat(payload: ChatRequest, settings: Annotated[Settings, Depends(server_sett
     messages = [item.model_dump() for item in payload.history]
     messages.append({"role": "user", "content": payload.message})
     try:
+        if not verified_case(payload.case, payload.case_signature, settings.gemini_api_key):
+            return error_response("invalid_case", 422)
+        if not settings.gemini_api_key:
+            return error_response("missing_configuration", 503)
         turn = run_turn(payload.case, messages, payload.language, GeminiProvider(settings))
         guidance = turn.guidance
         citations = [Citation(
@@ -144,6 +167,7 @@ def chat(payload: ChatRequest, settings: Annotated[Settings, Depends(server_sett
         ) for item in guidance.entries]
         return ChatResponse(
             case=turn.case, reply=turn.reply,
+            case_signature=sign_case(turn.case, settings.gemini_api_key),
             guidance=GuidanceResponse(status=guidance.status, language=guidance.language,
                                       message=guidance.message, citations=citations),
             missing_information=turn.case.unanswered_questions,
@@ -176,9 +200,11 @@ def transcribe(
 
 
 @app.post("/api/action-package", response_model=PackageResponse)
-def action_package(payload: PackageRequest):
+def action_package(payload: PackageRequest, settings: Annotated[Settings, Depends(server_settings)]):
     try:
-        blocked = blocked_from_context(payload.case, payload.history)
+        if not verified_case(payload.case, payload.case_signature, settings.gemini_api_key):
+            return error_response("invalid_case", 422)
+        blocked = blocked_from_context(payload.history)
         readiness = assess_readiness(payload.case, out_of_scope=blocked)
         if readiness.status == "out_of_scope" or not readiness.provisional_allowed or (
             readiness.status != "ready" and not payload.provisional

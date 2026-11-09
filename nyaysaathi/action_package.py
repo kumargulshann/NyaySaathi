@@ -8,7 +8,7 @@ from typing import Literal
 
 from nyaysaathi.knowledge import detect_safety, matches
 from nyaysaathi.models import CaseFile
-from nyaysaathi.consistency import protect_narratives
+from nyaysaathi.consistency import DATE_MENTION, protect_narratives
 
 
 DocumentLanguage = Literal["en", "hi"]
@@ -206,6 +206,12 @@ def generate_package(
         problem = t("[Fresh neutral description required after correction/conflict; earlier narrative was invalidated]",
                     "[सुधार/विरोधाभास के बाद नया निष्पक्ष विवरण आवश्यक है; पहले का विवरण हटाया गया]")
     resolution = clean(case.desired_resolution) or t("[Desired resolution]", "[इच्छित समाधान]")
+    product = clean(case.product_or_service)
+    recorded_purchase_date = clean(case.purchase_date_text)
+    purchase_year_missing = bool(recorded_purchase_date and not DATE_MENTION.search(recorded_purchase_date))
+    purchase_date = recorded_purchase_date or t("[Purchase date]", "[खरीद की तारीख]")
+    if purchase_year_missing:
+        purchase_date += t(" [Year]", " [वर्ष]")
     incident = case.incident_date.isoformat() if case.incident_date else t("[Incident date]", "[घटना की तारीख]")
     # amount_inr does not tell us whether money was paid, charged, requested, or refunded.
     amount = f"₹{case.amount_inr:,f}" if case.amount_inr is not None else t("[Amount in INR]", "[राशि रुपये में]")
@@ -230,11 +236,13 @@ def generate_package(
         t("I am writing about my consumer grievance. The following is my account of events, subject to review:",
           "मैं अपनी उपभोक्ता शिकायत के संबंध में लिख रहा/रही हूँ। नीचे मेरे बताए अनुसार घटनाओं का विवरण है; इसकी समीक्षा की जानी है:"),
         problem,
-        t("Order/reference ID: [Order ID]\nProduct/service: [Product/service]\nPurchase/order date: [Purchase date]",
-          "ऑर्डर/संदर्भ संख्या: [ऑर्डर आईडी]\nउत्पाद/सेवा: [उत्पाद/सेवा]\nखरीद/ऑर्डर की तारीख: [खरीद की तारीख]"),
+        t("Order/reference ID: [Order ID]\nProduct/service: ", "ऑर्डर/संदर्भ संख्या: [ऑर्डर आईडी]\nउत्पाद/सेवा: ")
+        + (product or t("[Product/service]", "[उत्पाद/सेवा]"))
+        + t("\nPurchase/order date: ", "\nखरीद/ऑर्डर की तारीख: ") + purchase_date,
         t("Reported incident date (confirm what this date refers to): ", "बताई गई घटना की तारीख (तारीख का संदर्भ स्पष्ट करें): ") + incident,
         t("Amount reported for this grievance (confirm whether price, payment or refund): ", "शिकायत में बताई गई राशि (कीमत, भुगतान या रिफंड का संदर्भ स्पष्ट करें): ") + amount,
         t("Timeline supplied by me:\n", "मेरे बताए अनुसार घटनाक्रम:\n") + timeline_text,
+        t("Evidence I report having:\n", "मेरे बताए अनुसार उपलब्ध साक्ष्य:\n") + reported,
         t("Previous communication reported by me:\n", "मेरे बताए अनुसार पिछला संपर्क:\n") + attempts_text,
         t("My requested resolution: ", "मेरा अनुरोधित समाधान: ") + resolution,
         t("Please review my concern and provide a written response explaining the proposed resolution.",
@@ -242,15 +250,20 @@ def generate_package(
         t("Thank you,\n[Your name]\n[Your contact details]", "धन्यवाद,\n[आपका नाम]\n[आपकी संपर्क जानकारी]"),
     ))
     missing = [FIELDS[name][language] for name in readiness.missing]
-    missing += [t("Order ID, exact product/service, purchase date, name and contact details",
-                  "ऑर्डर आईडी, सटीक उत्पाद/सेवा, खरीद की तारीख, नाम और संपर्क जानकारी")]
+    missing += [t("Order ID", "ऑर्डर आईडी"), t("Name and contact details", "नाम और संपर्क जानकारी")]
+    if purchase_year_missing:
+        missing.append(t("Purchase year", "खरीद का वर्ष"))
+    elif not recorded_purchase_date:
+        missing.append(t("Purchase date", "खरीद की तारीख"))
+    if not product:
+        missing.append(t("Exact product/service", "सटीक उत्पाद/सेवा"))
     missing += [clean(item) for item in case.unanswered_questions if clean(item)]
     sections = (
         (t("Company/seller", "कंपनी/विक्रेता"), seller),
-        (t("Product/service", "उत्पाद/सेवा"), t("[Product/service — confirm from your order]", "[उत्पाद/सेवा — ऑर्डर देखकर पुष्टि करें]")),
+        (t("Product/service", "उत्पाद/सेवा"), product or t("[Product/service — confirm from your order]", "[उत्पाद/सेवा — ऑर्डर देखकर पुष्टि करें]")),
         (t("Issue category", "समस्या की श्रेणी"), clean(case.issue_type) or t("[Issue type]", "[समस्या की श्रेणी]")),
-        (t("Transaction details", "लेनदेन का विवरण"), t("Order ID: [Order ID]\nPurchase date: [Purchase date]\nRecorded amount: ",
-             "ऑर्डर आईडी: [ऑर्डर आईडी]\nखरीद की तारीख: [खरीद की तारीख]\nदर्ज राशि: ") + amount),
+        (t("Transaction details", "लेनदेन का विवरण"), t("Order ID: [Order ID]\nPurchase date: ",
+             "ऑर्डर आईडी: [ऑर्डर आईडी]\nखरीद की तारीख: ") + purchase_date + t("\nRecorded amount: ", "\nदर्ज राशि: ") + amount),
         (t("Reported incident date (type of event to confirm)", "बताई गई घटना की तारीख (घटना का प्रकार स्पष्ट करें)"), incident),
         (t("Grievance — user's account", "शिकायत — उपयोगकर्ता के बताए अनुसार"), problem),
         (t("Timeline — user's account", "घटनाक्रम — उपयोगकर्ता के बताए अनुसार"), timeline_text),

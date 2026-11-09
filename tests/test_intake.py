@@ -38,7 +38,8 @@ def test_partial_extraction_keeps_unknowns_and_original_case():
     assert updated.incident_date is None
     assert updated.evidence_available == []
     assert updated.case_status == "in_progress"
-    assert updated.unanswered_questions == [reply]
+    assert updated.unanswered_questions[0] == reply
+    assert len(updated.unanswered_questions) == 3
     assert original == CaseFile()
 
 

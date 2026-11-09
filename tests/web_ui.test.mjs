@@ -51,7 +51,7 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
     if(path==="/api/transcribe")return transcriptionError ? {ok:false,json:async()=>({error:{code:"empty_transcription",message:"Provider returned no transcript; this does not confirm silence."}})} : {ok:true,json:async()=>({transcript:"Mera 2000 ka refund pending hai"})};
     if(path==="/api/chat"){
       if(body.message.includes("2500"))amount="2500";
-      return{ok:true,json:async()=>({case:caseData(),reply:"<img src=x onerror=alert(1)> Which seller?",guidance:{status:"grounded",language:"en",message:"",citations:[
+      return{ok:true,json:async()=>({case:caseData(),case_signature:`signature-${amount}`,reply:"<img src=x onerror=alert(1)> Which seller?",guidance:{status:"grounded",language:"en",message:"",citations:[
         {source_id:"OFFLINE-FIXTURE",title:"Official fixture",url:"https://consumeraffairs.gov.in/",explanation:"Checked fixture explanation",next_step:"Review the records",limitation:"Not an outcome guarantee",location:"Fixture only",date_checked:"2026-11-09"},
         {source_id:"UNSAFE-FIXTURE",title:"Unsafe fixture",url:"javascript:alert(1)",explanation:"Do not render this link"},
       ]},readiness,fingerprint:amount,error:null})};
@@ -68,6 +68,7 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
   assert.equal($("guidance-content").children.length,1);
   assert.equal($("guidance-content").children[0].children[1].href,"https://consumeraffairs.gov.in/");
   $("provisional").checked=true;await emit("generate");
+  assert.equal(calls.at(-1).body.case_signature,"signature-2999");
   assert.equal($("complaint").value,"Current complaint 2999");
   $("complaint").value="My manually reviewed complaint";$("nch-summary").value="My manual NCH summary";
   await emit("download-complaint");
@@ -78,8 +79,10 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
   $("language").value="hi";await emit("language","change");
   assert.equal($("complaint").value,"My manually reviewed complaint");
   $("message").value="Correction: amount 2500";await emit("chat-form","submit");await until(()=>!$("send").disabled);
+  assert.equal(calls.at(-1).body.case_signature,"signature-2999");
   assert.equal($("complaint").value,"My manually reviewed complaint");assert.equal($("nch-summary").value,"My manual NCH summary");assert.equal($("outdated").hidden,false);
   await emit("generate");assert.equal($("complaint").value,"Current complaint 2500");assert.equal($("outdated").hidden,true);
+  assert.equal(calls.at(-1).body.case_signature,"signature-2500");
   $("document-language").value="hi";await emit("document-language","change");assert.equal($("outdated").hidden,false);assert.equal($("complaint").value,"Current complaint 2500");
   await emit("new-case");assert.equal($("complaint").value,"");assert.equal($("messages").children.length,0);
   const beforeVoice=calls.length;
@@ -98,6 +101,7 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
   $("transcript").value="Approved correction 2500";await emit("transcript","input");
   await emit("send-voice");await emit("send-voice");await until(()=>!$("send").disabled);
   assert.equal(calls.length,beforeVoice+3);assert.equal(calls.at(-1).body.message,"Approved correction 2500");assert.equal($("send-voice").disabled,true);
+  assert.equal(calls.at(-1).body.case_signature,null);
   const beforeLanguage=calls.length;await emit("language","change");assert.equal(calls.length,beforeLanguage);
   fail=true;$("message").value="Refund still pending";await emit("chat-form","submit");await until(()=>!$("send").disabled);
   assert.equal($("request-error").hidden,false);assert.equal(calls.length,beforeLanguage+1);

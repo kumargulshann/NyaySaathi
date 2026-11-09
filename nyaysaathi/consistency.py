@@ -43,21 +43,21 @@ CLARIFY = {
     "en": {
         "amount_inr": "What amount can you confirm for this grievance?",
         "incident_date": "Which incident date can you confirm from your records?",
-        "company_or_seller": "Which seller or company name can you confirm?",
+        "company_or_seller": "Which seller or platform did you order from?",
         "desired_resolution": "What resolution are you requesting now?",
         "issue_type": "What consumer problem can you confirm?",
     },
     "hi": {
         "amount_inr": "इस शिकायत के लिए किस राशि की पुष्टि कर सकते हैं?",
         "incident_date": "अपने रिकॉर्ड से किस घटना की तारीख की पुष्टि कर सकते हैं?",
-        "company_or_seller": "किस विक्रेता या कंपनी के नाम की पुष्टि कर सकते हैं?",
+        "company_or_seller": "आपने किस विक्रेता या प्लेटफ़ॉर्म से ऑर्डर किया था?",
         "desired_resolution": "अब आप क्या समाधान चाहते हैं?",
         "issue_type": "किस उपभोक्ता समस्या की पुष्टि कर सकते हैं?",
     },
     "hinglish": {
         "amount_inr": "Is grievance ke liye kaunsi amount confirm kar sakte hain?",
         "incident_date": "Apne records se kaunsi incident date confirm kar sakte hain?",
-        "company_or_seller": "Kaunsa seller ya company name confirm kar sakte hain?",
+        "company_or_seller": "Aapne kis seller ya platform se order kiya tha?",
         "desired_resolution": "Ab aap kya resolution chahte hain?",
         "issue_type": "Kaunsi consumer problem confirm kar sakte hain?",
     },
@@ -107,6 +107,8 @@ def protect_narratives(case: CaseFile) -> CaseFile:
         setattr(safe, field, None)
     safe.user_summary = None
     safe.timeline = []
+    if "incident_date" in safe.uncertain_fields:
+        safe.purchase_date_text = None
     safe.evidence_missing = []
     safe.unanswered_questions = [consistency_question(safe, safe.user_language or "en")]
     safe.confidence_or_uncertainty = REVIEW_NOTICE[safe.user_language or "en"]

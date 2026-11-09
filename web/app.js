@@ -29,13 +29,15 @@ const translations = {
   micError:["Microphone unavailable or permission denied. Check browser permissions or use text chat.","माइक्रोफ़ोन उपलब्ध नहीं या अनुमति नहीं मिली। ब्राउज़र की अनुमति जाँचें या लिखकर संदेश भेजें।"], browserError:["This browser cannot record PCM audio here. Use a recent browser on localhost/HTTPS, or type your message.","यह ब्राउज़र यहाँ PCM ऑडियो रिकॉर्ड नहीं कर सकता। localhost/HTTPS पर नया ब्राउज़र इस्तेमाल करें या संदेश लिखें।"], audioError:["The recording could not be prepared. Try a shorter recording or use text chat.","रिकॉर्डिंग तैयार नहीं हो सकी। छोटा संदेश रिकॉर्ड करें या लिखें।"], networkError:["Request failed or timed out. Your existing case is kept. No automatic retry was made.","अनुरोध विफल हुआ या समय समाप्त हुआ। मौजूदा केस सुरक्षित है। अपने आप दोबारा प्रयास नहीं हुआ।"],
 };
 const errorHindi = {
+  invalid_case:"इस केस की पुष्टि नहीं हो सकी। जारी रखने के लिए नया केस शुरू करें।",
   silent_audio:"रिकॉर्डिंग में केवल मौन है। माइक्रोफ़ोन जाँचें और रिकॉर्डिंग सुनें।", empty_transcription:"प्रदाता ने कोई पाठ नहीं लौटाया; इससे मौन की पुष्टि नहीं होती। रिकॉर्डिंग सुनें और बाद में प्रयास करें। केस में कुछ नहीं भेजा गया।",
   missing_configuration:"सर्वर पर Gemini की API key और मॉडल कॉन्फ़िगरेशन जाँचें।", rate_limit:"प्रदाता की उपयोग सीमा पूरी हुई। फिर प्रयास करने से पहले कोटा जाँचें।", timeout:"प्रदाता का समय समाप्त हुआ। अपने आप दोबारा प्रयास नहीं हुआ।", model_error:"प्रदाता अनुरोध पूरा नहीं कर सका। मॉडल की पहुँच और कनेक्शन जाँचें।", invalid_output:"उत्तर सुरक्षित रूप से सत्यापित नहीं हो सका। पिछला केस सुरक्षित है।", unintelligible_audio:"उपयोगी आवाज़ का पाठ नहीं मिला। फिर रिकॉर्ड करें या लिखें।", invalid_audio:"WAV रिकॉर्डिंग अमान्य या अधूरी है।", unsupported_audio:"केवल 16-bit PCM WAV ऑडियो स्वीकार है।", audio_too_long:"रिकॉर्डिंग अधिकतम 60 सेकंड होनी चाहिए।", audio_too_large:"रिकॉर्डिंग 2 MB से छोटी होनी चाहिए।", request_too_large:"अनुरोध आकार सीमा से बड़ा है। छोटा संदेश या रिकॉर्डिंग दें।", invalid_request:"अनुरोध अमान्य है या केस/बातचीत की सीमा से बड़ा है।",
 };
 const fields = {
+  product_or_service:["Product / service","उत्पाद / सेवा"], purchase_date_text:["Purchase date as reported","बताई गई खरीद की तारीख"],
   issue_type:["Issue type","समस्या की श्रेणी"], company_or_seller:["Company / seller","कंपनी / विक्रेता"], amount_inr:["Recorded amount","दर्ज राशि"], incident_date:["Incident date","घटना की तारीख"], user_summary:["Your account","आपका विवरण"], timeline:["Timeline","घटनाक्रम"], evidence_available:["Reported evidence","बताया गया साक्ष्य"], desired_resolution:["Desired resolution","इच्छित समाधान"],
 };
-const state = {case:{}, messages:[], guidance:null, readiness:null, fingerprint:null, package:null, busy:false, recording:false, starting:false,
+const state = {case:{}, caseSignature:null, messages:[], guidance:null, readiness:null, fingerprint:null, package:null, busy:false, recording:false, starting:false,
   voice:{blob:null, url:null, id:null, transcribed:false, submitted:new Set()}, recorder:null};
 const language = () => $("language").value;
 const t = (key) => translations[key]?.[language() === "hi" ? 1 : 0] || key;
@@ -147,8 +149,8 @@ async function submitMessage(text, voiceId = null) {
   state.messages.push({role:"user",content:text}); state.guidance = null; $("message").value = "";
   renderMessages(); renderGuidance(); setBusy(true);
   try {
-    const result = await api("/api/chat", {message:text, language:language(), case:state.case, history});
-    state.case = result.case; state.guidance = result.guidance; state.readiness = result.readiness; state.fingerprint = result.fingerprint;
+    const result = await api("/api/chat", {message:text, language:language(), case:state.case, case_signature:state.caseSignature, history});
+    state.case = result.case; state.caseSignature = result.case_signature; state.guidance = result.guidance; state.readiness = result.readiness; state.fingerprint = result.fingerprint;
     if (result.reply) state.messages.push({role:"assistant",content:result.reply});
     renderMessages(); renderCase(); renderGuidance(); renderPackageStatus();
     if (result.error) showError(result.error);
@@ -214,7 +216,7 @@ $("generate").addEventListener("click", async () => {
   if (state.busy || state.recording || state.starting) return;
   setBusy(true, "generating");
   try {
-    const result = await api("/api/action-package", {case:state.case, history:boundedHistory(), language:$("document-language").value, provisional:$("provisional").checked});
+    const result = await api("/api/action-package", {case:state.case, case_signature:state.caseSignature, history:boundedHistory(), language:$("document-language").value, provisional:$("provisional").checked});
     state.readiness = result.readiness;
     if (result.package) {
       state.package = result.package; state.fingerprint = result.package.fingerprint;
@@ -236,7 +238,7 @@ $("download-complaint").addEventListener("click", () => download("complaint", "c
 $("download-summary").addEventListener("click", () => download("nch-summary", "nch_summary"));
 $("new-case").addEventListener("click", () => {
   if (state.busy || state.recording || state.starting) return;
-  clearVoice(); state.voice.submitted.clear(); state.case = {}; state.messages = []; state.guidance = null;
+  clearVoice(); state.voice.submitted.clear(); state.case = {}; state.caseSignature = null; state.messages = []; state.guidance = null;
   state.readiness = null; state.fingerprint = null; state.package = null;
   $("message").value = ""; $("complaint").value = ""; $("nch-summary").value = "";
   $("documents").hidden = true; $("provisional").checked = false; $("request-error").hidden = true;

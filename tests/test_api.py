@@ -5,7 +5,7 @@ import json
 from fastapi.testclient import TestClient
 import pytest
 
-from backend.main import app, server_settings
+from backend.main import app, server_settings, sign_case
 from nyaysaathi.action_package import generate_package
 from nyaysaathi.intake import IntakeError
 from nyaysaathi.knowledge import load_knowledge
@@ -44,6 +44,14 @@ def complete_case():
                     desired_resolution="refund", evidence_available=["invoice"])
 
 
+def signed(case):
+    return {"case": case.model_dump(mode="json"), "case_signature": sign_case(case, "test-private-key")}
+
+
+def returned_case(response):
+    return {field: response[field] for field in ("case", "case_signature")}
+
+
 WASHER_STORY = (
     "I ordered a washing machine worth ₹18,000 from an online seller on October 15. "
     "It arrived damaged. I have the invoice, photographs and customer support emails. "
@@ -74,13 +82,141 @@ def test_washer_intake_preserves_reported_facts_and_grounded_options(client, mon
     case = body["case"]
     assert body["error"] is None
     assert case["issue_type"] == "defective product" and case["amount_inr"] == "18000"
-    assert case["timeline"] == ["The seller has refused a replacement."]
+    assert case["timeline"] == [WASHER_STORY.split(". ")[0] + ".", "The seller has refused a replacement."]
     assert case["evidence_available"] == WASHER_EVIDENCE
     assert all(case[field] is None for field in ("company_or_seller", "incident_date", "desired_resolution"))
-    assert body["reply"] == "Which seller did you order from?"
+    assert body["reply"] == "Which seller or platform did you order from?"
     assert len(body["missing_information"]) == 3
     assert body["guidance"]["status"] == "grounded"
     assert body["guidance"]["citations"][0]["source_id"] == "CPA-DEFECT"
+    provider.assert_called_once()
+
+
+def test_washer_rejects_inferred_remedy_and_generic_seller_in_both_documents(client, monkeypatch):
+    changes = washer_changes()
+    changes[2]["value"] = "The buyer wants a replacement from the online seller."
+    changes.extend([
+        {"field": "company_or_seller", "value": "online seller", "source_quote": "an online seller"},
+        {"field": "desired_resolution", "value": "replacement", "source_quote": "The seller has refused a replacement."},
+    ])
+    provider = mock_intake(monkeypatch, changes=changes, source="CPA-DEFECT", missing_details=[])
+    body = client.post("/api/chat", json={"message": WASHER_STORY}).json()
+    case = body["case"]
+    assert body["error"] is None and body["guidance"]["status"] == "grounded"
+    assert case["amount_inr"] == "18000" and case["evidence_available"] == WASHER_EVIDENCE
+    assert case["issue_type"] == "defective product" and case["user_summary"] == "It arrived damaged."
+    assert case["product_or_service"] == "washing machine" and case["purchase_date_text"] == "October 15"
+    assert all(case[field] is None for field in ("company_or_seller", "desired_resolution", "incident_date"))
+    assert body["reply"] == "Which seller or platform did you order from?"
+    assert case["unanswered_questions"] == body["missing_information"] == [
+        body["reply"], "What resolution are you requesting now?", "What year did you place the order?",
+    ]
+    assert "from an online seller on October 15" in case["timeline"][0]
+    assert "The seller has refused a replacement." in case["timeline"]
+
+    response = client.post("/api/action-package", json={**returned_case(body), "provisional": True})
+    assert response.status_code == 200
+    package = response.json()["package"]
+    assert "To: [Seller/company]" in package["complaint"]
+    assert "My requested resolution: [Desired resolution]" in package["complaint"]
+    assert "Product/service:\nwashing machine" in package["summary"]
+    assert "Desired outcome:\n[Desired resolution]" in package["summary"]
+    for document in (package["complaint"], package["summary"]):
+        assert "October 15 [Year]" in document and "₹18,000" in document
+        assert "2026" not in document and "buyer wants a replacement" not in document
+        assert "The seller has refused a replacement." in document
+        assert all(item in document for item in WASHER_EVIDENCE)
+    assert package["checklist"]["reported"] == WASHER_EVIDENCE
+    provider.assert_called_once()
+
+
+@pytest.mark.parametrize("message,language,proposed,accepted", [
+    ("I want a replacement.", "en", "replacement", "replacement"),
+    ("I want my money back.", "en", "refund", "refund"),
+    ("I requested replacement earlier, but now I want a refund.", "en", "refund", "refund"),
+    ("मुझे रिफंड चाहिए।", "hi", "Refund", "Refund"),
+    ("Mujhe replacement chahiye.", "hinglish", "replacement", "replacement"),
+    ("I want to know why replacement was refused.", "en", "replacement", None),
+    ("I don't want a refund.", "en", "refund", None),
+    ("I requested a refund last week.", "en", "refund", None),
+    ("I want a refund or a replacement.", "en", "replacement", None),
+    ("I requested replacement earlier, but now I want a refund.", "en", "replacement", None),
+])
+def test_current_remedy_requires_an_explicit_user_request(client, monkeypatch, message, language, proposed, accepted):
+    case = CaseFile(issue_type="defective product", company_or_seller="Example Shop")
+    mock_intake(monkeypatch, language=language, changes=[
+        {"field": "desired_resolution", "value": proposed, "source_quote": message},
+    ])
+    body = client.post("/api/chat", json={"message": message, "language": language, **signed(case)}).json()
+    assert body["error"] is None and body["case"]["desired_resolution"] == accepted
+    if accepted is None:
+        assert body["reply"] == "What resolution are you requesting now?"
+
+
+@pytest.mark.parametrize("message,name", [
+    ("I bought the washer from Flipkart.", "Flipkart"),
+    ("The seller is India Online Store.", "India Online Store"),
+    ("मैंने कमल स्टोर से खरीदा।", "कमल स्टोर"),
+])
+def test_specific_seller_names_survive_validation(client, monkeypatch, message, name):
+    mock_intake(monkeypatch, changes=[{"field": "company_or_seller", "value": name, "source_quote": message}])
+    body = client.post("/api/chat", json={"message": message}).json()
+    assert body["error"] is None and body["case"]["company_or_seller"] == name
+
+
+def test_explicit_remedy_change_updates_new_drafts(client, monkeypatch):
+    initial = complete_case().model_copy(update={"desired_resolution": "replacement", "user_summary": "I want a replacement."})
+    message = "I requested replacement earlier, but now I want a refund."
+    mock_intake(monkeypatch, changes=[{"field": "desired_resolution", "value": "refund", "source_quote": message}])
+    body = client.post("/api/chat", json={"message": message, **signed(initial)}).json()
+    assert body["error"] is None and body["case"]["desired_resolution"] == "refund"
+    package = client.post("/api/action-package", json={**returned_case(body), "provisional": True}).json()["package"]
+    assert "My requested resolution: refund" in package["complaint"]
+    assert "Desired outcome:\nrefund" in package["summary"]
+    assert "I want a replacement" not in package["complaint"] + package["summary"]
+
+
+def test_washer_followups_complete_purchase_year_without_assigning_an_incident_date(client, monkeypatch):
+    mock_intake(monkeypatch, changes=washer_changes())
+    body = client.post("/api/chat", json={"message": WASHER_STORY}).json()
+    assert "seller or platform" in body["reply"]
+    for message, field, value, followup in (
+        ("The seller is Flipkart.", "company_or_seller", "Flipkart", "What resolution are you requesting now?"),
+        ("Replacement", "desired_resolution", "replacement", "What year did you place the order?"),
+    ):
+        mock_intake(monkeypatch, changes=[{"field": field, "value": value, "source_quote": message}])
+        body = client.post("/api/chat", json={"message": message, **returned_case(body),
+            "history": [{"role": "assistant", "content": body["reply"]}]}).json()
+        assert body["case"][field] == value and body["reply"] == followup
+
+    mock_intake(monkeypatch, case_status="ready_for_review", next_question=None)
+    body = client.post("/api/chat", json={"message": "2025.", **returned_case(body),
+        "history": [{"role": "assistant", "content": body["reply"]}]}).json()
+    assert body["case"]["purchase_date_text"] == "October 15, 2025"
+    assert body["case"]["incident_date"] is None
+    package = client.post("/api/action-package", json={**returned_case(body), "provisional": True}).json()["package"]
+    for document in (package["complaint"], package["summary"]):
+        assert "October 15, 2025" in document and "[Year]" not in document
+        assert "Flipkart" in document and "washing machine" in document
+
+
+@pytest.mark.parametrize("endpoint", ["/api/chat", "/api/action-package"])
+@pytest.mark.parametrize("include_signature", [False, True])
+def test_browser_cannot_supply_unvalidated_case_facts(client, monkeypatch, endpoint, include_signature):
+    provider = mock_intake(monkeypatch, changes=washer_changes())
+    body = client.post("/api/chat", json={"message": WASHER_STORY}).json()
+    original = returned_case(body)
+    altered = {"case": {**original["case"], "company_or_seller": "Invented Shop", "desired_resolution": "refund",
+                        "purchase_date_text": "October 15, 2099", "amount_inr": "99999"}}
+    if include_signature:
+        altered["case_signature"] = original["case_signature"]
+    if endpoint == "/api/chat":
+        altered["message"] = "What should I do next?"
+    else:
+        altered["provisional"] = True
+    response = client.post(endpoint, json=altered)
+    assert response.status_code == 422 and response.json()["error"]["code"] == "invalid_case"
+    assert "Invented Shop" not in response.text and "package" not in response.json()
     provider.assert_called_once()
 
 
@@ -102,7 +238,8 @@ def test_washer_mixed_output_recovers_independent_facts_only(client, monkeypatch
     assert body["error"] is None and "Some details still need review" in body["reply"]
     assert body["reply"].count("?") == 1 and "date" in body["reply"]
     assert case["amount_inr"] == "18000" and case["evidence_available"] == WASHER_EVIDENCE
-    assert case["user_summary"] is None and case["timeline"] == [] and case["incident_date"] is None
+    assert case["user_summary"] is None and case["incident_date"] is None
+    assert case["timeline"] == [WASHER_STORY.split(". ")[0] + "."]
     assert case["desired_resolution"] is None and case["case_status"] == "in_progress"
     assert body["guidance"]["status"] == "grounded"
     assert "2026" not in json.dumps(case)
@@ -144,7 +281,7 @@ def test_washer_recovers_from_the_combination_reported_by_production(client, mon
     assert body["error"] is None and "Some details still need review" in body["reply"]
     assert body["reply"].count("?") == 1 and "seller" in body["reply"]
     assert case["amount_inr"] == "18000" and case["evidence_available"] == WASHER_EVIDENCE
-    assert case["timeline"] == ["It arrived damaged.", "The seller has refused a replacement."]
+    assert case["timeline"] == [WASHER_STORY.split(". ")[0] + ".", "It arrived damaged.", "The seller has refused a replacement."]
     assert all(case[field] is None for field in ("user_summary", "company_or_seller", "incident_date", "desired_resolution"))
     assert body["guidance"]["status"] == "grounded"
     assert body["guidance"]["citations"][0]["source_id"] == "CPA-DEFECT"
@@ -161,7 +298,7 @@ def test_mixed_timeline_correction_keeps_existing_case(client, monkeypatch):
     changes.append({"field": "timeline", "value": ["It arrived damaged."],
                     "source_quote": "It arrived damaged.", "is_correction": True})
     mock_intake(monkeypatch, changes=changes)
-    response = client.post("/api/chat", json={"message": WASHER_STORY, "case": original.model_dump(mode="json")})
+    response = client.post("/api/chat", json={"message": WASHER_STORY, **signed(original)})
     body = response.json()
     assert body["error"]["code"] == "invalid_output"
     assert CaseFile.model_validate(body["case"]) == original
@@ -207,7 +344,7 @@ def test_washer_invalid_output_never_commits_unsafe_changes(client, monkeypatch,
     if kind == "broken_json":
         provider.return_value = "{ " + WASHER_STORY
     original = CaseFile(evidence_missing=["order record"])
-    response = client.post("/api/chat", json={"message": WASHER_STORY, "case": original.model_dump(mode="json")})
+    response = client.post("/api/chat", json={"message": WASHER_STORY, **signed(original)})
     body = response.json()
     if "case" in body:
         assert CaseFile.model_validate(body["case"]) == original
@@ -258,11 +395,11 @@ def test_multilingual_intake_and_unknowns(client, monkeypatch, language, text):
 def test_correction_updates_case_and_final_documents(client, monkeypatch):
     case = CaseFile.model_validate({**complete_case().model_dump(), "amount_inr":"2000", "user_summary":"Headphones cost Rs 2000."})
     mock_intake(monkeypatch, changes=[{"field":"amount_inr","value":"2500","source_quote":"2500","is_correction":True}])
-    response = client.post("/api/chat",json={"message":"Correction: amount 2500", "case":case.model_dump(mode="json")})
+    response = client.post("/api/chat",json={"message":"Correction: amount 2500", **signed(case)})
     result = response.json()
     assert result["case"]["amount_inr"] == "2500"
     assert result["case"]["user_summary"] is None and result["case"]["timeline"] == []
-    package = client.post("/api/action-package",json={"case":result["case"],"provisional":True}).json()["package"]
+    package = client.post("/api/action-package",json={**returned_case(result), "provisional":True}).json()["package"]
     assert "₹2,500" in package["complaint"]
     assert "2000" not in package["complaint"] + package["summary"]
 
@@ -308,7 +445,7 @@ def test_out_of_scope_blocks_package_without_client_status_flags(client, monkeyp
     assert response["guidance"]["status"] == "out_of_scope"
     assert response["readiness"]["status"] == "out_of_scope"
     result = client.post("/api/action-package",json={
-        "case":complete_case().model_dump(mode="json"),
+        **signed(complete_case()),
         "history":[{"role":"user","content":"Court notice and hearing deadline tomorrow"}],
     }).json()
     assert result["readiness"]["status"] == "out_of_scope" and result["package"] is None
@@ -317,10 +454,10 @@ def test_out_of_scope_blocks_package_without_client_status_flags(client, monkeyp
 def test_packages_reuse_exact_generator_and_require_provisional_consent(client, monkeypatch):
     provider = mock_intake(monkeypatch)
     case = complete_case()
-    result = client.post("/api/action-package",json={"case":case.model_dump(mode="json")}).json()
+    result = client.post("/api/action-package",json=signed(case)).json()
     assert result["package"]["complaint"] == generate_package(case).complaint
     assert result["package"]["checklist"]["reported"] == ["invoice"]
-    partial = client.post("/api/action-package",json={"case":{"issue_type":"refund"}}).json()
+    partial = client.post("/api/action-package",json=signed(CaseFile(issue_type="refund"))).json()
     assert partial["package"] is None
     assert partial["readiness"]["provisional_allowed"]
     provider.assert_not_called()
@@ -409,8 +546,7 @@ def test_missing_real_settings_does_not_construct_gemini_client(client):
 
 def test_each_request_uses_only_supplied_state_and_no_sessions(client, monkeypatch):
     provider = mock_intake(monkeypatch)
-    known = complete_case().model_dump(mode="json")
-    first = client.post("/api/chat",json={"message":"Refund pending", "case":known})
+    first = client.post("/api/chat",json={"message":"Refund pending", **signed(complete_case())})
     second = client.post("/api/chat",json={"message":"Another consumer grievance"})
     assert first.json()["case"]["company_or_seller"] == "Example Shop"
     assert second.json()["case"]["company_or_seller"] is None

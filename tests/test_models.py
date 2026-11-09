@@ -17,6 +17,8 @@ def test_empty_case_has_expected_unknown_fields():
         "company_or_seller": None,
         "amount_inr": None,
         "incident_date": None,
+        "product_or_service": None,
+        "purchase_date_text": None,
         "timeline": [],
         "evidence_available": [],
         "evidence_missing": [],

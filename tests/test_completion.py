@@ -5,7 +5,8 @@ from unittest.mock import Mock
 from fastapi.testclient import TestClient
 import pytest
 
-from backend.main import app, server_settings
+from backend.main import app, server_settings, sign_case
+from nyaysaathi.consistency import CLARIFY
 from nyaysaathi.intake import IntakeError, run_turn
 from nyaysaathi.knowledge import load_knowledge
 from nyaysaathi.models import CaseFile
@@ -35,7 +36,7 @@ def test_completed_intake_hands_off_without_inventing_a_new_question_or_facts(la
     assert "?" not in result.reply
     assert result.case.amount_inr == original.amount_inr
     assert result.case.incident_date is None and result.case.evidence_available == []
-    assert result.case.unanswered_questions == []
+    assert result.case.unanswered_questions == [CLARIFY[language]["incident_date"]]
     assert result.guidance.status == "grounded" and result.guidance.entries
 
 
@@ -61,6 +62,7 @@ def test_screenshot_followup_returns_200_reply_and_validated_sources(monkeypatch
     try:
         with TestClient(app) as client:
             response=client.post("/api/chat",json={"case":reviewed_case().model_dump(mode="json"),
+                "case_signature":sign_case(reviewed_case(), "offline-key"),
                 "history":[{"role":"assistant","content":"Do you want to correct any recorded detail before we conclude?"}],
                 "message":"No, now what should I do to proceed?"})
         assert response.status_code == 200
