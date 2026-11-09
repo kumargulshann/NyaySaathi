@@ -308,6 +308,99 @@ def test_ambiguous_remedy_prompts_for_clarification_then_accepts_answer(client, 
     provider.assert_not_called()
 
 
+@pytest.mark.parametrize("message,outcome,language", [
+    ("A working unit in its place would settle this for me.", "replacement", "en"),
+    ("I'd be happy if the debit was reversed to my card.", "refund", "en"),
+    ("They can collect it and put the money back on my card.", "return and refund", "en"),
+    ("इसकी जगह सही हालत वाला सामान मिल जाए तो बात बन जाएगी।", "replacement", "hi"),
+    ("Jo paise account se kate the woh dobara balance mein dikh jayein, bas.", "refund", "hinglish"),
+])
+def test_gemini_interprets_natural_remedy_without_command_words(client, monkeypatch, message, outcome, language):
+    question = CLARIFY[language]["desired_resolution"]
+    case = complete_case().model_copy(update={"desired_resolution": None, "unanswered_questions": [question]})
+    provider = mock_intake(monkeypatch, language=language, next_question=question,
+                           remedy_selection={"outcome": outcome, "source_quote": message})
+    body = client.post("/api/chat", json={"message": message, **signed(case), "history": [
+        {"role": "assistant", "content": question},
+    ]}).json()
+    provider.assert_called_once()
+    assert body["error"] is None and body["case"]["desired_resolution"] == outcome
+    assert body["case"]["evidence_available"] == case.evidence_available
+    assert question not in body["reply"] and question not in body["missing_information"]
+    assert body["guidance"]["status"] == "case_only"
+
+
+@pytest.mark.parametrize("message,quote", [
+    ("I don't want a refund.", "want a refund."),
+    ("I don't want a refund.", "I don't want a refund."),
+    ("I asked for a refund.", "I asked for a refund."),
+    ("Can they put it back on my card?", "Can they put it back on my card?"),
+    ("Either a new one or the payment back.", "Either a new one or the payment back."),
+    ("The seller refused to send a new one.", "The seller refused to send a new one."),
+    ("I have the invoice.", "I have the invoice."),
+    ("A working one would settle it.", "A refund would settle it."),
+    ("A replacement would help.", "A replacement"),
+])
+def test_semantic_remedy_proposal_cannot_bypass_source_and_intent_checks(client, monkeypatch, message, quote):
+    question = CLARIFY["en"]["desired_resolution"]
+    case = complete_case().model_copy(update={"desired_resolution": None, "unanswered_questions": [question]})
+    mock_intake(monkeypatch, next_question=question, remedy_selection={"outcome": "refund", "source_quote": quote})
+    body = client.post("/api/chat", json={"message": message, **signed(case), "history": [
+        {"role": "assistant", "content": question},
+    ]}).json()
+    assert body["error"] is None and body["case"]["desired_resolution"] is None
+
+
+def test_natural_remedy_correction_and_legal_question_share_one_call(client, monkeypatch):
+    case = complete_case().model_copy(update={"desired_resolution": "replacement", "user_summary": "I want a replacement."})
+    remedy = "At this point I'd be happier to see that debit reversed."
+    provider = mock_intake(monkeypatch, source="CPA-DEFECT", turn_intent="legal_question",
+                           remedy_selection={"outcome": "refund", "source_quote": remedy},
+                           next_question=None, case_status="ready_for_review")
+    body = client.post("/api/chat", json={"message": f"{remedy} What are my options for the damaged item?",
+                                          **signed(case)}).json()
+    provider.assert_called_once()
+    assert body["error"] is None and body["case"]["desired_resolution"] == "refund"
+    assert body["case"]["narrative_review_required"] and body["case"]["user_summary"] is None
+    assert body["guidance"]["status"] == "grounded"
+    assert body["guidance"]["citations"][0]["explanation"] in body["reply"]
+
+
+@pytest.mark.parametrize("intent,message,expected,source", [
+    ("evidence", "What should I keep handy from my emails and order records?", "invoice", None),
+    ("summary", "Could you recap the details you've picked up so far?", "Example Shop", None),
+    ("draft", "Put this into something I can send the shop.", "Action Package", None),
+    ("next", "How do I move this forward from here?", "Action Package", "CPA-DEFECT"),
+    ("legal_question", "How does a damaged product fit into consumer protection?", "defect", "CPA-DEFECT"),
+])
+def test_freeform_case_requests_answer_instead_of_repeating_intake(client, monkeypatch, intent, message, expected, source):
+    question = CLARIFY["en"]["desired_resolution"]
+    case = complete_case().model_copy(update={"desired_resolution": None, "unanswered_questions": [question]})
+    provider = mock_intake(monkeypatch, source=source, turn_intent=intent, next_question=None)
+    body = client.post("/api/chat", json={"message": message, **signed(case), "history": [
+        {"role": "assistant", "content": question},
+    ]}).json()
+    provider.assert_called_once()
+    assert body["error"] is None and expected in body["reply"] and question not in body["reply"]
+    assert body["case"] == case.model_dump(mode="json")
+    assert body["guidance"]["status"] == ("grounded" if source else "case_only")
+
+
+def test_natural_remedy_can_resume_after_an_evidence_question(client, monkeypatch):
+    question = CLARIFY["en"]["desired_resolution"]
+    case = complete_case().model_copy(update={"desired_resolution": None, "unanswered_questions": [question]})
+    message = "Something that works in its place would be enough."
+    mock_intake(monkeypatch, next_question=question,
+                remedy_selection={"outcome": "replacement", "source_quote": message})
+    body = client.post("/api/chat", json={"message": message, **signed(case), "history": [
+        {"role": "assistant", "content": question},
+        {"role": "user", "content": "What paperwork should I keep?"},
+        {"role": "assistant", "content": "You report having invoice."},
+    ]}).json()
+    assert body["error"] is None and body["case"]["desired_resolution"] == "replacement"
+    assert question not in body["reply"]
+
+
 def test_corrected_washer_conversation_moves_forward_without_restoring_old_prose(client, monkeypatch):
     history = []
     body = None

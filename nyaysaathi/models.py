@@ -62,6 +62,15 @@ class GuidanceSelection(BaseModel):
     explanation: str = Field(min_length=1, max_length=1800)
 
 
+class RemedySelection(BaseModel):
+    """An interpretation of the latest user's requested outcome, with its source."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    outcome: Literal["refund", "replacement", "return", "repair", "return and refund"]
+    source_quote: str = Field(min_length=1, max_length=12_000)
+
+
 class IntakeResponse(BaseModel):
     """A structured intake question, or a completed-intake handoff."""
 
@@ -69,6 +78,8 @@ class IntakeResponse(BaseModel):
 
     scope: Literal["in_scope", "out_of_scope", "unclear"]
     reply_language: Literal["en", "hi", "hinglish"]
+    turn_intent: Literal["intake", "summary", "draft", "next", "evidence", "legal_question"] = "intake"
+    remedy_selection: RemedySelection | None = None
     changes: list[FactChange] = Field(default_factory=list, max_length=20)
     evidence_missing: list[str] = Field(default_factory=list, max_length=15)
     missing_details: list[str] = Field(default_factory=list, max_length=15)
@@ -84,7 +95,9 @@ class IntakeResponse(BaseModel):
     def require_one_question(self) -> "IntakeResponse":
         if self.scope != "out_of_scope":
             completed = self.scope == "in_scope" and self.case_status == "ready_for_review"
-            if (not self.next_question or not self.next_question.strip()) and not completed:
+            if (not self.next_question or not self.next_question.strip()) and not completed and (
+                self.scope == "unclear" or self.turn_intent == "intake" or self.changes or self.remedy_selection
+            ):
                 raise PydanticCustomError("missing_intake_question", "An intake turn must ask one question")
             if self.next_question and self.next_question.count("?") + self.next_question.count("？") > 1:
                 raise PydanticCustomError("multiple_intake_questions", "Ask one question at a time")

@@ -9,12 +9,12 @@ from typing import Protocol
 from pydantic import ValidationError
 
 from nyaysaathi.case_facts import (
-    PURCHASE_CONTEXT, PURCHASE_YEAR_QUESTION, REMEDY_SHIFT, direct_remedy_answer, is_purchase_date_proposal,
+    PURCHASE_CONTEXT, PURCHASE_YEAR_QUESTION, REMEDY_SHIFT, contextual_remedy, direct_remedy_answer, is_purchase_date_proposal,
     material_questions, named_seller, record_purchase_date_reply, record_purchase_details, requested_remedy,
 )
 from nyaysaathi.conversation import (
-    clarify_remedy, core_details_known, document_handoff, followup_intent, local_reply, localized,
-    next_fact_question, record_remedy_reply,
+    case_preview, clarify_remedy, core_details_known, document_handoff, evidence_reply, followup_intent, local_reply,
+    localized, next_fact_question, record_remedy_reply, remedy_acknowledgment,
 )
 from nyaysaathi.models import CaseFile, FactChange, IntakeResponse
 from nyaysaathi.guidance import UNSUPPORTED_LEGAL_TEXT, ValidatedGuidance, notice, validate_guidance
@@ -268,11 +268,29 @@ def _apply_intake(
             # A purchase-year disagreement cannot invalidate a separate incident date.
             unresolved.discard("incident_date")
         rejected_meaning = False
+        changes = result.changes
+        semantic_remedy = None
+        selection = result.remedy_selection
+        if selection:
+            # Read-only questions can interrupt intake without resolving a signed gap.
+            first_question = protected.unanswered_questions[0] if protected.unanswered_questions else ""
+            remedy_pending = protected.desired_resolution is None and _remedy_question_language(first_question) is not None
+            if contextual_remedy(selection, latest, asked=remedy_pending) and "desired_resolution" not in unresolved:
+                previous = protected.desired_resolution
+                semantic_remedy = FactChange(
+                    field="desired_resolution", value=selection.outcome, source_quote=selection.source_quote,
+                    is_correction=(previous is not None and previous != selection.outcome)
+                    or "desired_resolution" in protected.uncertain_fields,
+                )
+                changes = [change for change in changes if change.field != "desired_resolution"] + [semantic_remedy]
+            else:
+                _diagnostic("fact_proposal", "current_remedy_unconfirmed", "desired_resolution")
+                rejected_meaning = True
         # Validate the full proposal before changing anything. Pre-marking accepted
         # correction turns makes invalidation independent of model change ordering.
         # A locally confirmed order-date reply changes only that field. Model
         # proposals on the same reply cannot rewrite the other signed facts.
-        for change in (() if purchase_updated else result.changes):
+        for change in (() if purchase_updated else changes):
             if change.field in seen:
                 if not recover or change.field != "timeline":
                     raise _invalid("fact_proposal", "duplicate_field", change.field)
@@ -299,7 +317,7 @@ def _apply_intake(
                 _diagnostic("fact_proposal", "seller_name_unconfirmed", change.field)
                 rejected_meaning = True
                 continue
-            elif change.field == "desired_resolution" and change.value is not None:
+            elif change.field == "desired_resolution" and change.value is not None and change is not semantic_remedy:
                 if not requested_remedy(change.value, change.source_quote, latest,
                                         answering_remedy_question=answering_remedy):
                     _diagnostic("fact_proposal", "current_remedy_unconfirmed", change.field)
@@ -389,7 +407,8 @@ def _apply_intake(
             updated.timeline = list(dict.fromkeys([*updated.timeline, *_quoted_statements(updated, accepted, latest)]))
         language = result.reply_language
         gaps = material_questions(updated, language)
-        if updated.narrative_review_required or purchase_updated or (
+        semantic_remedy_applied = semantic_remedy is not None and updated.desired_resolution == semantic_remedy.value
+        if updated.narrative_review_required or purchase_updated or semantic_remedy_applied or (
             core_details_known(updated) and PURCHASE_YEAR_QUESTION[language] in gaps
         ):
             if updated.narrative_review_required:
@@ -428,6 +447,28 @@ class TurnResult:
     intake_error: str | None = None
 
 
+def _case_guidance(language: str) -> ValidatedGuidance:
+    message = localized(language, "Ask about your legal options to see checked sources.",
+                        "जाँचे गए स्रोतों के लिए अपने कानूनी विकल्प पूछें।",
+                        "Checked sources ke liye apne legal options poochhein.")
+    return ValidatedGuidance(language=language, status="case_only", message=message)
+
+
+def _request_reply(case: CaseFile, intent: str, guidance: ValidatedGuidance) -> str:
+    language = guidance.language
+    if intent == "summary":
+        return case_preview(case, language)
+    if intent == "evidence":
+        return evidence_reply(case, language)
+    if intent == "draft":
+        return local_reply(case, "draft", "", language)
+    if intent == "legal_question":
+        return guidance.entries[0].guidance[language] if guidance.entries else guidance.message
+    step = guidance.entries[0].next_step[language] if guidance.entries else guidance.message
+    handoff = document_handoff(language) if case.issue_type or case.user_summary else CLARIFY[language]["issue_type"]
+    return f"{step} {handoff}".strip()
+
+
 def run_turn(
     case: CaseFile, messages: list[dict[str, str]], language: str, provider: ModelProvider,
 ) -> TurnResult:
@@ -456,13 +497,9 @@ def run_turn(
             reply_language = "hi"
         elif re.search(r"\b(?:kya|maine|mere|mera|batao|haan|nahi|nahin|bana|galti)\b", latest, re.IGNORECASE):
             reply_language = "hinglish"
-        message = localized(reply_language, "Ask about your legal options to see checked sources.",
-                            "जाँचे गए स्रोतों के लिए अपने कानूनी विकल्प पूछें।",
-                            "Checked sources ke liye apne legal options poochhein.")
         reply = (record_remedy_reply(updated, remedy, reply_language) if remedy
                  else local_reply(updated, intent, prior, reply_language))
-        return TurnResult(protect_narratives(updated), reply,
-                          ValidatedGuidance(language=reply_language, status="case_only", message=message))
+        return TurnResult(protect_narratives(updated), reply, _case_guidance(reply_language))
     context = retrieve(latest, case)
     try:
         response = provider.analyze(case.model_copy(deep=True), messages, language, context)
@@ -471,6 +508,12 @@ def run_turn(
             _diagnostic("provider", "no_usable_output")
         raise
     result = _parse_response(response)
+    if result.turn_intent != "intake" or result.remedy_selection:
+        recent_safety = detect_safety(" ".join(item["content"] for item in messages if item["role"] == "user"))
+        if recent_safety in ("urgent_notice", "threat_or_crime"):
+            message = notice(recent_safety, result.reply_language)
+            return TurnResult(case.model_copy(deep=True), message,
+                              ValidatedGuidance(language=result.reply_language, status=recent_safety, message=message))
 
     # Generated intake fields cannot become an alternative channel for legal
     # assertions, made-up sections, URLs, or guaranteed outcomes.
@@ -491,11 +534,15 @@ def run_turn(
         ))
 
     intake_error = None
+    case_request = result.scope == "in_scope" and result.turn_intent != "intake"
     if intent == "next" and core_details_known(case):
         # A request for options can get newly checked guidance, but it is not
         # a statement of new facts or consent to restore any old narrative.
         updated = protect_narratives(case)
         reply = document_handoff(result.reply_language)
+    elif case_request and not (result.changes or result.remedy_selection):
+        updated = protect_narratives(case)
+        reply = ""
     else:
         try:
             updated, reply = _apply_intake(case, messages, result, recover=True)
@@ -512,6 +559,18 @@ def run_turn(
         # Keep critical warnings visible in chat as well as the options panel.
         reply = guidance.message
         updated = case.model_copy(deep=True)
-    elif asked_remedy and updated.desired_resolution is None and reply == CLARIFY[result.reply_language]["desired_resolution"]:
-        reply = clarify_remedy(result.reply_language)
+    else:
+        if case_request:
+            reply = _request_reply(updated, result.turn_intent, guidance)
+        elif asked_remedy and updated.desired_resolution is None and reply == CLARIFY[result.reply_language]["desired_resolution"]:
+            reply = clarify_remedy(result.reply_language)
+        if result.remedy_selection and updated.desired_resolution == result.remedy_selection.outcome and (
+            updated.desired_resolution != case.desired_resolution
+        ):
+            reply = f"{remedy_acknowledgment(updated.desired_resolution, result.reply_language)} {reply}".strip()
+        if guidance.status == "insufficient_sources" and result.safety_flag == "none" and (
+            result.turn_intent in ("summary", "draft", "evidence")
+            or (result.remedy_selection and result.turn_intent == "intake" and result.scope == "in_scope")
+        ):
+            guidance = _case_guidance(result.reply_language)
     return TurnResult(updated, reply, guidance, intake_error)

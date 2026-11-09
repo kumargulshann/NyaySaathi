@@ -1,6 +1,6 @@
 """Answers that can be given from current case facts without model prose."""
 
-from nyaysaathi.action_package import clean
+from nyaysaathi.action_package import clean, evidence_checklist
 from nyaysaathi.case_facts import PURCHASE_YEAR_QUESTION, material_questions
 from nyaysaathi.consistency import CLARIFY, DATE_MENTION, consistency_question
 from nyaysaathi.models import CaseFile
@@ -74,11 +74,15 @@ def record_remedy_reply(case: CaseFile, remedy: str, language: str) -> str:
     case.unanswered_questions = list(dict.fromkeys(
         ([question] if question else []) + material_questions(case, language)
     ))
-    remedy_hi = {"refund": "रिफंड", "replacement": "बदली", "repair": "मरम्मत", "return": "उत्पाद की वापसी"}[remedy]
-    acknowledgment = localized(language, f"I’ve recorded that you’re asking for a {remedy}.",
-                               f"मैंने दर्ज किया है कि आप {remedy_hi} चाहते हैं।",
-                               f"Maine note kar liya hai ki aapko {remedy} chahiye.")
-    return f"{acknowledgment} {question or document_handoff(language)}"
+    return f"{remedy_acknowledgment(remedy, language)} {question or document_handoff(language)}"
+
+
+def remedy_acknowledgment(remedy: str, language: str) -> str:
+    remedy_hi = {"refund": "रिफंड", "replacement": "बदली", "repair": "मरम्मत", "return": "उत्पाद की वापसी",
+                 "return and refund": "उत्पाद की वापसी और रिफंड"}[remedy]
+    return localized(language, f"I’ve recorded that you’re asking for a {remedy}.",
+                     f"मैंने दर्ज किया है कि आप {remedy_hi} चाहते हैं।",
+                     f"Maine note kar liya hai ki aapko {remedy} chahiye.")
 
 
 def clarify_remedy(language: str) -> str:
@@ -112,6 +116,21 @@ def case_preview(case: CaseFile, language: str) -> str:
                        "You can add a fresh account in the draft editor.",
                        "सुधार या विरोधाभास के बाद पुराना विवरण और घटनाक्रम हटाया गया था। मसौदे में नया विवरण जोड़ सकते हैं।",
                        "Correction ya conflict ke baad purana description aur timeline hata di gayi thi. Draft editor mein fresh details add karein."))
+    return "\n".join(lines)
+
+
+def evidence_reply(case: CaseFile, language: str) -> str:
+    checklist = evidence_checklist(case, "hi" if language == "hi" else "en")
+    reported = ", ".join(checklist.reported)
+    possible = ", ".join(dict.fromkeys((*checklist.collect, *checklist.unknown)))
+    lines = [localized(language, f"You report having {reported}.", f"आपके अनुसार आपके पास {reported} है।",
+                       f"Aapne bataya ki aapke paas {reported} hai.") if reported else localized(
+        language, "No evidence has been reported yet.", "अभी कोई साक्ष्य दर्ज नहीं है।",
+        "Abhi koi evidence record nahi hua hai.")]
+    if possible:
+        lines.append(localized(language, f"If available, useful records may include {possible}.",
+                               f"अगर उपलब्ध हों तो ये रिकॉर्ड मददगार हो सकते हैं: {possible}।",
+                               f"Agar available hon, toh ye records useful ho sakte hain: {possible}."))
     return "\n".join(lines)
 
 

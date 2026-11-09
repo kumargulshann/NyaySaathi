@@ -4,7 +4,7 @@ import re
 from datetime import date
 
 from nyaysaathi.consistency import AMBIGUITY, CLARIFY, DATE_MENTION, PURCHASE_DATE_VALUE, possible_stale_assertion
-from nyaysaathi.models import CaseFile
+from nyaysaathi.models import CaseFile, RemedySelection
 
 
 GENERIC_SELLERS = frozenset({
@@ -108,6 +108,35 @@ def requested_remedy(value: str, quote: str, latest: str, *, answering_remedy_qu
     # A remedy keyword alone could have been copied from a refusal elsewhere
     # in the message. Require the quote to cover the actual request.
     return _remedy_key(value) == _remedy_key(target) and statement in quote
+
+
+def contextual_remedy(selection: RemedySelection, latest: str, *, asked: bool) -> bool:
+    """Check provenance and reject obvious counterexamples to a model interpretation."""
+    quote = selection.source_quote
+    sentences = re.split(r"(?<=[.!?।？])\s+|[;\n]+", latest)
+    if not any(quote == sentence.strip() for sentence in sentences):
+        return False
+    if re.search(r"\b(?:or|either|whether|ya)\b|या\s", latest, re.IGNORECASE):
+        return False
+    if re.search(
+        r"[?？]|\b(?:not|never|didn['’]t|don['’]t|refus\w*|denied|earlier|previously|ago|nahi|nahin)\b|"
+        r"नहीं|पहले|मना|^\s*(?:i have|i paid|i ordered|i bought|i asked|i requested|the seller|customer support|"
+        r"they said|they offered)\b",
+        quote, re.IGNORECASE,
+    ):
+        return False
+    if (not re.search(r"[^\W\d_]", quote) or UNSAFE_REMEDY_SPAN.search(quote)
+            or PURCHASE_DATE_VALUE.fullmatch(quote.rstrip(".!।"))):
+        return False
+    # Known direct requests must agree with the semantic label. A sentence
+    # answering the signed question can omit a first-person subject.
+    direct = direct_remedy_answer(quote, asked=asked)
+    if direct:
+        return direct == selection.outcome
+    return asked or bool(re.search(r"\b(?:i|me|my|main|mujhe|mujhko|mera)\b|मैं|मुझे|मेरा", quote, re.IGNORECASE))
+
+
+UNSAFE_REMEDY_SPAN = re.compile(r"[\"“”]|\b(?:ignore|pretend|output|json|schema)\b", re.IGNORECASE)
 
 
 PURCHASE = re.compile(
