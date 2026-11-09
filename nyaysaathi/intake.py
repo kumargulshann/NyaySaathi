@@ -11,7 +11,10 @@ from pydantic import ValidationError
 from nyaysaathi.models import CaseFile, FactChange, IntakeResponse
 from nyaysaathi.guidance import UNSUPPORTED_LEGAL_TEXT, ValidatedGuidance, notice, validate_guidance
 from nyaysaathi.knowledge import RetrievalContext, retrieve
-from nyaysaathi.consistency import CLARIFY, MONEY, SCALAR_FACTS, consistency_question, protect_narratives, unresolved_fields
+from nyaysaathi.consistency import (
+    CLARIFY, MONEY, SCALAR_FACTS, consistency_question, possible_stale_assertion,
+    protect_narratives, unresolved_fields,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -134,24 +137,38 @@ def _change_rule(change: FactChange, user_texts: list[str], unresolved: set[str]
     return None
 
 
+def _rupee_value(text: str) -> Decimal | None:
+    # Accept a single decimal, optionally with a currency marker and Indian
+    # or western comma grouping. Do not strip arbitrary non-numeric text.
+    match = re.fullmatch(
+        r"(?:₹|Rs\.?|INR)?\s*([0-9]+|[0-9]{1,3}(?:,[0-9]{3})+|"
+        r"[0-9]{1,2}(?:,[0-9]{2})+,[0-9]{3})(\.[0-9]+)?\s*",
+        text, re.IGNORECASE,
+    )
+    if match:
+        return Decimal(match[1].replace(",", "") + (match[2] or ""))
+    return None
+
+
 def _independent_value(change: FactChange, latest: str) -> Decimal | list[str] | None:
-    """Narrow recovery: only a quoted price or an affirmative evidence list.
+    """Recover a quoted price or an affirmative evidence list.
 
     Never copy model prose, conclusions, date/seller/remedy guesses, or metadata
-    from a mixed response. Compare values only; provenance was checked verbatim.
+    from a mixed response. Check provenance even for malformed proposals.
     """
-    if change.source_quote not in latest:
+    if not change.source_quote.strip() or change.source_quote not in latest:
         return None
-    if change.field == "amount_inr":
+    if change.field == "amount_inr" and isinstance(change.value, str):
         # Price must be in a positive purchase/payment statement in the latest
         # message, not merely a number mentioned by the user or assistant.
         prices = list(re.finditer(
-            rf"(?:^|[.!?]\s+)I (?:paid\s+|(?:ordered|bought) [^.!?\n]+? worth\s+)(?P<price>{MONEY.pattern})(?![\d,]|\.\d)",
+            rf"(?:^|[.!?]\s+)I (?:paid\s+|(?:ordered|bought) [^.!?\n]+? worth\s+)"
+            rf"(?P<price>{MONEY.pattern})(?![\d,]|\.\d)(?=\s+(?:from|for|on|to)\b|\s*(?:[.;!?]|$))",
             latest, re.IGNORECASE,
         ))
         if len(prices) == 1 and prices[0]["price"] in change.source_quote:
-            amount = Decimal(prices[0][2].replace(",", ""))
-            if amount == Decimal(change.value):
+            amount = _rupee_value(prices[0]["price"])
+            if amount is not None and amount == _rupee_value(change.value):
                 return amount
     if change.field == "evidence_available" and change.value:
         # Restrict recovery to a simple, explicit inventory in a single clause.
@@ -167,27 +184,52 @@ def _independent_value(change: FactChange, latest: str) -> Decimal | list[str] |
     return None
 
 
+def _quoted_timeline(case: CaseFile, changes: list[FactChange], latest: str) -> list[str]:
+    # Recover complete user statements in the original order. Discard the
+    # model's malformed values, paraphrases, and stitched or partial quotes.
+    quotes = {change.source_quote for change in changes if change.field == "timeline" and change.value}
+    events = []
+    for sentence in re.split(r"(?<=[.!?।])\s+|\n+", latest):
+        if (sentence in quotes or sentence.rstrip(".।") in quotes) and not (
+            not sentence.strip() or "?" in sentence or "？" in sentence or
+            UNSUPPORTED_LEGAL_TEXT.search(sentence) or possible_stale_assertion(case, sentence)
+        ):
+            events.append(sentence)
+    return list(dict.fromkeys(events))
+
+
 def _recover_intake(
     case: CaseFile, result: IntakeResponse, latest: str, unresolved: set[str],
-    valid: list[FactChange], failed: list[FactChange],
+    failed: list[FactChange],
 ) -> tuple[CaseFile, str]:
-    # Never recover across a correction, existing/uncertain fact, contradiction,
-    # or more than one invalid proposal. Those failures can affect other fields.
-    if len(failed) != 1 or unresolved or case.uncertain_fields or case.narrative_review_required or any(
+    # Corrections, contradictions, and writes to existing facts can affect
+    # other fields. Keep them transactional even if new facts look safe.
+    if unresolved or case.uncertain_fields or case.narrative_review_required or any(
         change.is_correction or getattr(case, change.field) not in (None, [])
         for change in result.changes
     ):
         raise _invalid("recovery", "inseparable_proposal")
     fields = {}
-    for change in valid:
+    for change in result.changes:
         value = _independent_value(change, latest)
         if value is not None:
             fields[change.field] = value
-    if not fields:
-        raise _invalid("recovery", "no_independent_facts")
-    language = result.reply_language
     updated = CaseFile.model_validate({**case.model_dump(), **fields, "case_status": "in_progress"})
-    question = CLARIFY[language].get(failed[0].field) or consistency_question(updated, language)
+    failed_fields = {change.field for change in failed}
+    events = (_quoted_timeline(updated, result.changes, latest)
+              if "timeline" in failed_fields and "incident_date" not in failed_fields else [])
+    if not fields and not events:
+        raise _invalid("recovery", "no_independent_facts")
+    if events:
+        updated.timeline = events
+    language = result.reply_language
+    # Ask about a rejected structured detail if it remains unknown. For a
+    # rejected narrative or a repaired price, prioritize a missing core fact.
+    question = next((CLARIFY[language][change.field] for change in failed
+                     if change.field in CLARIFY[language] and getattr(updated, change.field) is None), None)
+    if not question:
+        question = (CLARIFY[language]["company_or_seller"] if updated.company_or_seller is None
+                    else consistency_question(updated, language))
     updated.unanswered_questions = [question]
     # Old suggestions may no longer be missing after accepting evidence.
     if "evidence_available" in fields:
@@ -210,12 +252,17 @@ def _apply_intake(
         candidate = protected.model_dump()
         user_texts = [message["content"] for message in messages if message["role"] == "user"]
         unresolved = unresolved_fields(user_texts[-1])
-        seen, valid, failed = set(), [], []
+        seen, failed = set(), []
         # Validate the full proposal before changing anything. Pre-marking accepted
         # correction turns makes invalidation independent of model change ordering.
         for change in result.changes:
             if change.field in seen:
-                raise _invalid("fact_proposal", "duplicate_field", change.field)
+                if not recover or change.field != "timeline":
+                    raise _invalid("fact_proposal", "duplicate_field", change.field)
+                # A repeated timeline can contain separate append-only events.
+                # Consider it only in the verbatim recovery path.
+                _diagnostic("fact_proposal", "duplicate_field", change.field)
+                failed.append(change)
             seen.add(change.field)
             rule = _change_rule(change, user_texts, unresolved)
             if rule is not None:
@@ -223,10 +270,8 @@ def _apply_intake(
                     raise _invalid("fact_proposal", rule, change.field)
                 _diagnostic("fact_proposal", rule, change.field)
                 failed.append(change)
-            else:
-                valid.append(change)
         if failed:
-            return _recover_intake(protected, result, user_texts[-1], unresolved, valid, failed)
+            return _recover_intake(protected, result, user_texts[-1], unresolved, failed)
         if any(change.is_correction and change.field != "user_language" for change in result.changes):
             candidate["narrative_review_required"] = True
         for field in sorted(unresolved):

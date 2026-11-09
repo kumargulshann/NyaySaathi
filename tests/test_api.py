@@ -125,6 +125,48 @@ def test_partial_intake_does_not_save_a_price_just_because_its_quote_is_verbatim
     assert "19000" not in json.dumps(case)
 
 
+@pytest.mark.parametrize("formatted_price", ["₹18,000", "18,000"])
+def test_washer_recovers_from_the_combination_reported_by_production(client, monkeypatch, caplog, formatted_price):
+    # Reconstruct the logged rule failures. The production log contains no
+    # raw values, so these representative values are fixtures, not a replay.
+    changes = washer_changes()
+    changes[1]["value"] = formatted_price
+    changes[2].update(value="The washer was ordered in 2026.", source_quote="I ordered a washing machine ... It arrived damaged.")
+    changes[3]["value"] = "The seller promised a refund."
+    changes.insert(4, {"field": "timeline", "value": "The washer arrived damaged.", "source_quote": "It arrived damaged."})
+    changes.insert(5, {"field": "timeline", "value": "I asked for a refund.", "source_quote": "can you prepare a complaint?"})
+    provider = mock_intake(monkeypatch, source="CPA-DEFECT", changes=changes)
+
+    response = client.post("/api/chat", json={"message": WASHER_STORY})
+    assert response.status_code == 200
+    body = response.json()
+    case = body["case"]
+    assert body["error"] is None and "Some details still need review" in body["reply"]
+    assert body["reply"].count("?") == 1 and "seller" in body["reply"]
+    assert case["amount_inr"] == "18000" and case["evidence_available"] == WASHER_EVIDENCE
+    assert case["timeline"] == ["It arrived damaged.", "The seller has refused a replacement."]
+    assert all(case[field] is None for field in ("user_summary", "company_or_seller", "incident_date", "desired_resolution"))
+    assert body["guidance"]["status"] == "grounded"
+    assert body["guidance"]["citations"][0]["source_id"] == "CPA-DEFECT"
+    assert "rule=nonverbatim_quote field=user_summary" in caplog.text
+    assert "rule=invalid_field_value field=amount_inr" in caplog.text
+    assert "rule=invalid_field_value field=timeline" in caplog.text
+    assert "rule=duplicate_field field=timeline" in caplog.text
+    provider.assert_called_once()
+
+
+def test_mixed_timeline_correction_keeps_existing_case(client, monkeypatch):
+    original = CaseFile(timeline=["Original user report."])
+    changes = washer_changes()
+    changes.append({"field": "timeline", "value": ["It arrived damaged."],
+                    "source_quote": "It arrived damaged.", "is_correction": True})
+    mock_intake(monkeypatch, changes=changes)
+    response = client.post("/api/chat", json={"message": WASHER_STORY, "case": original.model_dump(mode="json")})
+    body = response.json()
+    assert body["error"]["code"] == "invalid_output"
+    assert CaseFile.model_validate(body["case"]) == original
+
+
 def test_month_first_invented_year_is_removed_from_draft_inputs(client, monkeypatch, caplog):
     changes = washer_changes()
     changes[2]["value"] = "Washer ordered on October 15, 2026."

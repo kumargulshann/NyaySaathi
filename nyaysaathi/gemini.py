@@ -58,8 +58,10 @@ unchanged unless the user explicitly states their requested outcome.
 Dates: use YYYY-MM-DD only when the source quote contains the day, month and four-digit
 year. For a partial date such as "October 15", omit incident_date. Retain that wording
 as reported in the timeline; never add a year there or in the summary. Do not turn
-relative dates into guessed calendar dates. Amounts: exact INR decimal
-strings, no estimates or currency conversions. issue_type is a short classification
+relative dates into guessed calendar dates. For an INR price such as ₹18,000,
+set amount_inr.value to the string "18000" without a currency symbol or commas.
+Keep the price formatting unchanged in source_quote. No estimates or currency conversions.
+issue_type is a short classification
 supported by the user's account. user_language is en, hi, or hinglish based on their text.
 
 Do not re-emit unchanged facts. Preserve existing facts unless the current USER
@@ -68,6 +70,8 @@ from that current message explaining the correction. Omitted fields stay unchang
 Null clears a scalar only on explicit retraction. List changes normally APPEND
 entries; for explicit corrections/retractions send the entire corrected list with
 is_correction=true (or null to clear). At most one change per field.
+timeline.value is always a list of strings, even for one event. For several events
+use one timeline change and a single exact source span supporting all of them.
 Keep the original user_summary unless explicitly corrected; additional events go
 in timeline. Evidence_available lists only evidence the user says they have.
 evidence_missing lists potentially useful items to ASK about, not mandatory legal
