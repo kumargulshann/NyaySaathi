@@ -65,6 +65,8 @@ def document_handoff(language: str) -> str:
 
 
 def record_remedy_reply(case: CaseFile, remedy: str, language: str) -> str:
+    if case.desired_resolution and case.desired_resolution != remedy:
+        case.narrative_review_required = True
     case.desired_resolution = remedy
     case.uncertain_fields.pop("desired_resolution", None)
     question = next_fact_question(case, language)
@@ -72,11 +74,18 @@ def record_remedy_reply(case: CaseFile, remedy: str, language: str) -> str:
     case.unanswered_questions = list(dict.fromkeys(
         ([question] if question else []) + material_questions(case, language)
     ))
-    remedy_hi = {"refund": "रिफंड", "replacement": "बदली", "repair": "मरम्मत"}[remedy]
+    remedy_hi = {"refund": "रिफंड", "replacement": "बदली", "repair": "मरम्मत", "return": "उत्पाद की वापसी"}[remedy]
     acknowledgment = localized(language, f"I’ve recorded that you’re asking for a {remedy}.",
                                f"मैंने दर्ज किया है कि आप {remedy_hi} चाहते हैं।",
                                f"Maine note kar liya hai ki aapko {remedy} chahiye.")
     return f"{acknowledgment} {question or document_handoff(language)}"
+
+
+def clarify_remedy(language: str) -> str:
+    examples = localized(language, "You can say what you'd like the seller to do, such as replace the item, accept a return, issue a refund, or repair it.",
+                         "बताएँ कि विक्रेता क्या करे, जैसे सामान बदले, वापसी स्वीकार करे, पैसे लौटाए या मरम्मत करे।",
+                         "Batayein seller kya kare, jaise item replace kare, return accept kare, refund de ya repair kare.")
+    return f"{examples} {CLARIFY[language]['desired_resolution']}"
 
 
 def case_preview(case: CaseFile, language: str) -> str:

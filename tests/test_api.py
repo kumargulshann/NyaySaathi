@@ -205,7 +205,9 @@ def test_washer_followups_complete_purchase_year_without_assigning_an_incident_d
 @pytest.mark.parametrize("language,answer,confirmation", [
     ("en", "replacement", "you’re asking for a replacement"),
     ("hi", "बदली", "आप बदली चाहते हैं"),
+    ("hi", "ऑर्डर बदल दीजिए।", "आप बदली चाहते हैं"),
     ("hinglish", "Mujhe replacement chahiye", "aapko replacement chahiye"),
+    ("hinglish", "Order replace kar do", "aapko replacement chahiye"),
 ])
 def test_short_remedy_answer_after_bilingual_seller_reply(client, monkeypatch, language, answer, confirmation):
     mock_intake(monkeypatch, changes=washer_changes())
@@ -243,6 +245,9 @@ def test_short_remedy_answer_after_bilingual_seller_reply(client, monkeypatch, l
     ("refund or replacement", True, None),
     ("The seller refused a replacement.", True, None),
     ("replacement?", True, None),
+    ("replace the order?", True, None),
+    ("Don't replace the order.", True, None),
+    ("The seller refused to replace the order.", True, None),
 ])
 def test_remedy_answer_needs_context_and_cannot_guess_or_overwrite(client, monkeypatch, answer, asked, known):
     question = CLARIFY["en"]["desired_resolution"]
@@ -255,6 +260,52 @@ def test_remedy_answer_needs_context_and_cannot_guess_or_overwrite(client, monke
     ]}).json()
     provider.assert_called_once()
     assert result["case"]["desired_resolution"] == known
+
+
+@pytest.mark.parametrize("issue", ["defective product", None])
+def test_return_then_replace_the_order_advances_intake(client, monkeypatch, issue):
+    question = CLARIFY["en"]["desired_resolution"]
+    case = CaseFile(issue_type=issue, product_or_service="washing machine", purchase_date_text="October 15",
+                    company_or_seller="Amazon", amount_inr="18000", evidence_available=WASHER_EVIDENCE,
+                    case_status="in_progress", unanswered_questions=[question, PURCHASE_YEAR_QUESTION["en"]])
+    history = [{"role": "user", "content": "मैंने Amazon से ऑर्डर किया था।"},
+               {"role": "assistant", "content": question}]
+    provider = mock_intake(monkeypatch, next_question=question)
+    payload = signed(case)
+    for message, remedy in [("return the order", "return"), ("replace the order", "replacement")]:
+        response = client.post("/api/chat", json={"message": message, "history": history, **payload})
+        assert response.status_code == 200
+        body = response.json()
+        assert body["error"] is None and body["case"]["desired_resolution"] == remedy
+        assert body["case"]["company_or_seller"] == "Amazon"
+        assert body["case"]["amount_inr"] == "18000" and body["case"]["incident_date"] is None
+        assert body["case"]["evidence_available"] == WASHER_EVIDENCE
+        assert body["case"]["purchase_date_text"] == "October 15"
+        assert question not in body["missing_information"]
+        next_question = PURCHASE_YEAR_QUESTION["en"] if issue else CLARIFY["en"]["issue_type"]
+        assert f"a {remedy}." in body["reply"] and body["reply"].endswith(next_question)
+        history.extend([{"role": "user", "content": message}, {"role": "assistant", "content": body["reply"]}])
+        payload = returned_case(body)
+    provider.assert_not_called()
+    draft = client.post("/api/action-package", json={**payload, "provisional": True}).json()["package"]
+    assert "Desired outcome:\nreplacement" in draft["summary"]
+
+
+def test_ambiguous_remedy_prompts_for_clarification_then_accepts_answer(client, monkeypatch):
+    question = CLARIFY["en"]["desired_resolution"]
+    case = complete_case().model_copy(update={"desired_resolution": None, "unanswered_questions": [question]})
+    provider = mock_intake(monkeypatch, next_question=question)
+    body = client.post("/api/chat", json={"message": "Return or replace it", **signed(case),
+        "history": [{"role": "assistant", "content": question}]}).json()
+    assert body["case"]["desired_resolution"] is None
+    assert "accept a return" in body["reply"] and body["reply"].endswith(question)
+    provider.assert_called_once()
+
+    provider.reset_mock()
+    body = client.post("/api/chat", json={"message": "return", **returned_case(body),
+        "history": [{"role": "assistant", "content": body["reply"]}]}).json()
+    assert body["case"]["desired_resolution"] == "return"
+    provider.assert_not_called()
 
 
 def test_corrected_washer_conversation_moves_forward_without_restoring_old_prose(client, monkeypatch):

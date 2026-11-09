@@ -34,23 +34,45 @@ REMEDY_REQUEST = re.compile(
 )
 REMEDIES = {
     "refund": r"refund|my money back|money back|paise\s+(?:wapas|vapas)|रिफंड|धनवापसी|(?:(?:मेरे|अपने)\s+)?पैसे वापस",
-    "replacement": r"replacement|new one|replacement product|रिप्लेसमेंट|बदली|नया उत्पाद",
+    "replacement": r"replacement|exchange|new one|replacement product|रिप्लेसमेंट|बदली|नया उत्पाद",
     "repair": r"repair|मरम्मत",
+    "return": r"return|product return|order return|वापसी",
+}
+ORDER_ITEM = r"(?:it|(?:(?:the|my|this|that) )?(?:order|item|product|unit|goods))"
+REMEDY_ACTIONS = {
+    "refund": rf"refund {ORDER_ITEM}|(?:give|send) (?:me )?my money back",
+    "replacement": rf"(?:replace|exchange|swap) {ORDER_ITEM}|(?:order|item|product) (?:replace|exchange) kar do|(?:ऑर्डर|सामान|उत्पाद) बदल (?:दो|दीजिए)",
+    "repair": rf"(?:repair|fix) {ORDER_ITEM}",
+    "return": rf"(?:return|take back) {ORDER_ITEM}|(?:order|item|product) (?:wapas|vapas) karna hai|(?:ऑर्डर|सामान|उत्पाद) वापस करना है",
 }
 REMEDY_SHIFT = re.compile(r"\b(?:now|instead|correction|actually|ab)\b|अब|इसके बजाय", re.IGNORECASE)
 
 
+def _remedy_words(text: str) -> str:
+    text = " ".join(text.casefold().strip(" .!।").split())
+    text = re.sub(r"^(?:please,?|a|an|the)\s+", "", text)
+    return re.sub(r",?\s+please$", "", text)
+
+
+def _remedy_action(text: str) -> str | None:
+    return next((key for key, forms in REMEDY_ACTIONS.items() if re.fullmatch(forms, text)), None)
+
+
 def _remedy_key(text: str) -> str:
-    text = re.sub(r"^(?:a|an|the)\s+", "", text.casefold().strip(" .!।"))
-    text = re.sub(r",?\s+please$", "", text)
+    text = _remedy_words(text)
+    action = _remedy_action(text.removeprefix("to "))
+    if action:
+        return action
     return next((key for key, variants in REMEDIES.items() if re.fullmatch(variants, text)), text)
 
 
-def direct_remedy_answer(text: str) -> str | None:
-    """Recognize a single supported outcome in an answer to a remedy question."""
+def direct_remedy_answer(text: str, *, asked: bool) -> str | None:
+    """A short label needs a question. An explicit action can update an existing request."""
     statement = text.strip().rstrip(".!।")
     match = REMEDY_REQUEST.fullmatch(statement)
     target = next(item for item in match.groups() if item is not None) if match else statement
+    if not asked and not match:
+        return _remedy_action(_remedy_words(statement))
     key = _remedy_key(target)
     return key if key in REMEDIES else None
 
@@ -71,7 +93,8 @@ def requested_remedy(value: str, quote: str, latest: str, *, answering_remedy_qu
             target = next(item for item in match.groups() if item is not None)
             # Questions, negatives, alternatives, and discussion of a request
             # are not a confirmed outcome. The requested text must be explicit.
-            if re.search(r"^to\s|\b(?:not|no|or|whether|why|if|nahi|nahin|ya|complaint|options|advice|guidance)\b|"
+            if (target.startswith("to ") and _remedy_key(target) not in REMEDIES) or re.search(
+                         r"\b(?:not|no|or|whether|why|if|nahi|nahin|ya|complaint|options|advice|guidance)\b|"
                          r"नहीं|या\s|शिकायत|जानकारी", target, re.IGNORECASE):
                 continue
             requested.append((target, statement))
