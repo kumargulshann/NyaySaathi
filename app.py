@@ -119,6 +119,8 @@ VOICE_ERRORS = {
     "audio_too_long": ("Recording exceeds 60 seconds. Record a shorter message.", "रिकॉर्डिंग 60 सेकंड से लंबी है। छोटा संदेश रिकॉर्ड करें।"),
     "unsupported_audio": ("Only 16-bit PCM WAV recordings are supported.", "केवल 16-bit PCM WAV रिकॉर्डिंग समर्थित हैं।"),
     "invalid_audio": ("Invalid or incomplete WAV audio. Record again.", "WAV ऑडियो अमान्य या अधूरा है। फिर रिकॉर्ड करें।"),
+    "silent_audio": ("The recording contains only silence. Check your microphone and preview.", "रिकॉर्डिंग में केवल मौन है। माइक्रोफ़ोन और रिकॉर्डिंग जाँचें।"),
+    "empty_transcription": ("The provider returned no transcript; this does not confirm silence. Check the preview and try again later.", "प्रदाता ने पाठ नहीं लौटाया; इससे मौन की पुष्टि नहीं होती। रिकॉर्डिंग सुनें और बाद में प्रयास करें।"),
     "unintelligible_audio": ("No usable transcript: speech was absent or marked unclear. Record again or type your message.", "उपयोगी पाठ नहीं मिला: आवाज़ अनुपस्थित या अस्पष्ट थी। फिर रिकॉर्ड करें या संदेश लिखें।"),
     "missing_configuration": ("Set GEMINI_API_KEY to enable transcription. Check GEMINI_TRANSCRIPTION_MODEL if overridden.", "लिप्यंतरण के लिए GEMINI_API_KEY सेट करें। बदला हो तो GEMINI_TRANSCRIPTION_MODEL भी जाँचें।"),
     "rate_limit": ("Transcription quota/rate limit reached. Check your quota before trying again.", "लिप्यंतरण की उपयोग सीमा पूरी हुई। फिर प्रयास करने से पहले कोटा जाँचें।"),

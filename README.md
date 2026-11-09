@@ -20,6 +20,12 @@ The deployed endpoints and two real fictional Gemini cases were checked on
 for results, the refund-intent inference requiring review, and voice limitations.
 Share as a limited prototype; live voice recognition remains unverified.
 
+Phase 11 addresses a production transcript-parsing defect found in user-supplied
+logs: structured `audio_transcription.text` was ignored by the SDK `.text` helper.
+See [VOICE_DEBUG.md](VOICE_DEBUG.md) for the evidence, fix, safe diagnostics and
+single genuine-recording test still needed. A parser fix is not claimed as proof
+of end-to-end speech recognition.
+
 ## Web application: FastAPI + vanilla browser frontend
 
 The browser version is a second interface over the **same** `nyaysaathi` services.

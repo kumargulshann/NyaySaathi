@@ -11,7 +11,7 @@ import pytest
 
 from nyaysaathi.settings import Settings
 from nyaysaathi.transcription import (
-    MAX_AUDIO_BYTES, TranscriptionError, transcribe_audio, validate_audio,
+    MAX_AUDIO_BYTES, TranscriptionError, extract_transcript, transcribe_audio, validate_audio,
 )
 
 
@@ -51,6 +51,8 @@ def test_valid_wav_and_normalized_mime():
     assert info.duration_seconds == 0.1
     assert info == validate_audio(audio, "audio/wav")
     assert len(info.recording_id) == 64
+    assert info.rms_level == pytest.approx(16 / 32768)
+    assert info.peak_level == pytest.approx(16 / 32768)
 
 
 @pytest.mark.parametrize("text", [
@@ -74,6 +76,7 @@ def test_language_is_preserved_and_one_documented_sdk_call_is_used(monkeypatch, 
     assert config.audio_transcription_config.mode == "VERBATIM"
     assert config.audio_transcription_config.language_codes == []
     assert config.system_instruction is None
+    assert config.automatic_function_calling.disable is True
     assert factory.call_args.kwargs["http_options"].timeout == 45000
     assert factory.call_args.kwargs["http_options"].retry_options.attempts == 1
     client.files.upload.assert_not_called()
@@ -89,7 +92,7 @@ def test_language_is_preserved_and_one_documented_sdk_call_is_used(monkeypatch, 
     (wav_bytes()[:-2], "audio/wav", "invalid_audio"),
     (wav_bytes() + b"extra payload", "audio/wav", "invalid_audio"),
     (wav_bytes(seconds=61, rate=8000), "audio/wav", "audio_too_long"),
-    (wav_bytes(silent=True), "audio/wav", "unintelligible_audio"),
+    (wav_bytes(silent=True), "audio/wav", "silent_audio"),
 ])
 def test_invalid_audio_never_constructs_a_client(monkeypatch, data, mime, code):
     client = Mock()
@@ -110,6 +113,17 @@ def test_partial_pcm_frame_is_rejected_even_with_matching_container_lengths():
     struct.pack_into("<I", data, 40, len(data) - 44)
     with pytest.raises(TranscriptionError, match="invalid_audio"):
         validate_audio(bytes(data), "audio/wav")
+
+
+def test_pcm_amplitude_is_measured_from_signed_samples_not_header_bytes():
+    stream=BytesIO()
+    with wave.open(stream,"wb") as audio:
+        audio.setnchannels(1);audio.setsampwidth(2);audio.setframerate(16000)
+        audio.writeframes(struct.pack("<5h",0,8192,-8192,16384,-16384)*320)
+    info=validate_audio(stream.getvalue(),"audio/wav")
+    assert info.duration_seconds==0.1
+    assert info.peak_level==pytest.approx(0.5)
+    assert info.rms_level==pytest.approx(0.125**0.5)
 
 
 def test_missing_key_never_constructs_client(monkeypatch):
@@ -137,7 +151,7 @@ def test_provider_failures_are_redacted_and_not_retried(monkeypatch, error, code
     client.models.generate_content.assert_called_once()
 
 
-@pytest.mark.parametrize("text", ["", "   ", "[inaudible]", "[अस्पष्ट]", "No speech detected."])
+@pytest.mark.parametrize("text", ["[inaudible]", "[अस्पष्ट]", "No speech detected."])
 def test_unusable_transcript_is_an_explicit_error(monkeypatch, text):
     mock_client(monkeypatch, output=response(text))
     with pytest.raises(TranscriptionError, match="unintelligible_audio"):
@@ -151,3 +165,58 @@ def test_missing_blocked_and_truncated_outputs_are_not_accepted(monkeypatch, out
     mock_client(monkeypatch, output=output)
     with pytest.raises(TranscriptionError, match="invalid_output"):
         transcribe_audio(wav_bytes(), "audio/wav", Settings("test-key"))
+
+
+@pytest.mark.parametrize("text", [
+    "My headphones worth 2999 arrived damaged.",
+    "मेरा सामान नहीं पहुँचा, मुझे रिफंड चाहिए।",
+    "Maine Flipkart se ₹4500 ka product liya tha.",
+])
+def test_production_structured_part_is_not_misclassified_as_no_speech(monkeypatch, text):
+    # Actual documented wire field names, parsed by the installed SDK types.
+    output = types.GenerateContentResponse.model_validate({"candidates":[{
+        "finishReason":"STOP", "content":{"role":"model","parts":[
+            {"audioTranscription":{"text":text,"languageCode":"en-IN"}}
+        ]}
+    }]})
+    assert output.text is None  # This is why the previous production parser failed.
+    _, client = mock_client(monkeypatch, output=output)
+    result = transcribe_audio(wav_bytes(), "audio/wav", Settings("offline-key"))
+    assert result.transcript == text and result.review_required
+    client.models.generate_content.assert_called_once()
+
+
+def test_segment_order_thought_exclusion_and_duplicate_representations():
+    output = types.GenerateContentResponse(candidates=[types.Candidate(finish_reason="STOP",
+        content=types.Content(parts=[
+            types.Part(text="Internal thought",thought=True),
+            types.Part(audio_transcription=types.Transcription(text="First segment.")),
+            types.Part(audio_transcription=types.Transcription(text="दूसरा हिस्सा।")),
+        ]))])
+    assert extract_transcript(output) == "First segment. दूसरा हिस्सा।"
+    output.candidates[0].content.parts.append(types.Part(text="First segment. दूसरा हिस्सा।"))
+    assert extract_transcript(output) == "First segment. दूसरा हिस्सा।"
+
+
+@pytest.mark.parametrize("parts", [
+    [], [types.Part(text="")], [types.Part(text="   ")],
+    [types.Part(audio_transcription=types.Transcription(text=""))],
+])
+def test_empty_completed_provider_output_is_not_proof_of_no_speech(monkeypatch, parts):
+    output=types.GenerateContentResponse(candidates=[types.Candidate(finish_reason="STOP",content=types.Content(parts=parts))])
+    mock_client(monkeypatch,output=output)
+    with pytest.raises(TranscriptionError,match="empty_transcription"):
+        transcribe_audio(wav_bytes(),"audio/wav",Settings("offline-key"))
+
+
+def test_diagnostics_contain_signal_metrics_but_no_content_or_credentials(monkeypatch, caplog):
+    import logging
+    caplog.set_level(logging.INFO,logger="nyaysaathi.transcription")
+    text="Private synthetic transcript marker"
+    mock_client(monkeypatch,output=response(text))
+    audio=wav_bytes()
+    result=transcribe_audio(audio,"audio/wav",Settings("private-offline-key-marker"))
+    assert "transcription_audio_validated" in caplog.text
+    assert "rms=" in caplog.text and "peak=" in caplog.text
+    for hidden in (text,"private-offline-key-marker",result.audio.recording_id,audio.hex()):
+        assert hidden not in caplog.text

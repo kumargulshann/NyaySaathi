@@ -42,13 +42,13 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
   const timers=[],realInterval=globalThis.setInterval;
   globalThis.setInterval=(...args)=>{const timer=realInterval(...args);timers.push(timer);return timer;};
   t.after(()=>{timers.forEach(clearInterval);globalThis.setInterval=realInterval;});
-  const calls=[];let amount="2999",fail=false;
+  const calls=[];let amount="2999",fail=false,transcriptionError=false;
   const caseData=()=>({issue_type:"defective product",company_or_seller:"Example Shop",amount_inr:amount,incident_date:null,evidence_available:[],evidence_missing:[],timeline:[],user_summary:amount==="2500"?null:"Damaged headphones.",desired_resolution:"refund",unanswered_questions:["Order date?"],case_status:"in_progress",narrative_review_required:amount==="2500"});
   const readiness={status:"missing",missing:["incident_date"],review:[],provisional_allowed:true};
   globalThis.fetch=async(path,options)=>{
     const body=path==="/api/transcribe"?options.body:JSON.parse(options.body);calls.push({path,body});
     if(fail)throw new Error("offline network failure");
-    if(path==="/api/transcribe")return{ok:true,json:async()=>({transcript:"Mera 2000 ka refund pending hai"})};
+    if(path==="/api/transcribe")return transcriptionError ? {ok:false,json:async()=>({error:{code:"empty_transcription",message:"Provider returned no transcript; this does not confirm silence."}})} : {ok:true,json:async()=>({transcript:"Mera 2000 ka refund pending hai"})};
     if(path==="/api/chat"){
       if(body.message.includes("2500"))amount="2500";
       return{ok:true,json:async()=>({case:caseData(),reply:"<img src=x onerror=alert(1)> Which seller?",guidance:{status:"grounded",language:"en",message:"",citations:[
@@ -86,10 +86,18 @@ test("UI logic preserves edits, marks stale drafts, sends approved voice once an
   await emit("record");node.port.onmessage({data:{type:"chunk",samples:new Float32Array(4800).fill(.1)}});await emit("record");
   await until(()=>!$("transcribe").hidden);assert.equal(stopped,1);assert.equal(calls.length,beforeVoice);
   const wave=urls.get($("audio-preview").src);assert.equal(wave.type,"audio/wav");assert.equal(wave.size,3244);
-  await emit("transcribe");await emit("transcribe");assert.equal(calls.length,beforeVoice+1);
+  transcriptionError=true;
+  await emit("transcribe");
+  assert.equal($("voice-error").hidden,false);
+  assert.match($("voice-error").textContent,/मौन|silence/);
+  assert.equal($("transcript-section").hidden,true);
+  assert.equal(calls.length,beforeVoice+1);
+  await emit("language","change");assert.equal(calls.length,beforeVoice+1); // No automatic retry.
+  transcriptionError=false;
+  await emit("transcribe");await emit("transcribe");assert.equal(calls.length,beforeVoice+2);
   $("transcript").value="Approved correction 2500";await emit("transcript","input");
   await emit("send-voice");await emit("send-voice");await until(()=>!$("send").disabled);
-  assert.equal(calls.length,beforeVoice+2);assert.equal(calls.at(-1).body.message,"Approved correction 2500");assert.equal($("send-voice").disabled,true);
+  assert.equal(calls.length,beforeVoice+3);assert.equal(calls.at(-1).body.message,"Approved correction 2500");assert.equal($("send-voice").disabled,true);
   const beforeLanguage=calls.length;await emit("language","change");assert.equal(calls.length,beforeLanguage);
   fail=true;$("message").value="Refund still pending";await emit("chat-form","submit");await until(()=>!$("send").disabled);
   assert.equal($("request-error").hidden,false);assert.equal(calls.length,beforeLanguage+1);

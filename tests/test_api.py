@@ -188,6 +188,33 @@ def test_transcription_timeout_has_no_intake_call(client, monkeypatch):
     provider.assert_not_called()
 
 
+def test_structured_provider_transcript_reaches_api_without_intake(client, monkeypatch):
+    from google.genai import types
+    from test_transcription import mock_client
+    output=types.GenerateContentResponse.model_validate({"candidates":[{"finishReason":"STOP","content":{"parts":[{"audioTranscription":{"text":"Mera refund pending hai"}}]}}]})
+    _, sdk=mock_client(monkeypatch,output=output)
+    intake=mock_intake(monkeypatch)
+    result=client.post("/api/transcribe",content=wav_bytes(),headers={"Content-Type":"audio/wav"})
+    assert result.status_code==200
+    assert result.json()["transcript"]=="Mera refund pending hai"
+    assert result.json()["review_required"] is True
+    sdk.models.generate_content.assert_called_once()
+    intake.assert_not_called()
+
+
+def test_empty_provider_output_and_local_silence_have_distinct_errors(client, monkeypatch):
+    from test_transcription import mock_client,response
+    _,sdk=mock_client(monkeypatch,output=response(""))
+    empty=client.post("/api/transcribe",content=wav_bytes(),headers={"Content-Type":"audio/wav"})
+    assert empty.status_code==502 and empty.json()["error"]["code"]=="empty_transcription"
+    assert "does not confirm silence" in empty.json()["error"]["message"]
+    sdk.models.generate_content.assert_called_once()
+    sdk.models.generate_content.reset_mock()
+    silent=client.post("/api/transcribe",content=wav_bytes(silent=True),headers={"Content-Type":"audio/wav"})
+    assert silent.status_code==400 and silent.json()["error"]["code"]=="silent_audio"
+    sdk.models.generate_content.assert_not_called()
+
+
 def test_unexpected_exception_and_unknown_provider_code_are_redacted(client, monkeypatch):
     for error in (RuntimeError("test-private-key"), IntakeError("test-private-key")):
         monkeypatch.setattr("nyaysaathi.gemini.GeminiProvider.analyze",Mock(side_effect=error))

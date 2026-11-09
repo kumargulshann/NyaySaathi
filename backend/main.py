@@ -32,6 +32,8 @@ ERRORS = {
     "audio_too_long": "Audio must be at most 60 seconds long.",
     "unsupported_audio": "Only 16-bit PCM WAV audio is accepted.",
     "invalid_audio": "The WAV recording is invalid or incomplete.",
+    "silent_audio": "The recording contains only silence. Check your microphone and listen to the preview before recording again.",
+    "empty_transcription": "The transcription provider returned no transcript. This does not confirm silence. Check the preview and try again later; nothing was sent to intake.",
     "unintelligible_audio": "No usable speech transcript was returned. Record again or type your message.",
     "invalid_request": "The request is invalid or exceeds the case/conversation limits.",
     "request_too_large": "The request exceeds the size limit. Shorten the recording or conversation.",
@@ -166,7 +168,7 @@ def transcribe(
         return transcribe_audio(audio, request.headers.get("content-type", ""), settings)
     except TranscriptionError as error:
         status = {"missing_configuration": 503, "rate_limit": 429, "timeout": 504,
-                  "model_error": 502, "invalid_output": 502}.get(error.code, 400)
+                  "model_error": 502, "invalid_output": 502, "empty_transcription": 502}.get(error.code, 400)
         return error_response(error.code, status)
     except Exception:
         return error_response("internal_error", 500)
